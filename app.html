@@ -81,6 +81,28 @@
     font-family: inherit;
   }
   .btn-primary:hover { background: #e0be64; }
+  .email-optional { font-size: 9px; color: #3a3020; letter-spacing: 1px; text-transform: uppercase; }
+
+  /* ── Upgrade notice ── */
+  #upgrade-notice {
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 999;
+    background: #1a1408; border-top: 1px solid rgba(201,168,76,0.3);
+    padding: 14px 24px;
+  }
+  .upgrade-inner {
+    max-width: 860px; margin: 0 auto;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .upgrade-icon { font-size: 20px; color: #c9a84c; flex-shrink: 0; }
+  .upgrade-text { font-size: 13px; color: #8a7040; flex: 1; line-height: 1.5; }
+  .upgrade-text strong { color: #c9a84c; }
+  .upgrade-link { color: #c9a84c; text-decoration: none; font-weight: 600; }
+  .upgrade-link:hover { text-decoration: underline; }
+  .upgrade-close {
+    background: none; border: none; color: #4a4030; font-size: 20px;
+    cursor: pointer; flex-shrink: 0; line-height: 1;
+  }
+  .upgrade-close:hover { color: #8a7040; }
 
   /* ══════════════════════════════════════
      SCREEN 2 — UPLOAD
@@ -373,6 +395,32 @@
     outline: none; font-family: inherit; cursor: pointer;
   }
 
+  /* ── Print / PDF styles ── */
+  @media print {
+    body { background: #fff !important; color: #111 !important; }
+    .top-nav, .dash-header { background: #f5f5f5 !important; border-color: #ddd !important; }
+    .wordmark { color: #8a6820 !important; }
+    .screen { display: block !important; }
+    #screen-setup, #screen-upload { display: none !important; }
+    #screen-dashboard { display: block !important; }
+    .upload-new-btn, .btn-reset, .day-type-select, .filter-bar { display: none !important; }
+    .card, .alert-item, .q-panel { background: #fafafa !important; border-color: #ddd !important; box-shadow: none !important; }
+    .card-gold { background: #fffdf5 !important; border-color: #c9a84c !important; }
+    .q2-panel { background: #fffdf5 !important; border-color: #c9a84c !important; }
+    .alert-body { display: block !important; }
+    .dash-body { padding: 16px !important; }
+    .sec-title { color: #8a6820 !important; }
+    .sec-title::after { background: #ddd !important; }
+    .port-table td, .client-table td { color: #333 !important; border-color: #eee !important; }
+    .port-table th, .client-table th { color: #8a6820 !important; border-color: #ddd !important; }
+    .health-score-big { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .projection-fill { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .badge { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .q-label { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    a { color: inherit !important; text-decoration: none !important; }
+    @page { margin: 16mm; size: A4; }
+  }
+
   /* Responsive */
   @media (max-width: 768px) {
     .row-2 { grid-template-columns: 1fr; }
@@ -426,7 +474,24 @@
       <option value="₩">Korean Won (₩)</option>
     </select>
   </div>
+  <div class="form-group">
+    <label>Your email <span class="email-optional">(optional — to receive updates &amp; tips)</span></label>
+    <input type="email" id="sa-email" placeholder="e.g. yuri@store.com" />
+  </div>
   <button class="btn-primary" onclick="saveSetup()">Continue to upload →</button>
+</div>
+
+<!-- Upgrade notice banner (hidden by default) -->
+<div id="upgrade-notice" style="display:none;">
+  <div class="upgrade-inner">
+    <span class="upgrade-icon">◈</span>
+    <div class="upgrade-text">
+      <strong>You've used CCadance before.</strong>
+      CCadance is free for your first analysis. From your second use, a subscription keeps it running.
+      <a href="mailto:hello@ccadance.com" class="upgrade-link">Get early access pricing →</a>
+    </div>
+    <button class="upgrade-close" onclick="document.getElementById('upgrade-notice').style.display='none'">×</button>
+  </div>
 </div>
 
 <!-- ══════════════════════════════════════
@@ -481,6 +546,8 @@
         <option value="closed">Closed / Prep (18 tasks)</option>
       </select>
       <button class="upload-new-btn" onclick="showScreen('screen-upload')">↑ New upload</button>
+      <button class="upload-new-btn" onclick="savePDF()" style="color:#c9a84c;border-color:#3a2a10;">⬇ Save PDF</button>
+      <button class="upload-new-btn" onclick="saveSnapshot()" style="color:#8a8070;border-color:#2a2820;">⬇ Save HTML</button>
     </div>
   </div>
 
@@ -604,6 +671,33 @@
 
 <script>
 // ══════════════════════════════════════
+// ══════════════════════════════════════
+// GOOGLE FORM CONFIG
+// ── Replace the values below with your own form IDs ──
+// 1. Create a Google Form with fields: Name, Store, Email, Date
+// 2. Open "Pre-filled link" and capture the entry.XXXXXXX IDs for each field
+// 3. Replace FORM_ACTION and ENTRY_* below
+// ══════════════════════════════════════
+const GFORM = {
+  ACTION: 'https://docs.google.com/forms/d/e/1FAIpQLSc8ptwIiT_xDSk0VIKIZonC-bialRnMZr2IjpQhc79-Wae1lQ/formResponse',
+  ENTRY_NAME:  'entry.1158524851',
+  ENTRY_STORE: 'entry.1831597470',
+  ENTRY_EMAIL: 'entry.681121754',
+  ENTRY_DATE:  'entry.1924118440',
+};
+
+function submitToGoogleForm(name, store, email) {
+  if (!GFORM.ACTION.includes('YOUR_FORM_ID')) {
+    const body = new URLSearchParams();
+    body.append(GFORM.ENTRY_NAME,  name);
+    body.append(GFORM.ENTRY_STORE, store);
+    body.append(GFORM.ENTRY_EMAIL, email || '');
+    body.append(GFORM.ENTRY_DATE,  new Date().toISOString().slice(0,10));
+    fetch(GFORM.ACTION, { method: 'POST', mode: 'no-cors', body }).catch(() => {});
+  }
+}
+
+// ══════════════════════════════════════
 // STATE
 // ══════════════════════════════════════
 let saProfile = {};
@@ -612,6 +706,7 @@ let filteredClients = [];
 let rawSAList = [];
 let sortState = { col: 'daysSinceVisit', dir: 'asc' };
 const STORAGE_KEY = 'ccadance-sa-profile';
+const COUNT_KEY   = 'ccadance-analysis-count';
 
 // ══════════════════════════════════════
 // INIT
@@ -624,6 +719,7 @@ window.onload = function() {
     document.getElementById('store-name').value = saProfile.store || '';
     document.getElementById('annual-target').value = saProfile.target || '';
     document.getElementById('currency').value = saProfile.currency || '€';
+    document.getElementById('sa-email').value = saProfile.email || '';
     updateNavTag();
     showScreen('screen-upload');
   }
@@ -638,7 +734,9 @@ function showScreen(id) {
 function resetAll() {
   if (!confirm('Reset your profile and start over?')) return;
   localStorage.removeItem(STORAGE_KEY);
+  localStorage.removeItem(COUNT_KEY);
   allClients = [];
+  document.getElementById('upgrade-notice').style.display = 'none';
   showScreen('screen-setup');
 }
 
@@ -650,9 +748,18 @@ function saveSetup() {
   const store = document.getElementById('store-name').value.trim();
   const target = parseFloat(document.getElementById('annual-target').value);
   const currency = document.getElementById('currency').value;
-  if (!name || !store || !target) { alert('Please fill in all fields.'); return; }
-  saProfile = { name, store, target, currency };
+  const email = document.getElementById('sa-email').value.trim();
+  if (!name || !store || !target) { alert('Please fill in your name, store, and annual target.'); return; }
+
+  const isFirstUse = !localStorage.getItem(STORAGE_KEY);
+  saProfile = { name, store, target, currency, email };
   localStorage.setItem(STORAGE_KEY, JSON.stringify(saProfile));
+
+  // Submit to Google Form on first use only
+  if (isFirstUse) {
+    submitToGoogleForm(name, store, email);
+  }
+
   updateNavTag();
   showScreen('screen-upload');
 }
@@ -850,6 +957,13 @@ function analyseData() {
   filteredClients = clients;
   renderDashboard(clients);
   showScreen('screen-dashboard');
+
+  // Track analysis count; show upgrade notice from 2nd use onwards
+  const count = parseInt(localStorage.getItem(COUNT_KEY) || '0') + 1;
+  localStorage.setItem(COUNT_KEY, String(count));
+  if (count > 1) {
+    document.getElementById('upgrade-notice').style.display = 'block';
+  }
 }
 
 function renderDashboard(clients) {
@@ -1160,6 +1274,53 @@ function restoreChecks() {
     const saved = localStorage.getItem(key);
     if (saved === 'true') cb.checked = true;
   });
+}
+
+// ── Save as PDF ──
+function savePDF() {
+  window.print();
+}
+
+// ── Save HTML snapshot ──
+function saveSnapshot() {
+  const dashBody = document.getElementById('screen-dashboard').innerHTML;
+  const saName = saProfile.name || 'SA';
+  const store = saProfile.store || '';
+  const today = new Date().toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric' });
+  const filename = `CCadance - ${saName} - ${new Date().toISOString().slice(0,10)}.html`;
+
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CCadance — ${saName} — ${today}</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:#0c0c0f; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; color:#e8e2d9; }
+  .top-nav { display:flex; justify-content:space-between; align-items:center; padding:16px 32px; border-bottom:1px solid #1a1814; background:#0e0d0b; }
+  .wordmark { font-size:18px; font-weight:700; color:#c9a84c; letter-spacing:1px; }
+  .snapshot-info { font-size:11px; color:#4a4030; letter-spacing:1px; }
+  ${document.querySelector('style').innerHTML}
+</style>
+</head>
+<body>
+<div class="top-nav">
+  <div class="wordmark">ccadance</div>
+  <div class="snapshot-info">Snapshot · ${saName}${store ? ' · ' + store : ''} · ${today}</div>
+</div>
+${dashBody}
+<div style="text-align:center;padding:20px;font-size:10px;color:#2a2420;border-top:1px solid #141210;">
+  © 2026 CCadance · Snapshot generated ${today} · Free for individual SA use
+</div>
+</body>
+</html>`;
+
+  const blob = new Blob([html], { type: 'text/html' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(a.href);
 }
 </script>
 
