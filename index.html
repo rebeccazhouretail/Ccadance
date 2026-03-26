@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CCadance — The Rhythm of Great Client Relationships</title>
+<title>CCadance — Tools for Sales Associates in Luxury Retail</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -22,6 +22,7 @@
   }
   .wordmark { font-size: 22px; font-weight: 700; color: #c9a84c; letter-spacing: 1px; }
   .wordmark span { color: #4a4030; font-weight: 400; }
+  .nav-links { display: flex; gap: 12px; }
   .nav-cta {
     background: #c9a84c; color: #0c0c0f; border: none;
     padding: 10px 22px; border-radius: 6px; font-size: 13px;
@@ -29,109 +30,171 @@
     text-decoration: none; transition: background .2s;
   }
   .nav-cta:hover { background: #e0be64; }
+  .nav-ghost {
+    background: transparent; color: #c9a84c; border: 1px solid rgba(201,168,76,0.35);
+    padding: 10px 22px; border-radius: 6px; font-size: 13px;
+    font-weight: 600; letter-spacing: .5px; cursor: pointer;
+    text-decoration: none; transition: border-color .2s, color .2s;
+  }
+  .nav-ghost:hover { border-color: #c9a84c; color: #e0be64; }
 
   /* ── Hero ── */
   .hero {
     max-width: 860px; margin: 0 auto;
-    padding: 96px 40px 80px; text-align: center;
+    padding: 80px 40px 60px; text-align: center;
   }
   .hero-eyebrow {
     font-size: 11px; letter-spacing: 4px; text-transform: uppercase;
     color: #c9a84c; opacity: .7; margin-bottom: 20px;
   }
   .hero h1 {
-    font-size: 52px; line-height: 1.15; color: #f5ead8;
-    font-weight: 700; margin-bottom: 22px; letter-spacing: -.5px;
+    font-size: 50px; line-height: 1.15; color: #f5ead8;
+    font-weight: 700; margin-bottom: 18px; letter-spacing: -.5px;
   }
   .hero h1 em { color: #c9a84c; font-style: normal; }
   .hero p {
-    font-size: 18px; line-height: 1.7; color: #8a8070;
-    max-width: 620px; margin: 0 auto 40px;
+    font-size: 17px; line-height: 1.7; color: #8a8070;
+    max-width: 600px; margin: 0 auto 20px;
   }
-  .hero-cta {
-    display: inline-flex; align-items: center; gap: 10px;
-    background: #c9a84c; color: #0c0c0f;
-    padding: 16px 36px; border-radius: 8px; font-size: 15px;
+
+  /* ── Tool cards ── */
+  .tools {
+    max-width: 960px; margin: 0 auto;
+    padding: 0 40px 80px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+    align-items: start;
+  }
+  .tool-card {
+    border-radius: 16px; padding: 36px 32px;
+    border: 1px solid #1e1c18;
+    background: #111115;
+    display: flex; flex-direction: column; gap: 0;
+  }
+  .tool-card.primary {
+    border-color: rgba(201,168,76,0.3);
+    background: linear-gradient(160deg, #141210 0%, #100e0a 100%);
+  }
+  .tool-tag {
+    display: inline-block;
+    font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+    padding: 4px 10px; border-radius: 20px; margin-bottom: 20px;
+    font-weight: 600;
+  }
+  .tool-card.primary .tool-tag {
+    background: rgba(201,168,76,0.15); color: #c9a84c;
+    border: 1px solid rgba(201,168,76,0.25);
+  }
+  .tool-card.secondary .tool-tag {
+    background: rgba(255,255,255,0.05); color: #6a6050;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .tool-card h2 {
+    font-size: 24px; color: #f5ead8; font-weight: 700;
+    margin-bottom: 10px; line-height: 1.2;
+  }
+  .tool-card.secondary h2 { color: #b0a090; }
+  .tool-card .tool-desc {
+    font-size: 14px; line-height: 1.65; color: #6a6050;
+    margin-bottom: 24px;
+  }
+  .tool-card.primary .tool-desc { color: #7a7060; }
+  .tool-points {
+    list-style: none; margin-bottom: 28px; display: flex; flex-direction: column; gap: 8px;
+  }
+  .tool-points li {
+    font-size: 13px; color: #5a5040; display: flex; gap: 10px; align-items: flex-start;
+  }
+  .tool-card.primary .tool-points li { color: #6a6050; }
+  .tool-points li::before { content: "✓"; color: #c9a84c; flex-shrink: 0; margin-top: 1px; }
+  .tool-btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 14px 28px; border-radius: 8px; font-size: 14px;
     font-weight: 700; text-decoration: none; letter-spacing: .3px;
     transition: background .2s, transform .15s;
   }
-  .hero-cta:hover { background: #e0be64; transform: translateY(-1px); }
-  .hero-note {
-    margin-top: 14px; font-size: 12px; color: #4a4030;
-    letter-spacing: 1px; text-transform: uppercase;
+  .tool-card.primary .tool-btn {
+    background: #c9a84c; color: #0c0c0f;
+  }
+  .tool-card.primary .tool-btn:hover { background: #e0be64; transform: translateY(-1px); }
+  .tool-card.secondary .tool-btn {
+    background: transparent; color: #6a6050;
+    border: 1px solid #2a2820;
+  }
+  .tool-card.secondary .tool-btn:hover { border-color: #4a4030; color: #9a9080; }
+  .tool-note {
+    margin-top: 10px; font-size: 11px; color: #2e2a22;
+    letter-spacing: 1px; text-transform: uppercase; text-align: center;
   }
 
-  /* ── Stats strip ── */
-  .stats {
-    border-top: 1px solid #1a1814; border-bottom: 1px solid #1a1814;
-    display: flex; justify-content: center; gap: 0;
-    background: #0e0d0b;
+  /* ── Divider ── */
+  .divider {
+    border-top: 1px solid #1a1814; margin: 0 48px;
   }
-  .stat {
-    padding: 28px 48px; text-align: center;
-    border-right: 1px solid #1a1814;
-  }
-  .stat:last-child { border-right: none; }
-  .stat-num { font-size: 28px; font-weight: 700; color: #c9a84c; }
-  .stat-label { font-size: 11px; color: #4a4030; letter-spacing: 2px; text-transform: uppercase; margin-top: 4px; }
 
-  /* ── How it works ── */
-  .section { max-width: 960px; margin: 0 auto; padding: 80px 40px; }
+  /* ── How CV works ── */
+  .section { max-width: 960px; margin: 0 auto; padding: 72px 40px; }
   .section-label {
     font-size: 10px; letter-spacing: 4px; text-transform: uppercase;
     color: #c9a84c; opacity: .6; margin-bottom: 12px; text-align: center;
   }
   .section h2 {
-    font-size: 34px; color: #f5ead8; text-align: center;
-    font-weight: 700; margin-bottom: 56px;
+    font-size: 32px; color: #f5ead8; text-align: center;
+    font-weight: 700; margin-bottom: 48px;
   }
-  .steps { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 28px; }
+  .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
   .step {
     background: #141418; border: 1px solid #1e1c18;
-    border-radius: 12px; padding: 28px;
+    border-radius: 12px; padding: 24px 22px;
   }
   .step-num {
-    width: 36px; height: 36px; border-radius: 50%;
-    background: rgba(201,168,76,0.15); border: 1px solid rgba(201,168,76,0.3);
+    width: 32px; height: 32px; border-radius: 50%;
+    background: rgba(201,168,76,0.12); border: 1px solid rgba(201,168,76,0.25);
     display: flex; align-items: center; justify-content: center;
-    font-size: 14px; font-weight: 700; color: #c9a84c;
-    margin-bottom: 16px;
+    font-size: 13px; font-weight: 700; color: #c9a84c;
+    margin-bottom: 14px;
   }
-  .step h3 { font-size: 16px; color: #f5ead8; margin-bottom: 10px; }
-  .step p { font-size: 13px; line-height: 1.65; color: #6a6050; }
+  .step h3 { font-size: 14px; color: #ddd0b8; margin-bottom: 8px; font-weight: 600; }
+  .step p { font-size: 12.5px; line-height: 1.6; color: #5a5040; }
 
-  /* ── What you get ── */
-  .features { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  .feature {
-    background: #141418; border: 1px solid #1e1c18;
-    border-radius: 10px; padding: 24px;
-    display: flex; gap: 16px; align-items: flex-start;
+  /* ── Framework highlight ── */
+  .framework {
+    background: rgba(201,168,76,0.04); border: 1px solid rgba(201,168,76,0.1);
+    border-radius: 14px; padding: 40px 48px; max-width: 860px; margin: 0 auto;
   }
-  .feature-icon {
-    width: 40px; height: 40px; border-radius: 8px; flex-shrink: 0;
-    background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.2);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 18px;
+  .framework h3 {
+    font-size: 14px; color: #c9a84c; letter-spacing: 2px;
+    text-transform: uppercase; margin-bottom: 20px;
   }
-  .feature h4 { font-size: 14px; color: #ddd0b8; margin-bottom: 6px; font-weight: 600; }
-  .feature p { font-size: 12.5px; line-height: 1.6; color: #5a5040; }
+  .sections-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+  }
+  .fw-section {
+    display: flex; gap: 12px; align-items: flex-start;
+  }
+  .fw-num {
+    font-size: 20px; font-weight: 700; color: rgba(201,168,76,0.3);
+    flex-shrink: 0; line-height: 1;
+  }
+  .fw-label { font-size: 13px; color: #7a7060; font-weight: 600; line-height: 1.2; }
+  .fw-sub { font-size: 11.5px; color: #3a3428; margin-top: 3px; }
 
   /* ── Privacy strip ── */
   .privacy {
-    background: rgba(201,168,76,0.04); border-top: 1px solid rgba(201,168,76,0.1);
-    border-bottom: 1px solid rgba(201,168,76,0.1);
-    text-align: center; padding: 28px 40px;
+    background: rgba(201,168,76,0.03); border-top: 1px solid rgba(201,168,76,0.08);
+    border-bottom: 1px solid rgba(201,168,76,0.08);
+    text-align: center; padding: 24px 40px;
   }
-  .privacy p { font-size: 13px; color: #6a5828; line-height: 1.6; }
+  .privacy p { font-size: 13px; color: #5a5030; line-height: 1.6; }
   .privacy strong { color: #c9a84c; }
 
   /* ── Bottom CTA ── */
   .bottom-cta {
-    text-align: center; padding: 80px 40px;
+    text-align: center; padding: 72px 40px;
     max-width: 600px; margin: 0 auto;
   }
-  .bottom-cta h2 { font-size: 32px; color: #f5ead8; font-weight: 700; margin-bottom: 16px; }
-  .bottom-cta p { font-size: 15px; color: #6a6050; margin-bottom: 32px; line-height: 1.6; }
+  .bottom-cta h2 { font-size: 30px; color: #f5ead8; font-weight: 700; margin-bottom: 14px; }
+  .bottom-cta p { font-size: 15px; color: #6a6050; margin-bottom: 28px; line-height: 1.6; }
+  .cta-group { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
 
   /* ── Footer ── */
   footer {
@@ -143,123 +206,171 @@
 
   @media (max-width: 768px) {
     nav { padding: 18px 24px; }
-    .hero { padding: 60px 24px 60px; }
+    .hero { padding: 52px 24px 40px; }
     .hero h1 { font-size: 34px; }
-    .stats { flex-wrap: wrap; }
-    .stat { padding: 20px 28px; }
-    .steps { grid-template-columns: 1fr; }
-    .features { grid-template-columns: 1fr; }
-    .section { padding: 60px 24px; }
+    .tools { grid-template-columns: 1fr; padding: 0 24px 60px; }
+    .steps { grid-template-columns: 1fr 1fr; }
+    .sections-grid { grid-template-columns: 1fr 1fr; }
+    .section { padding: 52px 24px; }
+    .framework { padding: 28px 24px; }
+    .divider { margin: 0 24px; }
     footer { flex-direction: column; gap: 8px; text-align: center; }
+    .nav-links { gap: 8px; }
+    .nav-ghost { display: none; }
   }
 </style>
 </head>
 <body>
 
 <nav>
-  <div class="wordmark">ccadance <span>/ client intelligence</span></div>
-  <a href="app.html" class="nav-cta">Try free →</a>
+  <div class="wordmark">ccadance <span>/ for retail SA</span></div>
+  <div class="nav-links">
+    <a href="app.html" class="nav-ghost">Portfolio Analyser</a>
+    <a href="cv.html" class="nav-cta">Build my CV →</a>
+  </div>
 </nav>
 
 <!-- Hero -->
 <div class="hero">
-  <div class="hero-eyebrow">For Sales Associates · Luxury Retail</div>
-  <h1>The rhythm of<br><em>great client relationships</em></h1>
-  <p>Upload your client list. Know exactly who to call today, what to say, and how your portfolio is tracking against your target — in under 60 seconds.</p>
-  <a href="app.html" class="hero-cta">
-    ◈ &nbsp; Start free — upload your client list
-  </a>
-  <div class="hero-note">No account · No install · Works in your browser</div>
+  <div class="hero-eyebrow">Free Tools · Sales Associates · Luxury Retail</div>
+  <h1>Two tools to grow<br><em>your retail career</em></h1>
+  <p>Free, browser-based tools built on the JYS Retail professional standard. No account. No app. No data leaves your device.</p>
 </div>
 
-<!-- Stats -->
-<div class="stats">
-  <div class="stat">
-    <div class="stat-num">333</div>
-    <div class="stat-label">Contact rule enforced</div>
+<!-- Tool cards -->
+<div class="tools">
+
+  <!-- CV Builder — Primary -->
+  <div class="tool-card primary">
+    <div class="tool-tag">CV Builder — Free</div>
+    <h2>SA Professional CV</h2>
+    <p class="tool-desc">Build a qualified luxury retail CV in 7 steps. The JYS Retail framework auto-selects your strongest 3 skills from a 20-skill library — and generates a bilingual EN + CN CV ready to download as PDF.</p>
+    <ul class="tool-points">
+      <li>6-section professional framework used by JYS Retail</li>
+      <li>System scores your skills — shows only your top 3</li>
+      <li>Bilingual output: English + Chinese toggle</li>
+      <li>Print to PDF — no upload, no account</li>
+      <li>Works for new joiners and experienced SAs</li>
+    </ul>
+    <a href="cv.html" class="tool-btn">◈ &nbsp; Build my CV free</a>
+    <div class="tool-note">7 steps · takes about 10 minutes</div>
   </div>
-  <div class="stat">
-    <div class="stat-num">A–E</div>
-    <div class="stat-label">Portfolio health score</div>
+
+  <!-- Portfolio Analyser — Secondary -->
+  <div class="tool-card secondary">
+    <div class="tool-tag">Portfolio Analyser — Free</div>
+    <h2>Client Portfolio Intelligence</h2>
+    <p class="tool-desc">Upload your client list. Know exactly who to call today, what to say, and how your portfolio is tracking against your annual target — in under 60 seconds.</p>
+    <ul class="tool-points">
+      <li>333 rule: 3-day, 21-day, 3-month contact alerts</li>
+      <li>Portfolio health score A–E vs your target</li>
+      <li>CLV stage view: Loyal / Year 3 / Year 2 / Year 1</li>
+      <li>Personalised call scripts per client</li>
+    </ul>
+    <a href="app.html" class="tool-btn">→ &nbsp; Analyse my portfolio</a>
+    <div class="tool-note">Upload CSV or Excel · data stays in your browser</div>
   </div>
-  <div class="stat">
-    <div class="stat-num">Q2</div>
-    <div class="stat-label">80% task focus</div>
-  </div>
-  <div class="stat">
-    <div class="stat-num">0s</div>
-    <div class="stat-label">Data leaves your device</div>
-  </div>
+
 </div>
 
-<!-- How it works -->
+<div class="divider"></div>
+
+<!-- How CV Builder works -->
 <div class="section">
-  <div class="section-label">How it works</div>
-  <h2>Three steps. Your full action plan.</h2>
+  <div class="section-label">CV Builder — How it works</div>
+  <h2>From draft notes to qualified CV in 7 steps</h2>
   <div class="steps">
     <div class="step">
       <div class="step-num">1</div>
-      <h3>Upload your client list</h3>
-      <p>Export from your store's CRM or ERP — Excel or CSV. CCadance reads it directly in your browser. Your client data never leaves your device.</p>
+      <h3>Choose your path</h3>
+      <p>New to luxury retail or experienced SA? Different questions, different CV structure — built for where you are now.</p>
     </div>
     <div class="step">
       <div class="step-num">2</div>
-      <h3>CCadance analyses your portfolio</h3>
-      <p>Every client is classified by their CLV stage, 3-touch rule status, and spending potential. Overdue contacts are flagged immediately.</p>
+      <h3>Enter your profile</h3>
+      <p>Name, location, languages. The system knows that speaking Mandarin + Cantonese + English is a top-3 skill for luxury retail.</p>
     </div>
     <div class="step">
       <div class="step-num">3</div>
-      <h3>You get your daily action plan</h3>
-      <p>Priority call list with suggested scripts. Four-quadrant task view. Portfolio health score. Commercial calendar for the month. Ready to act.</p>
+      <h3>Tell your story</h3>
+      <p>3 guided questions. The system writes your personal statement — no vague buzzwords, no "passionate about fashion".</p>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <h3>Add your experience</h3>
+      <p>Up to 3 roles. The system enforces the rule: at least one achievement with a number per role. Earlier roles condensed automatically.</p>
+    </div>
+  </div>
+  <div class="steps" style="margin-top: 20px;">
+    <div class="step">
+      <div class="step-num">5</div>
+      <h3>Capacity — scored automatically</h3>
+      <p>14 questions mapped to a 20-skill library. The system scores every skill and shows only your top 3 — the ones with the strongest evidence.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">6</div>
+      <h3>Career expectation</h3>
+      <p>Four lines: target role, target environment, skills to develop, salary expectation. Clear and direct — no heavy paragraph.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">7</div>
+      <h3>References &amp; download</h3>
+      <p>Two references for background check. Preview your CV, toggle EN / CN, download as PDF. Done.</p>
+    </div>
+    <div class="step" style="background: rgba(201,168,76,0.04); border-color: rgba(201,168,76,0.15);">
+      <div class="step-num" style="background: rgba(201,168,76,0.2); border-color: rgba(201,168,76,0.4);">✓</div>
+      <h3 style="color: #c9a84c;">CV ready to send</h3>
+      <p>Bilingual. Print-ready. Structured to answer the two questions every luxury retail HR director is asking.</p>
     </div>
   </div>
 </div>
 
-<!-- What you get -->
-<div class="section" style="padding-top:0;">
-  <div class="section-label">What you get</div>
-  <h2>Everything a great SA needs to see</h2>
-  <div class="features">
-    <div class="feature">
-      <div class="feature-icon">🔴</div>
-      <div>
-        <h4>333 Priority Alerts</h4>
-        <p>Every client who needs a 3-day, 21-day, or 3-month follow-up today — flagged automatically with the exact script to use.</p>
+<!-- Framework highlight -->
+<div class="section" style="padding-top: 0;">
+  <div class="framework">
+    <h3>The JYS Retail 6-Section CV Framework</h3>
+    <div class="sections-grid">
+      <div class="fw-section">
+        <div class="fw-num">01</div>
+        <div>
+          <div class="fw-label">Personal Information</div>
+          <div class="fw-sub">Name · location · languages · contact</div>
+        </div>
       </div>
-    </div>
-    <div class="feature">
-      <div class="feature-icon">◈</div>
-      <div>
-        <h4>Portfolio Health Score (A–E)</h4>
-        <p>Your portfolio's projected annual revenue vs. your target. Understand instantly where you stand and what moves the score.</p>
+      <div class="fw-section">
+        <div class="fw-num">02</div>
+        <div>
+          <div class="fw-label">Personal Statement</div>
+          <div class="fw-sub">Who you are as a seller — with proof</div>
+        </div>
       </div>
-    </div>
-    <div class="feature">
-      <div class="feature-icon">⊞</div>
-      <div>
-        <h4>Four-Quadrant Task View</h4>
-        <p>80% of your day should be Important, Not Urgent. See your tasks organised by quadrant — not just a flat checklist.</p>
+      <div class="fw-section">
+        <div class="fw-num">03</div>
+        <div>
+          <div class="fw-label">Experience by Year</div>
+          <div class="fw-sub">Achievements with numbers · reverse chronological</div>
+        </div>
       </div>
-    </div>
-    <div class="feature">
-      <div class="feature-icon">📊</div>
-      <div>
-        <h4>CLV Portfolio Snapshot</h4>
-        <p>Loyal, Year 3, Year 2, Year 1 — see exactly how your client base is distributed and where your revenue comes from.</p>
+      <div class="fw-section">
+        <div class="fw-num">04</div>
+        <div>
+          <div class="fw-label">Capacity — Top 3 Skills</div>
+          <div class="fw-sub">Auto-selected from 20-skill library</div>
+        </div>
       </div>
-    </div>
-    <div class="feature">
-      <div class="feature-icon">💬</div>
-      <div>
-        <h4>Personalised Call Scripts</h4>
-        <p>Each client contact comes with a suggested script built from their purchase history, category preference, and CLV stage.</p>
+      <div class="fw-section">
+        <div class="fw-num">05</div>
+        <div>
+          <div class="fw-label">Career Expectation</div>
+          <div class="fw-sub">Role · environment · growth · salary</div>
+        </div>
       </div>
-    </div>
-    <div class="feature">
-      <div class="feature-icon">📅</div>
-      <div>
-        <h4>Monthly Commercial View</h4>
-        <p>See the commercial rhythm for the month — new arrivals, key dates, markdown season — and which clients match each moment.</p>
+      <div class="fw-section">
+        <div class="fw-num">06</div>
+        <div>
+          <div class="fw-label">References</div>
+          <div class="fw-sub">Two contacts for background verification</div>
+        </div>
       </div>
     </div>
   </div>
@@ -267,18 +378,21 @@
 
 <!-- Privacy -->
 <div class="privacy">
-  <p><strong>Your client data stays with you.</strong> CCadance runs entirely in your browser. Nothing is uploaded to a server. Nothing is stored in the cloud. Close the tab — everything is gone. Open it again with your file — everything comes back.</p>
+  <p><strong>Everything stays in your browser.</strong> CCadance runs entirely on your device. No account required. No server. No cloud. Your CV answers and client data never leave your browser tab.</p>
 </div>
 
 <!-- Bottom CTA -->
 <div class="bottom-cta">
-  <h2>Start in 60 seconds</h2>
-  <p>Export your client list from your store system. Upload it. Get your action plan. No account, no IT request, no setup.</p>
-  <a href="app.html" class="hero-cta">◈ &nbsp; Try CCadance free</a>
+  <h2>Start building now</h2>
+  <p>Pick the tool that matches where you are. Both are free. Both take under 15 minutes.</p>
+  <div class="cta-group">
+    <a href="cv.html" class="tool-btn" style="background:#c9a84c; color:#0c0c0f; padding:14px 28px; border-radius:8px; font-size:14px; font-weight:700; text-decoration:none;">◈ &nbsp; Build my CV</a>
+    <a href="app.html" class="tool-btn" style="background:transparent; color:#6a6050; border:1px solid #2a2820; padding:14px 28px; border-radius:8px; font-size:14px; font-weight:700; text-decoration:none;">→ &nbsp; Analyse my portfolio</a>
+  </div>
 </div>
 
 <footer>
-  <div class="ft-left">© 2026 CCadance · Client Intelligence for Retail</div>
+  <div class="ft-left">© 2026 CCadance · JYS Retail Professional Standard</div>
   <div class="ft-right">Free for individual SA use · Commercial use requires a license</div>
 </footer>
 
