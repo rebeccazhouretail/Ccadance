@@ -46,6 +46,14 @@
     text-decoration: underline;
   }
   .btn-reset:hover { color: #6a5828; }
+  .lang-toggle { display: flex; gap: 4px; }
+  .lang-btn {
+    font-size: 11px; padding: 4px 10px; border-radius: 4px; cursor: pointer;
+    background: none; border: 1px solid #2a2820; color: #4a4030;
+    font-family: inherit; letter-spacing: .5px; transition: all .15s;
+  }
+  .lang-btn:hover { border-color: #c9a84c; color: #c9a84c; }
+  .lang-btn.active { background: rgba(201,168,76,0.15); border-color: #c9a84c; color: #c9a84c; font-weight: 600; }
 
   /* ══════════════════════════════════════
      SCREEN 1 — SETUP
@@ -140,6 +148,15 @@
     font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
     color: #6a6050; display: block; margin-bottom: 10px;
   }
+
+  .privacy-reminder {
+    margin-top: 24px; display: flex; gap: 14px; align-items: flex-start;
+    background: rgba(192,57,43,0.08); border: 1px solid rgba(192,57,43,0.25);
+    border-radius: 10px; padding: 16px 20px; text-align: left;
+  }
+  .pr-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+  .pr-text { font-size: 13px; color: #8a6050; line-height: 1.6; }
+  .pr-text strong { color: #c97060; display: block; margin-bottom: 4px; }
 
   .format-note {
     margin-top: 24px; background: #0e0d0b; border: 1px solid #1a1814;
@@ -281,6 +298,17 @@
   .script-text { font-size: 13px; color: #a09080; line-height: 1.65; font-style: italic; }
   .alert-detail { font-size: 12px; color: #5a5040; line-height: 1.7; }
   .alert-detail strong { color: #8a8070; }
+  .alert-compact-list {
+    background: #0f0e0c; border: 1px solid #1a1814;
+    border-radius: 10px; padding: 6px 0; margin-bottom: 8px;
+  }
+  .alert-compact-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 7px 16px; border-bottom: 1px solid #141210;
+  }
+  .alert-compact-row:last-child { border-bottom: none; }
+  .alert-compact-name { font-size: 13px; color: #ddd0b8; font-weight: 600; flex: 1; }
+  .alert-compact-meta { font-size: 11px; color: #4a4030; }
 
   /* Empty state */
   .empty-alerts {
@@ -355,6 +383,43 @@
     color: #c9a84c; margin-bottom: 14px; letter-spacing: 1px;
   }
 
+  /* Annual Contact Load */
+  .annual-load-section { margin-bottom: 20px; }
+  .load-summary {
+    display: flex; gap: 16px; margin-bottom: 14px; flex-wrap: wrap;
+  }
+  .load-stat {
+    background: #141418; border: 1px solid #1e1c18; border-radius: 8px;
+    padding: 12px 18px; text-align: center; flex: 1; min-width: 100px;
+  }
+  .load-stat-num { font-size: 22px; font-weight: 700; color: #c9a84c; }
+  .load-stat-label { font-size: 10px; color: #4a4030; letter-spacing: 1.5px; text-transform: uppercase; margin-top: 3px; }
+  .load-months {
+    display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin-bottom: 6px;
+  }
+  .load-month {
+    background: #141418; border: 1px solid #1e1c18; border-radius: 6px;
+    padding: 8px 10px;
+  }
+  .load-month-name { font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: #4a4030; margin-bottom: 4px; }
+  .load-month-num { font-size: 18px; font-weight: 700; color: #c9a84c; }
+  .load-month-sub { font-size: 9px; color: #3a3020; margin-top: 2px; }
+  .load-month.load-now { border-color: rgba(201,168,76,0.4); background: rgba(201,168,76,0.05); }
+  .load-month.load-now .load-month-name { color: #c9a84c; }
+  .touch-badge {
+    display: inline-block; font-size: 9px; letter-spacing: 1px;
+    padding: 1px 6px; border-radius: 10px; font-weight: 600;
+    background: rgba(201,168,76,0.12); color: #c9a84c;
+    border: 1px solid rgba(201,168,76,0.25);
+  }
+  .touch-badge.vip { background: rgba(192,57,43,0.12); color: #e07060; border-color: rgba(192,57,43,0.25); }
+  .touch-plan { display: flex; flex-wrap: wrap; gap: 3px; min-width: 220px; }
+  .tp-item { font-size: 9px; letter-spacing: .5px; border-radius: 4px; padding: 2px 5px; white-space: nowrap; }
+  .tp-item em { font-style: normal; }
+  .tp-done { background: rgba(50,45,38,0.6); color: #3a3020; }
+  .tp-due { background: rgba(201,168,76,0.2); color: #c9a84c; border: 1px solid rgba(201,168,76,0.4); font-weight: 700; }
+  .tp-upcoming { background: rgba(60,55,45,0.4); color: #6a6050; }
+
   /* Client table */
   .client-table-wrap { overflow-x: auto; }
   .client-table {
@@ -413,6 +478,16 @@
     .sec-title::after { background: #ddd !important; }
     .port-table td, .client-table td { color: #333 !important; border-color: #eee !important; }
     .port-table th, .client-table th { color: #8a6820 !important; border-color: #ddd !important; }
+    .touch-badge { background: #f0e8d0 !important; color: #8a6820 !important; border-color: #d0b870 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .touch-badge.vip { background: #f8e0d8 !important; color: #b06050 !important; border-color: #d08070 !important; }
+    .tp-done { background: #f0ede8 !important; color: #aaa090 !important; }
+    .tp-due { background: #f0e8d0 !important; color: #8a6820 !important; border-color: #d0b870 !important; }
+    .tp-upcoming { background: #f4f1ec !important; color: #8a8070 !important; }
+    .alert-compact-list { background: #f8f4ee !important; border-color: #e0d8c8 !important; }
+    .alert-compact-name { color: #333 !important; }
+    .alert-compact-meta { color: #888 !important; }
+    .load-stat, .load-month { background: #f8f4ee !important; border-color: #e0d8c8 !important; }
+    .load-stat-num, .load-month-num { color: #8a6820 !important; }
     .health-score-big { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     .projection-fill { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     .badge { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
@@ -439,8 +514,13 @@
 <nav class="top-nav">
   <div class="wordmark">ccadance</div>
   <div class="nav-right">
+    <div class="lang-toggle">
+      <button class="lang-btn active" data-lang="en" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" data-lang="ko" onclick="setLang('ko')">한국어</button>
+      <button class="lang-btn" data-lang="zh" onclick="setLang('zh')">中文</button>
+    </div>
     <span class="sa-tag" id="nav-sa-tag">—</span>
-    <button class="btn-reset" onclick="resetAll()">↺ Reset</button>
+    <button class="btn-reset" data-i18n="reset" onclick="resetAll()">↺ Reset</button>
   </div>
 </nav>
 
@@ -448,24 +528,24 @@
      SCREEN 1 — SETUP
 ══════════════════════════════════════ -->
 <div id="screen-setup" class="screen active">
-  <div class="s-eyebrow">Step 1 of 2</div>
-  <h1>Welcome to CCadance</h1>
-  <p class="s-sub">Tell us about yourself. This is saved in your browser — you won't need to enter it again.</p>
+  <div class="s-eyebrow" data-i18n="step1of2">Step 1 of 2</div>
+  <h1 data-i18n="welcomeTitle">Welcome to CCadance</h1>
+  <p class="s-sub" data-i18n="welcomeSub">Tell us about yourself. This is saved in your browser — you won't need to enter it again.</p>
 
   <div class="form-group">
-    <label>Your full name</label>
+    <label data-i18n="labelName">Your full name</label>
     <input type="text" id="sa-name" placeholder="e.g. Rebecca Zhou" />
   </div>
   <div class="form-group">
-    <label>Store name</label>
+    <label data-i18n="labelStore">Store name</label>
     <input type="text" id="store-name" placeholder="e.g. Jamsil B Store" />
   </div>
   <div class="form-group">
-    <label>Your annual sales target (€)</label>
+    <label data-i18n="labelTarget">Your annual sales target</label>
     <input type="number" id="annual-target" placeholder="e.g. 176400" />
   </div>
   <div class="form-group">
-    <label>Currency</label>
+    <label data-i18n="labelCurrency">Currency</label>
     <select id="currency">
       <option value="€">Euro (€)</option>
       <option value="£">British Pound (£)</option>
@@ -475,10 +555,10 @@
     </select>
   </div>
   <div class="form-group">
-    <label>Your email <span class="email-optional">(optional — to receive updates &amp; tips)</span></label>
+    <label data-i18n="labelEmail">Your email <span class="email-optional" data-i18n="labelEmailOptional">(optional — to receive updates &amp; tips)</span></label>
     <input type="email" id="sa-email" placeholder="e.g. yuri@store.com" />
   </div>
-  <button class="btn-primary" onclick="saveSetup()">Continue to upload →</button>
+  <button class="btn-primary" data-i18n="btnContinue" onclick="saveSetup()">Continue to upload →</button>
 </div>
 
 <!-- Upgrade notice banner (hidden by default) -->
@@ -498,30 +578,38 @@
      SCREEN 2 — UPLOAD
 ══════════════════════════════════════ -->
 <div id="screen-upload" class="screen">
-  <h2>Upload your client list</h2>
-  <p class="u-sub">Export from your CRM or ERP system. Works with Excel (.xlsx) and CSV files.</p>
+  <h2 data-i18n="uploadTitle">Upload your client list</h2>
+  <p class="u-sub" data-i18n="uploadSub">Export from your CRM or ERP system. Works with Excel (.xlsx) and CSV files.</p>
 
   <div class="drop-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
     <div class="drop-icon">⬆</div>
-    <div class="drop-text">Drop your file here, or click to browse</div>
-    <div class="drop-sub">Supports .xlsx and .csv · Your data never leaves this device</div>
+    <div class="drop-text" data-i18n="dropText">Drop your file here, or click to browse</div>
+    <div class="drop-sub" data-i18n="dropSub">Supports .xlsx and .csv · Your data never leaves this device</div>
     <input type="file" id="file-input" accept=".xlsx,.xls,.csv" onchange="handleFile(this.files[0])" />
   </div>
 
   <div class="file-chosen" id="file-chosen-label"></div>
 
   <div class="sa-selector-box" id="sa-selector-box">
-    <label>Multiple sales associates found — select yours:</label>
+    <label data-i18n="saSelector">Multiple sales associates found — select yours:</label>
     <select class="filter-select" id="sa-filter-select" style="width:100%;padding:10px;font-size:14px;">
     </select>
   </div>
 
-  <button class="btn-primary" id="analyse-btn" onclick="analyseData()" style="display:none;margin-top:20px;">
+  <button class="btn-primary" id="analyse-btn" data-i18n="btnAnalyse" onclick="analyseData()" style="display:none;margin-top:20px;">
     ◈ &nbsp; Analyse my portfolio
   </button>
 
+  <div class="privacy-reminder">
+    <div class="pr-icon">🔒</div>
+    <div class="pr-text">
+      <strong data-i18n="privacyTitle">Do not include personal contact details.</strong>
+      <span data-i18n="privacyText">Remove client phone numbers, email addresses, home addresses, and ID numbers before uploading. CCadance only needs purchase history and visit data — never personal contact information.</span>
+    </div>
+  </div>
+
   <div class="format-note">
-    <div class="fn-title">Supported column names</div>
+    <div class="fn-title" data-i18n="formatTitle">Supported column names</div>
     <p>CCadance automatically detects: <code>Full Name</code> · <code>Creation Date</code> · <code>Last Visit</code> · <code>Sales-12M</code> · <code>Frequency-12M</code> · <code>Customer Segment</code> · category columns (Bags, Jewelry, RTW, etc.) · <code>Regular sales assistant name</code>. Other column names are mapped automatically.</p>
   </div>
 </div>
@@ -538,12 +626,12 @@
       <span class="dash-target" id="dash-target"></span>
     </div>
     <div style="display:flex;gap:10px;align-items:center;">
-      <label style="font-size:11px;color:#4a4030;letter-spacing:1px;text-transform:uppercase;">Day type:</label>
+      <label style="font-size:11px;color:#4a4030;letter-spacing:1px;text-transform:uppercase;" data-i18n="dayTypeLabel">Day type:</label>
       <select class="day-type-select" id="day-type-select" onchange="updateTaskCap()">
-        <option value="standard">Standard (32 tasks)</option>
-        <option value="high">High Target (22 tasks)</option>
-        <option value="event">Commercial Event (20 tasks)</option>
-        <option value="closed">Closed / Prep (18 tasks)</option>
+        <option value="standard" data-i18n-option="dayStandard">Standard (32 tasks)</option>
+        <option value="high" data-i18n-option="dayHigh">High Target (22 tasks)</option>
+        <option value="event" data-i18n-option="dayEvent">Commercial Event (20 tasks)</option>
+        <option value="closed" data-i18n-option="dayClosed">Closed / Prep (18 tasks)</option>
       </select>
       <button class="upload-new-btn" onclick="showScreen('screen-upload')">↑ New upload</button>
       <button class="upload-new-btn" onclick="savePDF()" style="color:#c9a84c;border-color:#3a2a10;">⬇ Save PDF</button>
@@ -554,7 +642,7 @@
   <div class="dash-body">
 
     <!-- Row 1: Portfolio + Health Score -->
-    <div class="sec-title">Portfolio Overview</div>
+    <div class="sec-title" data-i18n="secPortfolio">Portfolio Overview</div>
     <div class="row-2" style="margin-bottom:20px;">
 
       <!-- Portfolio snapshot -->
@@ -572,7 +660,7 @@
 
       <!-- Health score -->
       <div class="card card-gold">
-        <div style="font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#c9a84c;opacity:.6;margin-bottom:4px;">Portfolio Health Score</div>
+        <div style="font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#c9a84c;opacity:.6;margin-bottom:4px;" data-i18n="secHealthScore">Portfolio Health Score</div>
         <div class="health-score-big" id="health-score-letter">—</div>
         <div class="projection-bar"><div class="projection-fill" id="proj-fill" style="width:0%"></div></div>
         <div class="proj-label">
@@ -584,20 +672,24 @@
     </div>
 
     <!-- Row 2: 333 Alerts -->
-    <div class="sec-title">333 Priority Alerts</div>
+    <div class="sec-title" data-i18n="sec333">333 Priority Alerts</div>
     <div class="alerts-section" id="alerts-section"></div>
 
+    <!-- Row 2b: Annual Contact Plan -->
+    <div class="sec-title" style="margin-top:8px;" data-i18n="secAnnual">Annual Contact Plan — 7-Touch Calendar</div>
+    <div class="annual-load-section" id="annual-load-section"></div>
+
     <!-- Row 3: Four-quadrant task view -->
-    <div class="sec-title" style="margin-top:8px;">Four-Quadrant Day Plan</div>
+    <div class="sec-title" style="margin-top:8px;" data-i18n="secQuadrant">Four-Quadrant Day Plan</div>
     <div id="day-type-notice" style="display:none;background:rgba(180,120,20,0.08);border:1px solid rgba(180,120,20,0.2);border-radius:8px;padding:12px 18px;margin-bottom:12px;font-size:12px;color:#a07820;"></div>
     <div class="quadrant-grid">
 
       <!-- Q2 panel -->
       <div class="q-panel q2-panel">
         <div class="q-header">
-          <div class="q-label">◈ The 80% Zone</div>
-          <div class="q-title">Important · Not Urgent <span class="q-count" id="q2-count">0 tasks</span></div>
-          <div class="q-subtitle">Planned · Proactive · Relationship-building</div>
+          <div class="q-label" data-i18n="q2Zone">◈ The 80% Zone</div>
+          <div class="q-title" data-i18n="q2Title">Important · Not Urgent <span class="q-count" id="q2-count">0 tasks</span></div>
+          <div class="q-subtitle" data-i18n="q2Sub">Planned · Proactive · Relationship-building</div>
         </div>
         <div class="q2-ratio-badge" id="q2-ratio-badge">— Q2</div>
         <div id="q2-tasks"></div>
@@ -606,57 +698,54 @@
       <!-- Q1 panel -->
       <div class="q-panel q1-panel">
         <div class="q-header">
-          <div class="q-label">⚡ Act Now</div>
-          <div class="q-title">Important · Urgent <span class="q-count" id="q1-count" style="background:rgba(230,168,23,0.12);color:#a07820;"></span></div>
-          <div class="q-subtitle" style="color:#6a5020;">Overdue contacts · Reactive situations</div>
+          <div class="q-label" data-i18n="q1Zone">⚡ Act Now</div>
+          <div class="q-title" data-i18n="q1Title">Important · Urgent <span class="q-count" id="q1-count" style="background:rgba(230,168,23,0.12);color:#a07820;"></span></div>
+          <div class="q-subtitle" style="color:#6a5020;" data-i18n="q1Sub">Overdue contacts · Reactive situations</div>
         </div>
         <div id="q1-tasks"></div>
       </div>
 
-      <!-- Q3 panel -->
-      <div class="q-panel q3-panel">
-        <div class="q-header">
-          <div class="q-label">↓ Minimise</div>
-          <div class="q-title" style="font-size:12px;">Not Important · Urgent</div>
-          <div class="q-subtitle">Admin — do once, then close</div>
-        </div>
-        <div class="task-item">
-          <input type="checkbox" class="task-cb" id="task-admin">
-          <span class="task-text muted">Admin batch (15 min): check email · verify receipts · any urgent messages</span>
+      <!-- Q3 note -->
+      <div class="q-panel q3-panel" style="display:flex;align-items:center;gap:10px;padding:12px 18px;">
+        <div style="font-size:16px;opacity:.4;">↓</div>
+        <div>
+          <div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#3a3020;" data-i18n="q3Note">Q3 / Q4 — Minimise &amp; Eliminate</div>
+          <div style="font-size:12px;color:#2a2418;margin-top:3px;" data-i18n="q3Sub">If a task belongs here, ask why it's on your list. Batch admin in one 15-min block. Delete Q4 entirely.</div>
         </div>
       </div>
 
     </div>
 
     <!-- Row 4: Full client table -->
-    <div class="sec-title" style="margin-top:8px;">All Clients</div>
+    <div class="sec-title" style="margin-top:8px;" data-i18n="secClients">All Clients</div>
     <div class="card" style="padding:18px;">
       <div class="filter-bar">
-        <input class="filter-input" id="client-search" placeholder="Search by name..." oninput="filterTable()" />
+        <input class="filter-input" id="client-search" data-i18n-placeholder="searchPlaceholder" placeholder="Search by name..." oninput="filterTable()" />
         <select class="filter-select" id="clv-filter" onchange="filterTable()">
-          <option value="">All stages</option>
-          <option value="Loyal">Loyal (3y+)</option>
-          <option value="Year 3">Year 3</option>
-          <option value="Year 2">Year 2</option>
-          <option value="Year 1">Year 1</option>
-          <option value="Sleeping">Sleeping</option>
+          <option value="" data-i18n-option="filterAllStages">All stages</option>
+          <option value="Loyal" data-i18n-option="stageLoyal">Loyal (3y+)</option>
+          <option value="Year 3" data-i18n-option="stageY3">Year 3</option>
+          <option value="Year 2" data-i18n-option="stageY2">Year 2</option>
+          <option value="Year 1" data-i18n-option="stageY1">Year 1</option>
+          <option value="Sleeping" data-i18n-option="stageSleeping">Sleeping</option>
         </select>
         <select class="filter-select" id="alert-filter" onchange="filterTable()">
-          <option value="">All clients</option>
-          <option value="alert">Has 333 alert</option>
+          <option value="" data-i18n-option="filterAllClients">All clients</option>
+          <option value="alert" data-i18n-option="filterWithAlert">Has 333 alert</option>
         </select>
       </div>
       <div class="client-table-wrap">
         <table class="client-table" id="client-table">
           <thead>
             <tr>
-              <th onclick="sortTable('name')">Name</th>
-              <th onclick="sortTable('clvStage')">CLV Stage</th>
-              <th onclick="sortTable('daysSinceVisit')">Last Visit</th>
-              <th onclick="sortTable('sales12m')">12M Revenue</th>
-              <th onclick="sortTable('frequency')">Visits</th>
-              <th>Top Category</th>
-              <th>Alert</th>
+              <th onclick="sortTable('name')" data-i18n="colName">Name</th>
+              <th onclick="sortTable('clvStage')" data-i18n="colCLV">CLV Stage</th>
+              <th onclick="sortTable('daysSinceVisit')" data-i18n="colLastVisit">Last Visit</th>
+              <th onclick="sortTable('sales12m')" data-i18n="col12M">12M Revenue</th>
+              <th data-i18n="colTopCat">Top Category</th>
+              <th data-i18n="col333">333 Alert</th>
+              <th onclick="sortTable('nextTouchDays')" data-i18n="colNextTouch">Next Touch ↕</th>
+              <th data-i18n="col7Touch">7-Touch Plan</th>
             </tr>
           </thead>
           <tbody id="client-tbody"></tbody>
@@ -670,6 +759,230 @@
 
 
 <script>
+// ══════════════════════════════════════
+// LANGUAGE / i18n
+// ══════════════════════════════════════
+let currentLang = localStorage.getItem('ccadance-lang') || 'en';
+
+const STRINGS = {
+  en: {
+    reset:'↺ Reset', step1of2:'Step 1 of 2', welcomeTitle:'Welcome to CCadance',
+    welcomeSub:"Tell us about yourself. This is saved in your browser — you won't need to enter it again.",
+    labelName:'Your full name', labelStore:'Store name', labelTarget:'Your annual sales target',
+    labelCurrency:'Currency', labelEmail:'Your email',
+    labelEmailOptional:'(optional — to receive updates & tips)',
+    btnContinue:'Continue to upload →',
+    uploadTitle:'Upload your client list',
+    uploadSub:'Export from your CRM or ERP system. Works with Excel (.xlsx) and CSV files.',
+    dropText:'Drop your file here, or click to browse',
+    dropSub:'Supports .xlsx and .csv · Your data never leaves this device',
+    saSelector:'Multiple sales associates found — select yours:',
+    btnAnalyse:'◈  Analyse my portfolio',
+    privacyTitle:'Do not include personal contact details.',
+    privacyText:'Remove client phone numbers, email addresses, home addresses, and ID numbers before uploading. CCadance only needs purchase history and visit data — never personal contact information.',
+    formatTitle:'Supported column names',
+    secPortfolio:'Portfolio Overview', secHealthScore:'Portfolio Health Score',
+    sec333:'333 Priority Alerts', secAnnual:'Annual Contact Plan — 7-Touch Calendar',
+    secQuadrant:'Four-Quadrant Day Plan', secClients:'All Clients',
+    annualTarget:'Annual target:',
+    projection:'Projection', target:'Target',
+    gapLabel:'Gap to cover through new clients:',
+    scoreADesc:'Excellent — mature portfolio, strong Loyal base. Protect and develop VIPs.',
+    scoreBDesc:'Good — solid foundation. Fill the Year 2–3 pipeline and push category expansion.',
+    scoreCDesc:'Moderate — Year 1 heavy, retention is critical. Prioritise Y1→Y2 conversion.',
+    scoreDDesc:'Weak — portfolio is young and fragile. 3-touch compliance is non-negotiable.',
+    scoreEDesc:'Critical — portfolio cannot sustain the target. Aggressive new acquisition and reactivation needed.',
+    stageLoyal:'Loyal', stageY3:'Year 3', stageY2:'Year 2', stageY1:'Year 1', stageSleeping:'Sleeping',
+    alert3day:'3-Day Follow-up — MUST DO', alert21day:'21-Day Follow-up — MUST DO',
+    alert3month:'3-Month Re-engagement — MUST DO', alertOverdue:'Overdue — Year 1 window at risk',
+    alertSleeping:'Sleeping — Reactivation needed',
+    scriptLabel:'Script example — adapt for all clients below with the same alert',
+    noAlerts:'✓ No overdue contacts today — excellent 3-touch compliance.',
+    loadAnnual:'Annual contacts', loadDaily:'Per day avg', loadVip:'VIP monthly', loadActive:'Active clients',
+    loadFootnote:'VIP = monthly contact (12/yr) · 333 = T1–T3 post-purchase · Maint. = T4–T7 rolling plan',
+    q2Zone:'◈ The 80% Zone', q2Title:'Important · Not Urgent', q2Sub:'Planned · Proactive · Relationship-building',
+    q1Zone:'⚡ Act Now', q1Title:'Important · Urgent', q1Sub:'Overdue contacts · Reactive situations',
+    q3Note:'Q3 / Q4 — Minimise & Eliminate',
+    q3Sub:"If a task belongs here, ask why it's on your list. Batch admin in one 15-min block. Delete Q4 entirely.",
+    sectionOutreach:'Client Outreach', sectionOps:'Daily Operations',
+    vipMonthly:'VIP MONTHLY', mustDo:'MUST DO', maintenanceTouch:'annual maintenance touch',
+    noUrgent:'No urgent issues today — good.',
+    opsBriefing:'15-min team morning briefing',
+    opsFloor:'Floor image check — maintain display standards',
+    opsProduct:'Product knowledge — review one new piece before floor opens',
+    opsProfile:'Profile update — 2 min note after each client call',
+    dayTypeLabel:'Day type:',
+    dayStandard:'Standard (32 tasks)', dayHigh:'High Target (22 tasks)',
+    dayEvent:'Commercial Event (20 tasks)', dayClosed:'Closed / Prep (18 tasks)',
+    noticeHigh:'▶ <strong>HIGH TARGET DAY</strong> — Task cap: 22. Extra time freed is unstructured Q2 floor time — not free time. Be present. Every client on the floor is an opportunity.',
+    noticeEvent:'▶ <strong>COMMERCIAL EVENT DAY</strong> — Task cap: 20. Maximum floor selling mode. Client outreach MUST DOs still apply.',
+    noticeClosed:'▶ <strong>CLOSED / PREP DAY</strong> — No client calls today. Focus on VM, stock, and preparation tasks.',
+    colName:'Name', colCLV:'CLV Stage', colLastVisit:'Last Visit', col12M:'12M Revenue',
+    colTopCat:'Top Category', col333:'333 Alert', colNextTouch:'Next Touch ↕', col7Touch:'7-Touch Plan',
+    searchPlaceholder:'Search by name...',
+    filterAllStages:'All stages', filterAllClients:'All clients', filterWithAlert:'Has 333 alert',
+    showingClients:'Showing {n} clients',
+    touchDue:'DUE', touchToday:'today', touchIn:'in {n}d', touchAgo:'{n}d ago',
+    vipMonthlyLabel:'VIP Monthly', overdueLabel:'Year 1 window overdue',
+    upgradeTitle:"You've used CCadance before.",
+    upgradeText:"CCadance is free for your first analysis. From your second use, a subscription keeps it running.",
+    upgradeLink:'Get early access pricing →',
+  },
+  ko: {
+    reset:'↺ 초기화', step1of2:'1단계 / 2단계', welcomeTitle:'CCadance에 오신 것을 환영합니다',
+    welcomeSub:'본인 정보를 입력해 주세요. 브라우저에 저장되므로 다음에는 다시 입력하지 않아도 됩니다.',
+    labelName:'이름', labelStore:'매장명', labelTarget:'연간 판매 목표',
+    labelCurrency:'통화', labelEmail:'이메일',
+    labelEmailOptional:'(선택 사항 — 업데이트 및 팁 수신)',
+    btnContinue:'다음 단계로 →',
+    uploadTitle:'고객 리스트 업로드',
+    uploadSub:'CRM 또는 ERP에서 내보낸 파일을 업로드하세요. Excel (.xlsx) 및 CSV 파일을 지원합니다.',
+    dropText:'파일을 여기에 드롭하거나 클릭하여 선택하세요',
+    dropSub:'.xlsx 및 .csv 지원 · 데이터가 이 기기를 벗어나지 않습니다',
+    saSelector:'여러 판매 직원이 발견되었습니다 — 본인을 선택하세요:',
+    btnAnalyse:'◈  내 포트폴리오 분석',
+    privacyTitle:'개인 연락처 정보를 포함하지 마세요.',
+    privacyText:'업로드 전 고객의 전화번호, 이메일, 주소, ID 번호를 삭제하세요. CCadance는 구매 이력 및 방문 데이터만 필요합니다.',
+    formatTitle:'지원 열 이름',
+    secPortfolio:'포트폴리오 개요', secHealthScore:'포트폴리오 건강 점수',
+    sec333:'333 우선 알림', secAnnual:'연간 연락 계획 — 7회 접촉 캘린더',
+    secQuadrant:'4사분면 일일 플랜', secClients:'전체 고객',
+    annualTarget:'연간 목표:',
+    projection:'예상 매출', target:'목표',
+    gapLabel:'신규 고객으로 채워야 할 차이:',
+    scoreADesc:'우수 — 성숙한 포트폴리오, 충성 고객 기반이 강합니다. VIP를 보호하고 육성하세요.',
+    scoreBDesc:'양호 — 탄탄한 기반. 2-3년차 파이프라인을 채우고 카테고리를 확장하세요.',
+    scoreCDesc:'보통 — 1년차 비중 높음, 고객 유지가 중요합니다. Y1→Y2 전환을 우선하세요.',
+    scoreDDesc:'취약 — 포트폴리오가 불안정합니다. 333 원칙 준수는 필수입니다.',
+    scoreEDesc:'위험 — 현재 포트폴리오로 목표 달성이 어렵습니다. 신규 고객 확보 및 재활성화가 필요합니다.',
+    stageLoyal:'충성 고객', stageY3:'3년차', stageY2:'2년차', stageY1:'1년차', stageSleeping:'휴면 고객',
+    alert3day:'3일 팔로업 — 필수', alert21day:'21일 팔로업 — 필수',
+    alert3month:'3개월 재접촉 — 필수', alertOverdue:'기한 초과 — 1년차 고객 이탈 위험',
+    alertSleeping:'휴면 — 재활성화 필요',
+    scriptLabel:'스크립트 예시 (영어) — 동일 알림의 모든 고객에게 적용하세요',
+    noAlerts:'✓ 오늘 지연된 연락 없음 — 333 원칙 완벽 준수.',
+    loadAnnual:'연간 접촉 횟수', loadDaily:'일 평균', loadVip:'VIP 월별', loadActive:'활성 고객',
+    loadFootnote:'VIP = 월 1회 접촉 (연12회) · 333 = T1–T3 구매 후 · 유지 = T4–T7 롤링 계획',
+    q2Zone:'◈ 80% 구역', q2Title:'중요 · 긴급하지 않음', q2Sub:'계획된 · 주도적 · 관계 구축',
+    q1Zone:'⚡ 즉시 처리', q1Title:'중요 · 긴급', q1Sub:'기한 초과 연락 · 즉각 대응 상황',
+    q3Note:'Q3 / Q4 — 최소화 및 제거',
+    q3Sub:'이 영역에 해당하는 업무가 있다면 왜 목록에 있는지 확인하세요. 관리 업무는 15분 내 일괄 처리, Q4는 완전히 제거하세요.',
+    sectionOutreach:'고객 연락', sectionOps:'일일 운영',
+    vipMonthly:'VIP 월별', mustDo:'필수', maintenanceTouch:'연간 유지 접촉',
+    noUrgent:'오늘 긴급 현안 없음 — 좋습니다.',
+    opsBriefing:'15분 팀 아침 브리핑',
+    opsFloor:'매장 이미지 점검 — 디스플레이 기준 유지',
+    opsProduct:'제품 지식 — 매장 오픈 전 새 제품 한 가지 복습',
+    opsProfile:'고객 프로필 업데이트 — 통화 후 2분 메모',
+    dayTypeLabel:'일 유형:',
+    dayStandard:'표준 (32개 업무)', dayHigh:'고목표 (22개 업무)',
+    dayEvent:'상업 이벤트 (20개 업무)', dayClosed:'휴무/준비 (18개 업무)',
+    noticeHigh:'▶ <strong>고목표 데이</strong> — 업무 한도: 22개. 여유 시간은 Q2 판매 시간입니다 — 자유 시간이 아닙니다. 매장에 집중하세요.',
+    noticeEvent:'▶ <strong>상업 이벤트 데이</strong> — 업무 한도: 20개. 최대 판매 모드. 고객 연락 필수 업무는 여전히 적용됩니다.',
+    noticeClosed:'▶ <strong>휴무/준비 데이</strong> — 오늘은 고객 전화 없음. VM, 재고, 준비 작업에 집중하세요.',
+    colName:'이름', colCLV:'CLV 단계', colLastVisit:'마지막 방문', col12M:'12개월 매출',
+    colTopCat:'주요 카테고리', col333:'333 알림', colNextTouch:'다음 접촉 ↕', col7Touch:'7회 접촉 계획',
+    searchPlaceholder:'이름으로 검색...',
+    filterAllStages:'모든 단계', filterAllClients:'모든 고객', filterWithAlert:'알림 있는 고객만',
+    showingClients:'{n}명 고객 표시',
+    touchDue:'지금', touchToday:'오늘', touchIn:'{n}일 후', touchAgo:'{n}일 전',
+    vipMonthlyLabel:'VIP 월별', overdueLabel:'1년차 기간 초과',
+    upgradeTitle:'CCadance를 이전에 사용하셨습니다.',
+    upgradeText:'CCadance는 첫 분석은 무료입니다. 두 번째 사용부터는 구독이 필요합니다.',
+    upgradeLink:'얼리 액세스 가격 보기 →',
+  },
+  zh: {
+    reset:'↺ 重置', step1of2:'第1步 / 共2步', welcomeTitle:'欢迎使用 CCadance',
+    welcomeSub:'请填写您的信息。信息将保存在浏览器中，下次无需重新填写。',
+    labelName:'您的姓名', labelStore:'门店名称', labelTarget:'年度销售目标',
+    labelCurrency:'货币', labelEmail:'您的邮箱',
+    labelEmailOptional:'（可选 — 接收更新和使用技巧）',
+    btnContinue:'继续上传 →',
+    uploadTitle:'上传客户列表',
+    uploadSub:'从CRM或ERP系统导出文件。支持Excel (.xlsx)和CSV格式。',
+    dropText:'将文件拖放至此处，或点击选择文件',
+    dropSub:'支持.xlsx和.csv · 您的数据不会离开此设备',
+    saSelector:'发现多位销售顾问 — 请选择您自己：',
+    btnAnalyse:'◈  分析我的客户组合',
+    privacyTitle:'请勿包含个人联系方式。',
+    privacyText:'上传前请删除客户的电话号码、邮箱、地址和身份证号。CCadance只需要购买记录和到访数据。',
+    formatTitle:'支持的列名',
+    secPortfolio:'客户组合概览', secHealthScore:'组合健康评分',
+    sec333:'333优先提醒', secAnnual:'年度联系计划 — 7次触达日历',
+    secQuadrant:'四象限日计划', secClients:'全部客户',
+    annualTarget:'年度目标：',
+    projection:'预计收入', target:'目标',
+    gapLabel:'需通过新客户弥补的差距：',
+    scoreADesc:'优秀 — 成熟的客户组合，忠实客户基础强劲。保护并发展VIP客户。',
+    scoreBDesc:'良好 — 基础稳固。填充第2-3年客户管道，推动品类扩展。',
+    scoreCDesc:'中等 — 第1年客户比重高，留存至关重要。优先推动Y1→Y2转化。',
+    scoreDDesc:'较弱 — 组合年轻且脆弱。333规则合规不可或缺。',
+    scoreEDesc:'危险 — 现有组合无法支撑目标。需积极开发新客户并重新激活沉睡客户。',
+    stageLoyal:'忠实客户', stageY3:'第3年', stageY2:'第2年', stageY1:'第1年', stageSleeping:'沉睡客户',
+    alert3day:'3天回访 — 必须完成', alert21day:'21天回访 — 必须完成',
+    alert3month:'3个月再接触 — 必须完成', alertOverdue:'逾期 — 第1年窗口期告急',
+    alertSleeping:'沉睡 — 需要重新激活',
+    scriptLabel:'脚本示例（英文）— 适用于所有相同提醒的客户',
+    noAlerts:'✓ 今日无逾期联系 — 333规则完美执行。',
+    loadAnnual:'年度联系次数', loadDaily:'日均', loadVip:'VIP月度', loadActive:'活跃客户',
+    loadFootnote:'VIP = 月度联系（年12次）· 333 = T1–T3购后 · 维护 = T4–T7滚动计划',
+    q2Zone:'◈ 80%区域', q2Title:'重要 · 不紧急', q2Sub:'计划性 · 主动性 · 关系建设',
+    q1Zone:'⚡ 立即处理', q1Title:'重要 · 紧急', q1Sub:'逾期联系 · 即时响应情况',
+    q3Note:'Q3 / Q4 — 最小化与消除',
+    q3Sub:'如有任务属于此区域，请思考为何它在您的清单上。行政事务集中15分钟内处理，彻底删除Q4。',
+    sectionOutreach:'客户联系', sectionOps:'日常运营',
+    vipMonthly:'VIP月度', mustDo:'必须完成', maintenanceTouch:'年度维护触达',
+    noUrgent:'今日无紧急事项 — 很好。',
+    opsBriefing:'15分钟团队晨会',
+    opsFloor:'门店形象检查 — 维护陈列标准',
+    opsProduct:'产品知识 — 开店前复习一件新品',
+    opsProfile:'客户档案更新 — 通话后2分钟记录',
+    dayTypeLabel:'日期类型：',
+    dayStandard:'标准（32个任务）', dayHigh:'高目标（22个任务）',
+    dayEvent:'商业活动（20个任务）', dayClosed:'闭店/准备（18个任务）',
+    noticeHigh:'▶ <strong>高目标日</strong> — 任务上限：22个。多余时间是Q2销售时间，不是休息时间。保持专注，每位客户都是机会。',
+    noticeEvent:'▶ <strong>商业活动日</strong> — 任务上限：20个。最大化销售模式。客户联系必做项仍然适用。',
+    noticeClosed:'▶ <strong>闭店/准备日</strong> — 今日不进行客户电话。专注于陈列、库存和准备工作。',
+    colName:'姓名', colCLV:'CLV阶段', colLastVisit:'最近到访', col12M:'12月销售额',
+    colTopCat:'主要品类', col333:'333提醒', colNextTouch:'下次触达 ↕', col7Touch:'7次触达计划',
+    searchPlaceholder:'按姓名搜索...',
+    filterAllStages:'全部阶段', filterAllClients:'全部客户', filterWithAlert:'仅显示有提醒的客户',
+    showingClients:'显示{n}位客户',
+    touchDue:'立即', touchToday:'今天', touchIn:'{n}天后', touchAgo:'{n}天前',
+    vipMonthlyLabel:'VIP月度', overdueLabel:'第1年窗口期已过',
+    upgradeTitle:'您之前已使用过CCadance。',
+    upgradeText:'CCadance首次分析免费。从第二次使用起需要订阅。',
+    upgradeLink:'获取早鸟定价 →',
+  }
+};
+
+function t(key) {
+  return (STRINGS[currentLang] && STRINGS[currentLang][key]) || STRINGS.en[key] || key;
+}
+
+function setLang(lang) {
+  currentLang = lang;
+  localStorage.setItem('ccadance-lang', lang);
+  // Update static data-i18n elements
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    el.innerHTML = t(el.getAttribute('data-i18n'));
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    el.placeholder = t(el.getAttribute('data-i18n-placeholder'));
+  });
+  document.querySelectorAll('[data-i18n-option]').forEach(el => {
+    el.textContent = t(el.getAttribute('data-i18n-option'));
+  });
+  // Sync active button
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+  });
+  // Re-render dashboard if open
+  if (document.getElementById('screen-dashboard').classList.contains('active') && filteredClients.length) {
+    renderDashboard(filteredClients);
+  }
+}
+
 // ══════════════════════════════════════
 // ══════════════════════════════════════
 // GOOGLE FORM CONFIG
@@ -704,7 +1017,7 @@ let saProfile = {};
 let allClients = [];
 let filteredClients = [];
 let rawSAList = [];
-let sortState = { col: 'daysSinceVisit', dir: 'asc' };
+let sortState = { col: 'nextTouchDays', dir: 'asc' };
 const STORAGE_KEY = 'ccadance-sa-profile';
 const COUNT_KEY   = 'ccadance-analysis-count';
 
@@ -724,6 +1037,7 @@ window.onload = function() {
     showScreen('screen-upload');
   }
   setupDrop();
+  setLang(currentLang);
 };
 
 function showScreen(id) {
@@ -929,6 +1243,138 @@ function getCLVStage(monthsSinceCreation, sales12m, daysSinceVisit) {
   return 'Year 1';
 }
 
+// ── 7-Touch Schedule ──
+const TOUCH_DAYS = [3, 21, 90, 150, 210, 270, 330];
+const TOUCH_WINDOW = 7; // ±7 days for T4-T7; 333 rule handles T1-T3 separately
+
+function getTouchSchedule(client) {
+  if (!client.daysSinceVisit || client.daysSinceVisit > 9999) return null;
+  const today = new Date(); today.setHours(0,0,0,0);
+  const lastVisit = new Date(); lastVisit.setDate(today.getDate() - client.daysSinceVisit);
+  return TOUCH_DAYS.map((offset, i) => {
+    const due = new Date(lastVisit); due.setDate(due.getDate() + offset);
+    const daysUntil = Math.round((due - today) / 86400000);
+    let status;
+    if (daysUntil < -TOUCH_WINDOW) status = 'done';        // past window — assume done
+    else if (Math.abs(daysUntil) <= TOUCH_WINDOW) status = 'due'; // within window
+    else status = 'upcoming';
+    return { num: i + 1, label: `T${i+1}`, due, daysUntil, status };
+  });
+}
+
+function getNextTouch(client) {
+  const schedule = getTouchSchedule(client);
+  if (!schedule) return null;
+  // VIP: monthly contact overrides
+  if (client.segment === 'VIP' && client.daysSinceVisit > 28) {
+    return { label: 'VIP Monthly', daysUntil: 0, isVip: true };
+  }
+  // T1-T3 already handled by 333 alerts — find first T4-T7 that is due or upcoming
+  const next = schedule.slice(3).find(t => t.status === 'due' || t.status === 'upcoming');
+  if (!next) return null;
+  return next;
+}
+
+function getMaintenanceDue(clients) {
+  // Returns clients with T4-T7 due today (±7 days), excluding those already flagged by 333
+  return clients.filter(c => {
+    if (c.alert333) return false; // 333 already handles them
+    if (c.clvStage === 'Sleeping') return false;
+    const schedule = getTouchSchedule(c);
+    if (!schedule) return false;
+    return schedule.slice(3).some(t => t.status === 'due');
+  });
+}
+
+function getVipDue(clients) {
+  return clients.filter(c => c.segment === 'VIP' && c.daysSinceVisit > 28);
+}
+
+// ── Annual Contact Load ──
+function renderAnnualContactLoad(clients) {
+  const activeClients = clients.filter(c => c.clvStage !== 'Sleeping');
+  const vipClients = clients.filter(c => c.segment === 'VIP');
+  const nonVipActive = activeClients.filter(c => c.segment !== 'VIP');
+  const sleepingTargeted = clients.filter(c => c.clvStage === 'Sleeping').slice(0, Math.ceil(clients.length * 0.1));
+
+  const totalAnnual = (nonVipActive.length * 7) + (vipClients.length * 12) + (sleepingTargeted.length * 2);
+  const dailyAvg = (totalAnnual / 250).toFixed(1);
+
+  // Build monthly distribution (next 12 months)
+  const today = new Date(); today.setHours(0,0,0,0);
+  const MONTHS_SHOWN = 6;
+  const monthlyLoad = Array(MONTHS_SHOWN).fill(0).map(() => ({ total: 0, vip: 0, t123: 0, t47: 0 }));
+
+  // T1-T7 per active client
+  activeClients.forEach(c => {
+    const schedule = getTouchSchedule(c);
+    if (!schedule) return;
+    schedule.forEach((t, i) => {
+      const monthOffset = Math.floor((t.daysUntil + (today.getDate())) / 30.4);
+      // Find which of the next 12 months this touch falls in
+      const touchDate = t.due;
+      for (let m = 0; m < MONTHS_SHOWN; m++) {
+        const mDate = new Date(today);
+        mDate.setMonth(mDate.getMonth() + m);
+        if (touchDate.getFullYear() === mDate.getFullYear() && touchDate.getMonth() === mDate.getMonth()) {
+          monthlyLoad[m].total++;
+          if (i < 3) monthlyLoad[m].t123++;
+          else monthlyLoad[m].t47++;
+          break;
+        }
+      }
+    });
+  });
+
+  // VIP monthly: 1 touch per VIP per month for next 12 months
+  vipClients.forEach(() => {
+    for (let m = 0; m < MONTHS_SHOWN; m++) {
+      monthlyLoad[m].total++;
+      monthlyLoad[m].vip++;
+    }
+  });
+
+  const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const currentMonth = today.getMonth();
+  const currentYear = today.getFullYear();
+
+  let monthsHtml = '';
+  for (let m = 0; m < MONTHS_SHOWN; m++) {
+    const mIdx = (currentMonth + m) % 12;
+    const yr = currentYear + Math.floor((currentMonth + m) / 12);
+    const isNow = m === 0;
+    const load = monthlyLoad[m];
+    monthsHtml += `
+      <div class="load-month ${isNow ? 'load-now' : ''}">
+        <div class="load-month-name">${monthNames[mIdx]} ${yr !== currentYear ? yr : ''}</div>
+        <div class="load-month-num">${load.total}</div>
+        <div class="load-month-sub">${load.vip ? `<span style="color:#e07060">${load.vip} VIP</span> · ` : ''}${load.t123} 333 · ${load.t47} maint</div>
+      </div>`;
+  }
+
+  document.getElementById('annual-load-section').innerHTML = `
+    <div class="load-summary">
+      <div class="load-stat">
+        <div class="load-stat-num">${totalAnnual}</div>
+        <div class="load-stat-label">${t('loadAnnual')}</div>
+      </div>
+      <div class="load-stat">
+        <div class="load-stat-num">${dailyAvg}</div>
+        <div class="load-stat-label">${t('loadDaily')}</div>
+      </div>
+      <div class="load-stat">
+        <div class="load-stat-num">${vipClients.length}</div>
+        <div class="load-stat-label">${t('loadVip')}</div>
+      </div>
+      <div class="load-stat">
+        <div class="load-stat-num">${activeClients.length}</div>
+        <div class="load-stat-label">${t('loadActive')}</div>
+      </div>
+    </div>
+    <div class="load-months">${monthsHtml}</div>
+    <div style="margin-top:8px;font-size:11px;color:#3a3020;">${t('loadFootnote')}</div>`;
+}
+
 // ── 333 Alert ──
 function get333Alert(days, clvStage) {
   if (clvStage === 'Sleeping') return days > 365 ? 'sleeping' : null;
@@ -975,13 +1421,16 @@ function renderDashboard(clients) {
   document.getElementById('dash-date').textContent =
     today.toLocaleDateString('en-GB', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
   document.getElementById('dash-target').innerHTML =
-    `Annual target: <strong>${currency}${Number(target).toLocaleString()}</strong>`;
+    `${t('annualTarget')} <strong>${currency}${Number(target).toLocaleString()}</strong>`;
 
   // Portfolio snapshot
   renderPortfolioSnapshot(clients, currency, target);
 
   // 333 alerts
   render333Alerts(clients, currency);
+
+  // Annual contact load
+  renderAnnualContactLoad(clients);
 
   // Quadrant
   renderQuadrant(clients);
@@ -1029,19 +1478,19 @@ function renderPortfolioSnapshot(clients, currency, target) {
   // Health score
   const ratio = target > 0 ? projection / target : 0;
   const pct = Math.min(100, Math.round(ratio * 100));
-  let score = 'E', scoreClass = 'score-e', scoreDesc = 'Critical — portfolio cannot sustain the target. Aggressive new acquisition and reactivation needed.';
-  if (ratio >= 0.70) { score='A'; scoreClass='score-a'; scoreDesc='Excellent — mature portfolio, strong Loyal base. Protect and develop VIPs.'; }
-  else if (ratio >= 0.50) { score='B'; scoreClass='score-b'; scoreDesc='Good — solid foundation. Fill the Year 2–3 pipeline and push category expansion.'; }
-  else if (ratio >= 0.30) { score='C'; scoreClass='score-c'; scoreDesc='Moderate — Year 1 heavy, retention is critical. Prioritise Y1→Y2 conversion.'; }
-  else if (ratio >= 0.15) { score='D'; scoreClass='score-d'; scoreDesc='Weak — portfolio is young and fragile. 3-touch compliance is non-negotiable.'; }
+  let score = 'E', scoreClass = 'score-e', scoreDesc = t('scoreEDesc');
+  if (ratio >= 0.70) { score='A'; scoreClass='score-a'; scoreDesc=t('scoreADesc'); }
+  else if (ratio >= 0.50) { score='B'; scoreClass='score-b'; scoreDesc=t('scoreBDesc'); }
+  else if (ratio >= 0.30) { score='C'; scoreClass='score-c'; scoreDesc=t('scoreCDesc'); }
+  else if (ratio >= 0.15) { score='D'; scoreClass='score-d'; scoreDesc=t('scoreDDesc'); }
 
   document.getElementById('health-score-letter').className = 'health-score-big ' + scoreClass;
   document.getElementById('health-score-letter').textContent = score;
   document.getElementById('proj-fill').style.width = pct + '%';
-  document.getElementById('proj-label-left').textContent = `Projection: ${currency}${Math.round(projection).toLocaleString()} (${pct}%)`;
-  document.getElementById('proj-label-right').textContent = `Target: ${currency}${Number(target).toLocaleString()}`;
+  document.getElementById('proj-label-left').textContent = `${t('projection')}: ${currency}${Math.round(projection).toLocaleString()} (${pct}%)`;
+  document.getElementById('proj-label-right').textContent = `${t('target')}: ${currency}${Number(target).toLocaleString()}`;
   document.getElementById('health-meta').innerHTML =
-    `<strong>${scoreDesc}</strong><br><br>Gap to cover through new clients: <strong>${currency}${Math.max(0,Math.round(target-projection)).toLocaleString()}</strong>`;
+    `<strong>${scoreDesc}</strong><br><br>${t('gapLabel')} <strong>${currency}${Math.max(0,Math.round(target-projection)).toLocaleString()}</strong>`;
 }
 
 // ── 333 Alerts ──
@@ -1051,45 +1500,57 @@ function render333Alerts(clients, currency) {
   const sec = document.getElementById('alerts-section');
 
   if (alertClients.length === 0) {
-    sec.innerHTML = `<div class="empty-alerts">✓ No overdue contacts today — excellent 3-touch compliance.</div>`;
+    sec.innerHTML = `<div class="empty-alerts">${t('noAlerts')}</div>`;
     return;
   }
 
-  sec.innerHTML = alertClients.map((c,i) => {
-    const isMustDo = ['3-day','21-day','3-month'].includes(c.alert333);
-    const alertLabel = {
-      '3-day': '🔴 3-Day Follow-up — MUST DO',
-      '21-day': '🔴 21-Day Follow-up — MUST DO',
-      '3-month': '🔴 3-Month Re-engagement — MUST DO',
-      'overdue': '🟡 Overdue — Year 1 window at risk',
-      'sleeping': '⚪ Sleeping — Reactivation needed'
-    }[c.alert333];
+  const firstClient = alertClients[0];
+  const restClients = alertClients.slice(1);
 
-    const script = generateScript(c, saProfile.name || 'your SA');
+  const alertLabel = (a) => ({
+    '3-day': t('alert3day'), '21-day': t('alert21day'), '3-month': t('alert3month'),
+    'overdue': t('alertOverdue'), 'sleeping': t('alertSleeping')
+  })[a] || a;
 
-    return `
-    <div class="alert-item ${isMustDo ? 'must-do' : 'warning'}">
-      <div class="alert-header" onclick="toggleAlert(${i})">
+  const alertBadgeClass = (alert333) =>
+    ['3-day','21-day','3-month'].includes(alert333) ? 'badge-red' : 'badge-amber';
+
+  const firstScript = generateScript(firstClient, saProfile.name || 'your SA');
+  const isMustDoFirst = ['3-day','21-day','3-month'].includes(firstClient.alert333);
+
+  let html = `
+    <div class="alert-item ${isMustDoFirst ? 'must-do' : 'warning'}">
+      <div class="alert-header" onclick="toggleAlert(0)">
         <div>
-          <span class="badge ${isMustDo ? 'badge-red' : 'badge-amber'}">${alertLabel}</span>
-          <div class="alert-name" style="margin-top:6px;">${c.name}</div>
-          <div class="alert-meta">${c.clvStage} · Last visit: ${c.daysSinceVisit} days ago · 12M: ${currency}${Math.round(c.sales12m).toLocaleString()}</div>
+          <span class="badge ${alertBadgeClass(firstClient.alert333)}">${alertLabel(firstClient.alert333)}</span>
+          <div class="alert-name" style="margin-top:6px;">${firstClient.name}</div>
+          <div class="alert-meta">${firstClient.clvStage} · Last visit: ${firstClient.daysSinceVisit}d ago · 12M: ${currency}${Math.round(firstClient.sales12m).toLocaleString()} · Top: ${firstClient.topCategory}</div>
         </div>
-        <div class="alert-arrow" id="arrow-${i}">▼</div>
+        <div class="alert-arrow open" id="arrow-0">▼</div>
       </div>
-      <div class="alert-body" id="body-${i}">
-        <div class="alert-detail">
-          <strong>CLV Stage:</strong> ${c.clvStage} &nbsp;·&nbsp;
-          <strong>Visits (12M):</strong> ${c.frequency} &nbsp;·&nbsp;
-          <strong>Top category:</strong> ${c.topCategory}
-        </div>
+      <div class="alert-body open" id="body-0">
         <div class="script-box">
-          <span class="script-label">Suggested script</span>
-          <div class="script-text">${script}</div>
+          <span class="script-label">${t('scriptLabel')}</span>
+          <div class="script-text">${firstScript}</div>
         </div>
       </div>
     </div>`;
-  }).join('');
+
+  if (restClients.length > 0) {
+    html += `<div class="alert-compact-list">`;
+    restClients.forEach(c => {
+      const isMustDo = ['3-day','21-day','3-month'].includes(c.alert333);
+      html += `
+        <div class="alert-compact-row">
+          <span class="badge ${alertBadgeClass(c.alert333)}" style="font-size:9px;">${alertLabel(c.alert333)}</span>
+          <span class="alert-compact-name">${c.name}</span>
+          <span class="alert-compact-meta">${c.clvStage} · ${c.daysSinceVisit}d · ${currency}${Math.round(c.sales12m).toLocaleString()}</span>
+        </div>`;
+    });
+    html += `</div>`;
+  }
+
+  sec.innerHTML = html;
 }
 
 function toggleAlert(i) {
@@ -1129,18 +1590,25 @@ function renderQuadrant(clients) {
   const alerts = clients.filter(c => ['3-day','21-day','3-month'].includes(c.alert333));
   const overdue = clients.filter(c => c.alert333 === 'overdue');
   const sleeping = clients.filter(c => c.alert333 === 'sleeping').slice(0,3);
+  const vipDue = getVipDue(clients);
+  const maintenanceDue = getMaintenanceDue(clients);
 
   // Standard daily operational Q2 tasks
   const opsTasks = [
-    { text: '15-min team morning briefing', core: false },
-    { text: 'Floor image check — maintain display standards', core: false },
-    { text: 'Product knowledge — review one new piece before floor opens', core: false },
-    { text: 'Profile update — 2 min note after each client call', core: false },
+    { text: t('opsBriefing'), core: false },
+    { text: t('opsFloor'), core: false },
+    { text: t('opsProduct'), core: false },
+    { text: t('opsProfile'), core: false },
   ];
 
-  // Q2: alerts + regular outreach + ops
   const outreachItems = [
-    ...alerts.map(c => ({ text: `[MUST DO] ${c.name} — ${c.alert333} follow-up`, core: true })),
+    ...vipDue.map(c => ({ text: `[${t('vipMonthly')}] ${c.name} — ${c.daysSinceVisit}d`, core: true })),
+    ...alerts.map(c => ({ text: `[${t('mustDo')}] ${c.name} — ${c.alert333} follow-up`, core: true })),
+    ...maintenanceDue.slice(0,5).map(c => {
+      const schedule = getTouchSchedule(c);
+      const due = schedule ? schedule.slice(3).find(touch => touch.status === 'due') : null;
+      return { text: `${c.name} — ${due ? due.label : 'T4-T7'} ${t('maintenanceTouch')}`, core: false };
+    }),
     ...sleeping.map(c => ({ text: `${c.name} — sleeping client reactivation`, core: false })),
   ];
 
@@ -1158,12 +1626,12 @@ function renderQuadrant(clients) {
   // Render Q2
   let q2Html = '';
   if (outreachItems.length) {
-    q2Html += '<div class="task-section-label">Client Outreach</div>';
+    q2Html += `<div class="task-section-label">${t('sectionOutreach')}</div>`;
     outreachItems.forEach((t,i) => {
       q2Html += `<div class="task-item"><input type="checkbox" class="task-cb" id="q2-${i}" onchange="saveCheck(this)"><label for="q2-${i}" class="task-text ${t.core?'core':''}">${t.text}</label></div>`;
     });
   }
-  q2Html += '<div class="task-section-label">Daily Operations</div>';
+  q2Html += `<div class="task-section-label">${t('sectionOps')}</div>`;
   opsTasks.forEach((t,i) => {
     q2Html += `<div class="task-item"><input type="checkbox" class="task-cb" id="ops-${i}" onchange="saveCheck(this)"><label for="ops-${i}" class="task-text">${t.text}</label></div>`;
   });
@@ -1172,7 +1640,7 @@ function renderQuadrant(clients) {
   // Render Q1
   let q1Html = '';
   if (overdue.length === 0) {
-    q1Html = '<div class="task-item"><span class="task-text muted">No urgent issues today — good.</span></div>';
+    q1Html = `<div class="task-item"><span class="task-text muted">${t('noUrgent')}</span></div>`;
   } else {
     q1Html = '<div class="task-section-label">Overdue Contacts</div>';
     overdue.slice(0,5).forEach((c,i) => {
@@ -1193,21 +1661,35 @@ function updateTaskCap() {
   const notice = document.getElementById('day-type-notice');
   if (dayType === 'high') {
     notice.style.display = 'block';
-    notice.innerHTML = '▶ <strong>HIGH TARGET DAY</strong> — Task cap: 22. Extra time freed is unstructured Q2 floor time — not free time. Be present. Every client on the floor is an opportunity.';
+    notice.innerHTML = t('noticeHigh');
   } else if (dayType === 'event') {
     notice.style.display = 'block';
-    notice.innerHTML = '▶ <strong>COMMERCIAL EVENT DAY</strong> — Task cap: 20. Maximum floor selling mode. Client outreach MUST DOs still apply.';
+    notice.innerHTML = t('noticeEvent');
   } else if (dayType === 'closed') {
     notice.style.display = 'block';
-    notice.innerHTML = '▶ <strong>CLOSED / PREP DAY</strong> — No client calls today. Focus on VM, stock, and preparation tasks.';
+    notice.innerHTML = t('noticeClosed');
   } else {
     notice.style.display = 'none';
   }
 }
 
 // ── Client Table ──
+function computeNextTouchDays(clients) {
+  clients.forEach(c => {
+    if (c.segment === 'VIP' && c.daysSinceVisit > 28) { c.nextTouchDays = 0; return; }
+    const schedule = getTouchSchedule(c);
+    if (schedule) {
+      const next = schedule.find(t => t.status === 'due' || t.status === 'upcoming');
+      c.nextTouchDays = next ? Math.max(0, next.daysUntil) : 9999;
+    } else {
+      c.nextTouchDays = 9999;
+    }
+  });
+}
+
 function renderClientTable(clients, currency) {
-  filteredClients = [...clients];
+  computeNextTouchDays(clients);
+  filteredClients = [...clients].sort((a,b) => a.nextTouchDays - b.nextTouchDays);
   renderTableRows(currency);
 }
 
@@ -1228,6 +1710,13 @@ function filterTable() {
     if (alertF === 'alert' && !c.alert333) return false;
     return true;
   });
+  // Re-apply current sort
+  const d = sortState.dir === 'asc' ? 1 : -1;
+  filteredClients.sort((a,b) => {
+    const av = a[sortState.col], bv = b[sortState.col];
+    if (av == null) return 1; if (bv == null) return -1;
+    return av > bv ? d : av < bv ? -d : 0;
+  });
   renderTableRows(currency);
 }
 
@@ -1244,23 +1733,67 @@ function sortTable(col) {
 }
 
 function renderTableRows(currency) {
-  const alertLabel = { '3-day':'3-Day ↑', '21-day':'21-Day ↑', '3-month':'3-Month ↑', 'overdue':'Overdue ⚠', 'sleeping':'Sleeping' };
+  const alertLabel = {
+    '3-day': t('alert3day').replace(' — MUST DO','').replace(' — 必须完成','').replace(' — 필수','') + ' ↑',
+    '21-day': t('alert21day').replace(' — MUST DO','').replace(' — 必须完成','').replace(' — 필수','') + ' ↑',
+    '3-month': t('alert3month').replace(' — MUST DO','').replace(' — 必须完成','').replace(' — 필수','') + ' ↑',
+    'overdue': t('alertOverdue').split(' — ')[0] + ' ⚠',
+    'sleeping': t('stageSleeping')
+  };
   const alertClass = { '3-day':'badge-red', '21-day':'badge-red', '3-month':'badge-red', 'overdue':'badge-amber', 'sleeping':'badge-gray' };
+  const clvStageLabel = { 'Loyal':t('stageLoyal'),'Year 3':t('stageY3'),'Year 2':t('stageY2'),'Year 1':t('stageY1'),'Sleeping':t('stageSleeping') };
   const clvClass = { 'Loyal':'clv-loyal','Year 3':'clv-y3','Year 2':'clv-y2','Year 1':'clv-y1','Sleeping':'clv-sleep' };
 
+  const today = new Date(); today.setHours(0,0,0,0);
+  const fmtDate = d => d.toLocaleDateString('en-GB', { day:'numeric', month:'short' });
+
   const tbody = document.getElementById('client-tbody');
-  tbody.innerHTML = filteredClients.map(c => `
+  tbody.innerHTML = filteredClients.map(c => {
+    const schedule = getTouchSchedule(c);
+    const isVip = c.segment === 'VIP';
+
+    // Next touch
+    let nextTouchHtml = '—';
+    let nextTouchDays = 9999;
+    if (isVip && c.daysSinceVisit > 28) {
+      nextTouchHtml = `<span class="touch-badge vip">${t('vipMonthlyLabel')}</span>`;
+      nextTouchDays = 0;
+    } else if (schedule) {
+      const next = schedule.find(touch => touch.status === 'due' || touch.status === 'upcoming');
+      if (next) {
+        nextTouchDays = Math.max(0, next.daysUntil);
+        const dLabel = next.daysUntil <= 0 ? t('touchToday') : t('touchIn').replace('{n}', next.daysUntil);
+        nextTouchHtml = `<span class="touch-badge">${next.label} · ${dLabel}</span>`;
+      }
+    }
+
+    // 7-touch plan — all 7 dates
+    let touchPlanHtml = '—';
+    if (schedule) {
+      const dots = schedule.map(t => {
+        const dateStr = fmtDate(t.due);
+        if (t.status === 'done') return `<span class="tp-item tp-done" title="${t.label}: ${dateStr}">${t.label}</span>`;
+        if (t.status === 'due')  return `<span class="tp-item tp-due"  title="${t.label}: ${dateStr} — DUE NOW">${t.label} <em>${dateStr}</em></span>`;
+        return                          `<span class="tp-item tp-upcoming" title="${t.label}: ${dateStr}">${t.label} <em>${dateStr}</em></span>`;
+      });
+      touchPlanHtml = `<div class="touch-plan">${dots.join('')}</div>`;
+    } else if (isVip) {
+      touchPlanHtml = `<span class="touch-badge vip">Monthly</span>`;
+    }
+
+    return `
     <tr>
       <td>${c.name}</td>
-      <td><span class="${clvClass[c.clvStage]||''}">${c.clvStage}</span></td>
+      <td><span class="${clvClass[c.clvStage]||''}">${clvStageLabel[c.clvStage]||c.clvStage}</span></td>
       <td>${c.daysSinceVisit < 999 ? c.daysSinceVisit + 'd ago' : '—'}</td>
       <td>${currency}${Math.round(c.sales12m).toLocaleString()}</td>
-      <td>${c.frequency || '—'}</td>
       <td>${c.topCategory}</td>
       <td>${c.alert333 ? `<span class="badge ${alertClass[c.alert333]||'badge-gray'}">${alertLabel[c.alert333]}</span>` : '—'}</td>
-    </tr>
-  `).join('');
-  document.getElementById('table-count').textContent = `Showing ${filteredClients.length} clients`;
+      <td data-days="${nextTouchDays}">${nextTouchHtml}</td>
+      <td>${touchPlanHtml}</td>
+    </tr>`;
+  }).join('');
+  document.getElementById('table-count').textContent = t('showingClients').replace('{n}', filteredClients.length);
 }
 
 // ── Checkbox persistence ──
