@@ -1560,8 +1560,13 @@ function render333Alerts(clients, currency) {
     return;
   }
 
-  const firstClient = alertClients[0];
-  const restClients = alertClients.slice(1);
+  const ALERT_CAP = 5;
+  const totalAlerts = alertClients.length;
+  const shownClients = alertClients.slice(0, ALERT_CAP);
+  const hiddenCount = totalAlerts - shownClients.length;
+
+  const firstClient = shownClients[0];
+  const restClients = shownClients.slice(1);
 
   const alertLabel = (a) => ({
     '3-day': t('alert3day'), '21-day': t('alert21day'), '3-month': t('alert3month'),
@@ -1595,7 +1600,6 @@ function render333Alerts(clients, currency) {
   if (restClients.length > 0) {
     html += `<div class="alert-compact-list">`;
     restClients.forEach(c => {
-      const isMustDo = ['3-day','21-day','3-month'].includes(c.alert333);
       html += `
         <div class="alert-compact-row">
           <span class="badge ${alertBadgeClass(c.alert333)}" style="font-size:9px;">${alertLabel(c.alert333)}</span>
@@ -1604,6 +1608,10 @@ function render333Alerts(clients, currency) {
         </div>`;
     });
     html += `</div>`;
+  }
+
+  if (hiddenCount > 0) {
+    html += `<div style="margin-top:10px;font-size:11px;color:#4a4030;padding:8px 12px;background:rgba(230,168,23,0.05);border:1px solid rgba(230,168,23,0.12);border-radius:6px;">+${hiddenCount} more overdue — all shown in This Week's Contact List above.</div>`;
   }
 
   sec.innerHTML = html;
