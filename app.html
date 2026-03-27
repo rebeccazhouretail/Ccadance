@@ -1770,7 +1770,10 @@ function getWeeklyContactList(clients) {
     .slice(0, 3)
     .forEach(c => add(c, 'sleeping', 5));
 
-  return list.sort((a,b) => a.weekPriority - b.weekPriority || b.sales12m - a.sales12m);
+  const sorted = list.sort((a,b) => a.weekPriority - b.weekPriority || b.sales12m - a.sales12m);
+  const WEEK_CAP = 15;
+  sorted._totalDue = sorted.length;
+  return sorted.slice(0, WEEK_CAP);
 }
 
 function renderWeeklyContactList(clients, currency) {
@@ -1788,10 +1791,14 @@ function renderWeeklyContactList(clients, currency) {
     return;
   }
 
+  const totalDue = weekList._totalDue || weekList.length;
   const mustCount = weekList.filter(c => ['3-day','21-day','3-month'].includes(c.weekReason)).length;
   if (summary) {
-    summary.textContent = weekList.length + ' client' + (weekList.length !== 1 ? 's' : '') +
-      ' to contact this week' + (mustCount ? ' · ' + mustCount + ' must-do' : '') + '.';
+    const capped = totalDue > weekList.length;
+    summary.textContent = weekList.length + (capped ? ' of ' + totalDue : '') +
+      ' client' + (weekList.length !== 1 ? 's' : '') + ' to contact this week' +
+      (mustCount ? ' · ' + mustCount + ' must-do' : '') +
+      (capped ? ' — complete these first, then re-upload for the next batch.' : '.');
   }
 
   const reasonLabel = r => ({
