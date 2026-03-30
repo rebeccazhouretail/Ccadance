@@ -445,6 +445,12 @@
   .week-tap-hint { font-size: 10px; color: #3a3020; float: right; margin-top: 2px; }
   .week-empty { padding: 20px; text-align: center; color: #4a4030; font-size: 13px; }
   .week-summary { font-size: 11px; color: #3a3020; margin-bottom: 14px; letter-spacing: 0.3px; }
+  .week-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .week-nav-btn { background: none; border: 1px solid rgba(201,168,76,0.15); color: #5a5040; font-size: 11px; padding: 5px 12px; border-radius: 6px; cursor: pointer; letter-spacing: 0.5px; transition: all 0.2s; }
+  .week-nav-btn:hover { color: #c9a84c; border-color: rgba(201,168,76,0.4); }
+  .week-nav-btn:disabled { opacity: 0.2; cursor: default; }
+  .week-nav-label { font-size: 12px; color: #c9a84c; letter-spacing: 1px; font-weight: 500; }
+  .week-nav-sub { font-size: 10px; color: #3a3020; text-align: center; margin-top: 2px; }
   .all-clients-toggle { background: none; border: 1px solid rgba(201,168,76,0.12); color: #3a3020; font-size: 11px; letter-spacing: 1px; padding: 10px 16px; border-radius: 8px; cursor: pointer; margin-top: 10px; width: 100%; transition: all 0.2s; text-align: center; }
   .all-clients-toggle:hover { color: #c9a84c; border-color: rgba(201,168,76,0.3); }
 
@@ -749,8 +755,16 @@
     </div>
 
     <!-- Row 4: This Week's Contact List -->
-    <div class="sec-title" style="margin-top:8px;" data-i18n="secWeekly">This Week's Contact List</div>
+    <div class="sec-title" style="margin-top:8px;" id="weekly-section-title">This Week's Contact List</div>
     <div class="card" style="padding:18px;">
+      <div class="week-nav">
+        <button class="week-nav-btn" id="week-prev-btn" onclick="changeWeek(-1)">← Prev</button>
+        <div style="text-align:center;">
+          <div class="week-nav-label" id="week-nav-label"></div>
+          <div class="week-nav-sub" id="week-nav-sub"></div>
+        </div>
+        <button class="week-nav-btn" id="week-next-btn" onclick="changeWeek(1)">Next →</button>
+      </div>
       <div class="week-summary" id="week-summary"></div>
       <div class="week-list" id="weekly-list-section"></div>
     </div>
@@ -1074,6 +1088,7 @@ let allClients = [];
 let filteredClients = [];
 let rawSAList = [];
 let sortState = { col: 'nextTouchDays', dir: 'asc' };
+let _currentWeekDisplay = 0; // 0 = auto (set from date on first render)
 const STORAGE_KEY = 'ccadance-sa-profile';
 const COUNT_KEY   = 'ccadance-analysis-count';
 
@@ -1271,6 +1286,7 @@ function parseRows(rows) {
   }
 
   allClients = clients;
+  _currentWeekDisplay = 0; // reset so next render auto-sets from current date
   document.getElementById('analyse-btn').style.display = 'block';
 }
 
@@ -1779,19 +1795,46 @@ function getWeeklyContactList(clients) {
     .forEach(c => add(c, 'sleeping', 5));
 
   const sorted = list.sort((a,b) => a.weekPriority - b.weekPriority || b.sales12m - a.sales12m);
-  const WEEK_CAP = 15;
+  const MONTH_CAP = 60; // 4 weeks × 15
   sorted._totalDue = sorted.length;
-  return sorted.slice(0, WEEK_CAP);
+  return sorted.slice(0, MONTH_CAP);
 }
 
 function renderWeeklyContactList(clients, currency) {
   const saName = saProfile.name || 'your SA';
-  const weekList = getWeeklyContactList(clients);
+  const allDue = getWeeklyContactList(clients);
   const sec = document.getElementById('weekly-list-section');
   const summary = document.getElementById('week-summary');
   const toggle = document.getElementById('all-clients-toggle');
 
   if (toggle) toggle.textContent = t('weekAllClients').replace('{n}', clients.length);
+
+  // Auto-set week from current date on first render
+  if (_currentWeekDisplay === 0) {
+    _currentWeekDisplay = Math.min(Math.ceil(new Date().getDate() / 7), 4);
+  }
+
+  const BATCH = 15;
+  const totalDue = allDue._totalDue || allDue.length;
+  const totalWeeks = Math.min(4, Math.ceil(totalDue / BATCH));
+  const weekNum = Math.min(_currentWeekDisplay, totalWeeks || 1);
+  const batchStart = (weekNum - 1) * BATCH;
+  const weekList = allDue.slice(batchStart, batchStart + BATCH);
+
+  // Update nav UI
+  const monthName = new Date().toLocaleString('en', { month: 'long' });
+  const navLabel = document.getElementById('week-nav-label');
+  const navSub = document.getElementById('week-nav-sub');
+  const prevBtn = document.getElementById('week-prev-btn');
+  const nextBtn = document.getElementById('week-next-btn');
+  const titleEl = document.getElementById('weekly-section-title');
+  if (navLabel) navLabel.textContent = `Week ${weekNum} of ${totalWeeks || 1} · ${monthName}`;
+  if (navSub) navSub.textContent = totalDue > BATCH * 4
+    ? `${totalDue} clients due — showing top 60 across 4 weeks`
+    : `${totalDue} client${totalDue !== 1 ? 's' : ''} due this month`;
+  if (prevBtn) prevBtn.disabled = weekNum <= 1;
+  if (nextBtn) nextBtn.disabled = weekNum >= (totalWeeks || 1);
+  if (titleEl) titleEl.textContent = `Week ${weekNum} Contact List · ${monthName}`;
 
   if (weekList.length === 0) {
     if (summary) summary.textContent = '';
@@ -1799,14 +1842,10 @@ function renderWeeklyContactList(clients, currency) {
     return;
   }
 
-  const totalDue = weekList._totalDue || weekList.length;
   const mustCount = weekList.filter(c => ['3-day','21-day','3-month'].includes(c.weekReason)).length;
   if (summary) {
-    const capped = totalDue > weekList.length;
-    summary.textContent = weekList.length + (capped ? ' of ' + totalDue : '') +
-      ' client' + (weekList.length !== 1 ? 's' : '') + ' to contact this week' +
-      (mustCount ? ' · ' + mustCount + ' must-do' : '') +
-      (capped ? ' — complete these first, then re-upload for the next batch.' : '.');
+    summary.textContent = weekList.length + ' client' + (weekList.length !== 1 ? 's' : '') +
+      ' to contact this week' + (mustCount ? ' · ' + mustCount + ' must-do' : '') + '.';
   }
 
   const reasonLabel = r => ({
@@ -1854,6 +1893,14 @@ function renderWeeklyContactList(clients, currency) {
         </div>
       </div>`;
   }).join('');
+}
+
+function changeWeek(delta) {
+  const allDue = getWeeklyContactList(allClients);
+  const totalDue = allDue._totalDue || allDue.length;
+  const totalWeeks = Math.min(4, Math.max(1, Math.ceil(totalDue / 15)));
+  _currentWeekDisplay = Math.max(1, Math.min(_currentWeekDisplay + delta, totalWeeks));
+  renderWeeklyContactList(allClients, saProfile.currency || '€');
 }
 
 function generateWeekScript(client, saName, reason) {
