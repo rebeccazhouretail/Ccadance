@@ -1209,6 +1209,7 @@ const STORAGE_KEY    = 'ccadance-sa-profile';
 const COUNT_KEY      = 'ccadance-analysis-count';
 const BENCHMARK_KEY  = 'ccadance-benchmark-v3';
 let benchmarkClients = []; // loaded from localStorage on init
+let selectedBenchmarkSA = ''; // SA filter for the benchmark left column
 
 // ══════════════════════════════════════
 // INIT
@@ -1920,12 +1921,32 @@ function renderPortfolioSection(clients, currency, target) {
       '<div class="sec-title" style="margin-top:0;">3 Key Trackers — CRM Truth Test</div>' +
       '<div class="tracker-grid" id="tracker-grid"></div>';
   } else {
+    // Build SA filter dropdown from unique SA names in benchmark
+    const bmSANames = [...new Set(benchmarkClients.map(function(c){ return c.saName; }).filter(function(n){ return n; }))].sort();
+    const autoSA = bmSANames.find(function(n){ return n.toUpperCase() === (saProfile.name || '').toUpperCase(); }) || '';
+    selectedBenchmarkSA = autoSA;
+
+    const bmSADropdown = bmSANames.length > 0
+      ? '<select id="bm-sa-filter" onchange="filterBenchmarkSA(this.value)" style="' +
+          'background:#141418;border:1px solid #2a2820;color:#c9a84c;font-size:11px;' +
+          'padding:4px 8px;border-radius:6px;cursor:pointer;font-family:inherit;outline:none;' +
+          'letter-spacing:.5px;max-width:160px;">' +
+          '<option value="">All SAs (' + benchmarkClients.length.toLocaleString() + ')</option>' +
+          bmSANames.map(function(n){
+            return '<option value="' + n + '"' + (n === autoSA ? ' selected' : '') + '>' + n + '</option>';
+          }).join('') +
+        '</select>'
+      : '';
+
     el.innerHTML =
       '<div class="sec-title">Portfolio Comparison — FY2025 vs 2026 Monthly</div>' +
       '<div class="comparison-layout">' +
         '<div class="comparison-col">' +
-          '<span class="comparison-col-header">FY2025 — Benchmark · ' + benchmarkClients.length.toLocaleString() + ' clients</span>' +
-          renderBenchmarkColumn(currency) +
+          '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;gap:8px;">' +
+            '<span class="comparison-col-header" style="margin-bottom:0;">FY2025 — Benchmark</span>' +
+            bmSADropdown +
+          '</div>' +
+          '<div id="bm-col-content">' + renderBenchmarkColumn(currency, autoSA) + '</div>' +
         '</div>' +
         '<div class="comparison-col">' +
           '<span class="comparison-col-header active">2026 Monthly — ' + new Date().toLocaleString('en', {month:'long', year:'numeric'}) + '</span>' +
@@ -1943,14 +1964,18 @@ function renderPortfolioSection(clients, currency, target) {
 
 // ── FY2025 Benchmark Left Column ──
 // Computes CLV stages from stored benchmark data using FY2025 end date (Feb 28, 2026).
-function renderBenchmarkColumn(currency) {
+function renderBenchmarkColumn(currency, saFilter) {
   const FY25_END = new Date('2026-02-28');
   const stages = ['Loyal','Year 3','Year 2','Year 1','Sleeping'];
   const counts = { Loyal:0, 'Year 3':0, 'Year 2':0, 'Year 1':0, Sleeping:0 };
   const revs   = { Loyal:0, 'Year 3':0, 'Year 2':0, 'Year 1':0, Sleeping:0 };
   let totalRev = 0, total = 0;
 
-  benchmarkClients.forEach(function(c) {
+  const source = saFilter
+    ? benchmarkClients.filter(function(c){ return c.saName && c.saName.toUpperCase() === saFilter.toUpperCase(); })
+    : benchmarkClients;
+
+  source.forEach(function(c) {
     const months = c.creationDate  ? monthsDiff(new Date(c.creationDate), FY25_END) : 999;
     const dsv    = c.lastVisitDate ? Math.floor((FY25_END - new Date(c.lastVisitDate)) / 86400000) : 999;
     const stage  = getCLVStage(months, c.sales12m, dsv);
@@ -1990,6 +2015,14 @@ function renderBenchmarkColumn(currency) {
     '<div style="font-size:12px;color:#5a5040;margin-top:8px;">' +
       total.toLocaleString() + ' clients · ' + currency + Math.round(totalRev).toLocaleString() + ' total 12M' +
     '</div></div>';
+}
+
+// ── Benchmark SA Filter ──
+function filterBenchmarkSA(saName) {
+  selectedBenchmarkSA = saName;
+  const currency = saProfile.currency || '€';
+  const el = document.getElementById('bm-col-content');
+  if (el) el.innerHTML = renderBenchmarkColumn(currency, saName);
 }
 
 // ── Portfolio Snapshot ──
