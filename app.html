@@ -1820,7 +1820,12 @@ function renderThreeTrackers(clients) {
     // Map: normName → monthly client (for lastVisit lookup)
     const monthlyMap = new Map(clients.map(function(c) { return [normalizeName(c.name), c]; }));
 
-    const t3Cohort = benchmarkClients.filter(function(c) {
+    // Filter benchmark to the selected SA (same SA as the monthly file)
+    const bmSource = selectedBenchmarkSA
+      ? benchmarkClients.filter(function(c){ return c.saName && c.saName.toUpperCase() === selectedBenchmarkSA.toUpperCase(); })
+      : benchmarkClients;
+
+    const t3Cohort = bmSource.filter(function(c) {
       if (!c.creationDate) return false;
       const d = new Date(c.creationDate);
       return d >= fy25Start && d <= fy25End;
