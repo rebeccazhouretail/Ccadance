@@ -1928,7 +1928,11 @@ function renderPortfolioSection(clients, currency, target) {
   } else {
     // Build SA filter dropdown from unique SA names in benchmark
     const bmSANames = [...new Set(benchmarkClients.map(function(c){ return c.saName; }).filter(function(n){ return n; }))].sort();
-    const autoSA = bmSANames.find(function(n){ return n.toUpperCase() === (saProfile.name || '').toUpperCase(); }) || '';
+    const saNameNorm = (saProfile.name || '').toUpperCase();
+    const autoSA = bmSANames.find(function(n){
+      const nUp = n.toUpperCase();
+      return nUp === saNameNorm || nUp.includes(saNameNorm) || saNameNorm.includes(nUp);
+    }) || '';
     selectedBenchmarkSA = autoSA;
 
     const bmSADropdown = bmSANames.length > 0
@@ -2028,6 +2032,9 @@ function filterBenchmarkSA(saName) {
   const currency = saProfile.currency || '€';
   const el = document.getElementById('bm-col-content');
   if (el) el.innerHTML = renderBenchmarkColumn(currency, saName);
+  // Re-render T3 with updated SA filter
+  const clients = filteredClients.length ? filteredClients : allClients;
+  if (clients.length) renderThreeTrackers(clients);
 }
 
 // ── Portfolio Snapshot ──
