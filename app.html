@@ -1806,6 +1806,7 @@ function renderThreeTrackers(clients) {
   // FY2025 Y1 cohort from benchmark (created Mar 2025–Feb 2026).
   // "Converted" = name matched in monthly file AND lastVisit >= Mar 1, 2026.
   let rate3 = null, col3 = 't-gray', verdict3 = '', detail3 = '';
+  let t3TotalCount = 0, t3ReturnedCount = 0;
 
   if (benchmarkClients.length === 0) {
     verdict3 = 'Upload FY2025 benchmark';
@@ -1831,37 +1832,57 @@ function renderThreeTrackers(clients) {
       return match.lastVisitDate && match.lastVisitDate >= fy26Start;
     });
 
-    rate3 = t3Cohort.length > 0 ? Math.round(t3Converted.length / t3Cohort.length * 100) : null;
+    t3TotalCount    = t3Cohort.length;
+    t3ReturnedCount = t3Converted.length;
+
+    rate3 = t3TotalCount > 0 ? Math.round(t3ReturnedCount / t3TotalCount * 100) : null;
     col3 = rate3 === null ? 't-gray' : rate3 >= 20 ? 't-green' : rate3 >= 10 ? 't-amber' : 't-red';
     verdict3 = rate3 === null ? 'No FY2025 cohort found'
       : rate3 >= 20 ? 'Y1→Y2 conversion healthy'
       : rate3 >= 10 ? 'Conversion below target'
       : 'Y1 clients not returning — CRM not working';
-    detail3 = t3Cohort.length === 0
+    detail3 = t3TotalCount === 0
       ? 'No clients created Mar 2025–Feb 2026 in benchmark. Check the benchmark file date range.'
-      : t3Cohort.length + ' FY2025 new clients (benchmark) · ' +
-        t3Converted.length + ' confirmed returned in FY2026 (visited after Mar 2026) · ' +
-        (t3Cohort.length - t3Converted.length) + ' not yet returned';
+      : t3TotalCount + ' FY2025 new clients (benchmark) · ' +
+        t3ReturnedCount + ' confirmed returned in FY2026 (visited after Mar 2026) · ' +
+        (t3TotalCount - t3ReturnedCount) + ' not yet returned';
   }
+
+  // T1 count display: "N / M on-track"
+  const t1CountHtml = rate1 !== null
+    ? onTrack + ' / ' + year1.length
+    : '—';
+  const t1PctHtml = rate1 !== null
+    ? '<div style="font-size:13px;color:#5a5040;margin-bottom:4px;">= ' + rate1 + '% on-track</div>'
+    : '';
+
+  // T3 count display: "N / M converted" (uses t3TotalCount, t3ReturnedCount declared above)
+  const t3CountHtml = rate3 !== null ? t3ReturnedCount + ' / ' + t3TotalCount : '—';
+  const t3PctHtml   = rate3 !== null
+    ? '<div style="font-size:13px;color:#5a5040;margin-bottom:4px;">= ' + rate3 + '% converted</div>'
+    : '';
 
   el.innerHTML =
     '<div class="tracker-card ' + col1 + '">' +
       '<div class="tracker-label">T1 — 333 Rule · This Month</div>' +
-      '<div class="tracker-num">' + (rate1 !== null ? rate1 + '%' : '—') + '</div>' +
+      '<div class="tracker-num">' + t1CountHtml + '</div>' +
+      t1PctHtml +
       '<div class="tracker-sub">Year 1 clients on-track — 3-day · 21-day · 3-month windows</div>' +
       '<div class="tracker-verdict">' + verdict1 + '</div>' +
       '<div class="tracker-detail">' + detail1 + '</div>' +
     '</div>' +
     '<div class="tracker-card ' + col2 + '">' +
       '<div class="tracker-label">T2 — VIP Maintenance · This Month</div>' +
-      '<div class="tracker-num">' + (rate2 !== null ? rate2 + '%' : '—') + '</div>' +
+      '<div class="tracker-num">' + (rate2 !== null ? vipContacted.length + ' / ' + vips.length : '—') + '</div>' +
+      (rate2 !== null ? '<div style="font-size:13px;color:#5a5040;margin-bottom:4px;">= ' + rate2 + '% contacted</div>' : '') +
       '<div class="tracker-sub">VIPs (Sales &gt;' + currency + '5K or Loyal 3y+) contacted in last 30 days</div>' +
       '<div class="tracker-verdict">' + verdict2 + '</div>' +
       '<div class="tracker-detail">' + detail2 + '</div>' +
     '</div>' +
     '<div class="tracker-card ' + col3 + '">' +
       '<div class="tracker-label">T3 — Y1→Y2 Conversion · vs FY2025</div>' +
-      '<div class="tracker-num">' + (rate3 !== null ? rate3 + '%' : '—') + '</div>' +
+      '<div class="tracker-num">' + t3CountHtml + '</div>' +
+      t3PctHtml +
       '<div class="tracker-sub">FY2025 new clients (Mar 2025–Feb 2026) who visited after Mar 2026</div>' +
       '<div class="tracker-verdict">' + verdict3 + '</div>' +
       '<div class="tracker-detail">' + detail3 + '</div>' +
