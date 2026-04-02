@@ -494,8 +494,21 @@
   }
 
   /* ── 3 Key Trackers ── */
-  .tracker-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:20px; }
+  .tracker-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:16px; }
   @media(max-width:700px){ .tracker-grid { grid-template-columns:1fr; } }
+
+  /* ── Comparison layout (FY2025 left / Monthly right) ── */
+  .comparison-layout { display:grid; grid-template-columns:1fr 1.15fr; gap:20px; margin-bottom:20px; align-items:start; }
+  .comparison-col { display:flex; flex-direction:column; gap:12px; }
+  .comparison-col-header {
+    font-size:9px; letter-spacing:2.5px; text-transform:uppercase;
+    color:#c9a84c; opacity:.55; margin-bottom:4px; display:block;
+  }
+  .comparison-col-header.active { opacity:1; }
+  .tracker-grid-col { display:grid; grid-template-columns:1fr; gap:10px; margin-bottom:0; }
+  .tracker-grid-col .tracker-card { padding:16px 18px; }
+  .tracker-grid-col .tracker-num { font-size:26px; }
+  @media(max-width:900px){ .comparison-layout { grid-template-columns:1fr; } }
   .tracker-card {
     background:#141418; border:1px solid #1e1c18; border-radius:12px;
     padding:20px 22px; position:relative; overflow:hidden;
@@ -809,39 +822,8 @@
 
   <div class="dash-body">
 
-    <!-- Row 1: Portfolio + Health Score -->
-    <div class="sec-title" data-i18n="secPortfolio">Portfolio Overview</div>
-    <div class="row-2" style="margin-bottom:20px;">
-
-      <!-- Portfolio snapshot -->
-      <div class="card">
-        <div style="font-size:12px;color:#4a4030;letter-spacing:2px;text-transform:uppercase;margin-bottom:14px;">CLV Breakdown</div>
-        <table class="port-table" id="port-table">
-          <thead>
-            <tr>
-              <th>Stage</th><th>Clients</th><th>%</th><th>12M Revenue</th><th>Avg/Client</th>
-            </tr>
-          </thead>
-          <tbody id="port-tbody"></tbody>
-        </table>
-      </div>
-
-      <!-- Health score -->
-      <div class="card card-gold">
-        <div style="font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#c9a84c;opacity:.6;margin-bottom:4px;" data-i18n="secHealthScore">Portfolio Health Score</div>
-        <div class="health-score-big" id="health-score-letter">—</div>
-        <div class="projection-bar"><div class="projection-fill" id="proj-fill" style="width:0%"></div></div>
-        <div class="proj-label">
-          <span id="proj-label-left">Projection</span>
-          <span id="proj-label-right">Target</span>
-        </div>
-        <div class="health-meta" id="health-meta"></div>
-      </div>
-    </div>
-
-    <!-- 3 Key Trackers -->
-    <div class="sec-title" style="margin-top:8px;">3 Key Trackers — CRM Truth Test</div>
-    <div class="tracker-grid" id="tracker-grid"></div>
+    <!-- Portfolio + Trackers — dynamically rendered based on benchmark status -->
+    <div id="portfolio-section"></div>
 
     <!-- Row 2: 333 Alerts -->
     <div class="sec-title" style="margin-top:8px;" data-i18n="sec333">333 Priority Alerts</div>
@@ -1225,7 +1207,7 @@ let sortState = { col: 'nextTouchDays', dir: 'asc' };
 let _currentWeekDisplay = 0; // 0 = auto (set from date on first render)
 const STORAGE_KEY    = 'ccadance-sa-profile';
 const COUNT_KEY      = 'ccadance-analysis-count';
-const BENCHMARK_KEY  = 'ccadance-benchmark-v2';
+const BENCHMARK_KEY  = 'ccadance-benchmark-v3';
 let benchmarkClients = []; // loaded from localStorage on init
 
 // ══════════════════════════════════════
@@ -1313,9 +1295,11 @@ function loadBenchmark() {
   if (!raw) { benchmarkClients = []; return; }
   try {
     const arr = JSON.parse(raw);
-    // stored as [[normName, creationDateISO, sales12m], ...]
+    // stored as [[normName, creationDateISO, lastVisitDateISO, sales12m, saName], ...]
+    // v2 had only 3 fields — discard if incompatible
+    if (!arr.length || arr[0].length < 4) { benchmarkClients = []; localStorage.removeItem(BENCHMARK_KEY); return; }
     benchmarkClients = arr.map(function(row) {
-      return { normName: row[0], creationDate: row[1], sales12m: row[2] };
+      return { normName: row[0], creationDate: row[1], lastVisitDate: row[2], sales12m: row[3], saName: row[4] || '' };
     });
   } catch(e) { benchmarkClients = []; }
 }
@@ -1361,12 +1345,16 @@ function handleBenchmarkFile(file) {
       if (!r || !r[cols.name]) continue;
       const name = (r[cols.name] || '').toString().trim();
       if (!name) continue;
-      const sales12m = cols.sales12m >= 0 ? (parseFloat(r[cols.sales12m]) || 0) : 0;
-      const creationDate = cols.creation >= 0 ? parseDate(r[cols.creation]) : null;
+      const sales12m     = cols.sales12m  >= 0 ? (parseFloat(r[cols.sales12m])  || 0) : 0;
+      const creationDate   = cols.creation  >= 0 ? parseDate(r[cols.creation])  : null;
+      const lastVisitDate  = cols.lastVisit >= 0 ? parseDate(r[cols.lastVisit]) : null;
+      const saNameBm       = cols.saName    >= 0 ? (r[cols.saName] || '').toString().trim() : '';
       parsed.push({
-        normName: normalizeName(name),
-        creationDate: creationDate ? creationDate.toISOString() : null,
-        sales12m: sales12m
+        normName:      normalizeName(name),
+        creationDate:  creationDate  ? creationDate.toISOString()  : null,
+        lastVisitDate: lastVisitDate ? lastVisitDate.toISOString() : null,
+        sales12m:      sales12m,
+        saName:        saNameBm
       });
     }
 
@@ -1382,7 +1370,7 @@ function confirmBenchmark() {
   if (!window._pendingBenchmark || window._pendingBenchmark.length === 0) return;
   const data = window._pendingBenchmark;
   // Store as compact array to minimise localStorage usage
-  const minimal = data.map(function(c) { return [c.normName, c.creationDate, c.sales12m]; });
+  const minimal = data.map(function(c) { return [c.normName, c.creationDate, c.lastVisitDate, c.sales12m, c.saName]; });
   localStorage.setItem(BENCHMARK_KEY, JSON.stringify(minimal));
   benchmarkClients = data;
   window._pendingBenchmark = null;
@@ -1746,11 +1734,8 @@ function renderDashboard(clients) {
   document.getElementById('dash-target').innerHTML =
     `${t('annualTarget')} <strong>${currency}${Number(target).toLocaleString()}</strong>`;
 
-  // Portfolio snapshot
-  renderPortfolioSnapshot(clients, currency, target);
-
-  // 3 Key Trackers
-  renderThreeTrackers(clients);
+  // Portfolio section (comparison layout or single-file, includes trackers)
+  renderPortfolioSection(clients, currency, target);
 
   // 333 alerts
   render333Alerts(clients, currency);
@@ -1766,172 +1751,224 @@ function renderDashboard(clients) {
 }
 
 // ══════════════════════════════════════
-// 3 KEY TRACKERS — TWO-FILE COMPARISON
+// 3 KEY TRACKERS
 // ══════════════════════════════════════
+// T1 & T2 use the monthly file only.
+// T3 cross-references the FY2025 benchmark, checking lastVisit >= Mar 1 2026
+// to avoid false 100% from cumulative CRM exports.
 function renderThreeTrackers(clients) {
   const el = document.getElementById('tracker-grid');
+  if (!el) return;
   const currency = saProfile.currency || '€';
 
-  // ── If no benchmark: show single-file fallback ──
+  // ── T1: 333 Rule Status — monthly file ──
+  const year1     = clients.filter(function(c) { return c.clvStage === 'Year 1'; });
+  const in3day    = year1.filter(function(c) { return c.alert333 === '3-day'; });
+  const in21d     = year1.filter(function(c) { return c.alert333 === '21-day'; });
+  const in3mo     = year1.filter(function(c) { return c.alert333 === '3-month'; });
+  const overdue333 = year1.filter(function(c) { return c.alert333 === 'overdue'; });
+  const onTrack   = year1.length - overdue333.length;
+  const rate1 = year1.length > 0 ? Math.round(onTrack / year1.length * 100) : null;
+
+  const col1 = rate1 === null ? 't-gray' : rate1 >= 80 ? 't-green' : rate1 >= 60 ? 't-amber' : 't-red';
+  const verdict1 = rate1 === null ? 'No Year 1 clients'
+    : rate1 >= 80 ? 'On track'
+    : rate1 >= 60 ? 'Needs attention'
+    : 'Critical — clients falling through';
+  const detail1 = year1.length === 0
+    ? 'No Year 1 clients in this file.'
+    : year1.length + ' Year 1 clients — ' +
+      in3day.length + ' need 3-day call · ' +
+      in21d.length + ' need 21-day call · ' +
+      in3mo.length + ' need 3-month call · ' +
+      overdue333.length + ' overdue (window missed)';
+
+  // ── T2: VIP Maintenance — monthly file ──
+  // VIP = Sales-12M > 5,000 OR (Loyal 3y+ AND still active)
+  const vips = clients.filter(function(c) {
+    return c.sales12m > 5000 || (c.monthsSinceCreation >= 37 && c.clvStage !== 'Sleeping');
+  });
+  const vipContacted = vips.filter(function(c) { return c.daysSinceVisit <= 30; });
+  const rate2 = vips.length > 0 ? Math.round(vipContacted.length / vips.length * 100) : null;
+
+  const col2 = rate2 === null ? 't-gray' : rate2 >= 80 ? 't-green' : rate2 >= 50 ? 't-amber' : 't-red';
+  const verdict2 = rate2 === null ? 'No VIPs in this file'
+    : rate2 >= 80 ? 'VIPs well maintained'
+    : rate2 >= 50 ? 'Some VIPs at risk'
+    : 'VIPs neglected — reactivation needed';
+  const detail2 = vips.length === 0
+    ? 'No VIPs found (Sales-12M >' + currency + '5K or Loyal 3y+). Check that the Sales-12M column is correctly detected in your file.'
+    : vips.length + ' VIPs (>' + currency + '5K or Loyal 3y+) · ' +
+      vipContacted.length + ' contacted in last 30 days · ' +
+      (vips.length - vipContacted.length) + ' overdue for VIP contact';
+
+  // ── T3: Y1→Y2 Conversion — cross-file (benchmark required) ──
+  // FY2025 Y1 cohort from benchmark (created Mar 2025–Feb 2026).
+  // "Converted" = name matched in monthly file AND lastVisit >= Mar 1, 2026.
+  let rate3 = null, col3 = 't-gray', verdict3 = '', detail3 = '';
+
   if (benchmarkClients.length === 0) {
-    renderThreeTrackersSingleFile(clients, el, currency);
-    return;
+    verdict3 = 'Upload FY2025 benchmark';
+    detail3  = 'Upload asia1 2025 as your benchmark to track whether FY2025 new clients returned in 2026.';
+  } else {
+    const fy26Start = new Date('2026-03-01');
+    const fy25Start = new Date('2025-03-01');
+    const fy25End   = new Date('2026-02-28');
+
+    // Map: normName → monthly client (for lastVisit lookup)
+    const monthlyMap = new Map(clients.map(function(c) { return [normalizeName(c.name), c]; }));
+
+    const t3Cohort = benchmarkClients.filter(function(c) {
+      if (!c.creationDate) return false;
+      const d = new Date(c.creationDate);
+      return d >= fy25Start && d <= fy25End;
+    });
+
+    const t3Converted = t3Cohort.filter(function(c) {
+      const match = monthlyMap.get(c.normName);
+      if (!match) return false;
+      // Must have actually visited in FY2026, not just exist in cumulative CRM
+      return match.lastVisitDate && match.lastVisitDate >= fy26Start;
+    });
+
+    rate3 = t3Cohort.length > 0 ? Math.round(t3Converted.length / t3Cohort.length * 100) : null;
+    col3 = rate3 === null ? 't-gray' : rate3 >= 20 ? 't-green' : rate3 >= 10 ? 't-amber' : 't-red';
+    verdict3 = rate3 === null ? 'No FY2025 cohort found'
+      : rate3 >= 20 ? 'Y1→Y2 conversion healthy'
+      : rate3 >= 10 ? 'Conversion below target'
+      : 'Y1 clients not returning — CRM not working';
+    detail3 = t3Cohort.length === 0
+      ? 'No clients created Mar 2025–Feb 2026 in benchmark. Check the benchmark file date range.'
+      : t3Cohort.length + ' FY2025 new clients (benchmark) · ' +
+        t3Converted.length + ' confirmed returned in FY2026 (visited after Mar 2026) · ' +
+        (t3Cohort.length - t3Converted.length) + ' not yet returned';
   }
-
-  const today = new Date(); today.setHours(0,0,0,0);
-
-  // Build name lookup: set of normalised names in the monthly file
-  const monthlyNames = new Set(clients.map(function(c) { return normalizeName(c.name); }));
-
-  // ── T1: 333 Return Rate (Option B — 4-month cohort) ──
-  // Cohort: benchmark clients whose creation date is 90–120 days before today
-  // Question: did these clients (who had their 90-day follow-up window just pass) come back?
-  const t1Cohort = benchmarkClients.filter(function(c) {
-    if (!c.creationDate) return false;
-    const days = Math.floor((today - new Date(c.creationDate)) / 86400000);
-    return days >= 90 && days <= 120;
-  });
-  const t1Returned = t1Cohort.filter(function(c) { return monthlyNames.has(c.normName); });
-  const t1Rate = t1Cohort.length > 0 ? Math.round(t1Returned.length / t1Cohort.length * 100) : null;
-  // Also count new clients in monthly file (created in last 90 days)
-  const newIn90 = clients.filter(function(c) {
-    if (!c.creationDate) return false;
-    return Math.floor((today - c.creationDate) / 86400000) <= 90;
-  }).length;
-
-  const col1 = t1Rate === null ? 't-gray'
-    : t1Rate >= 40 ? 't-green'
-    : t1Rate >= 20 ? 't-amber' : 't-red';
-  const verdict1 = t1Rate === null ? 'No 90–120 day cohort'
-    : t1Rate >= 40 ? '333 follow-up working'
-    : t1Rate >= 20 ? 'Partial — clients slipping'
-    : '333 not converting — clients lost after 3 months';
-  const detail1 = t1Cohort.length === 0
-    ? 'No benchmark clients from 90–120 days ago found. New clients in monthly file: ' + newIn90 + '.'
-    : t1Cohort.length + ' clients (created 90–120 days ago from benchmark) · ' + t1Returned.length + ' returned this month · ' + newIn90 + ' new clients in monthly file';
-
-  // ── T2: VIP Active Rate ──
-  // VIP = Loyal (monthsSinceCreation ≥ 37 from today, active) OR sales12m > 5000 in benchmark
-  const t2Vips = benchmarkClients.filter(function(c) {
-    const months = c.creationDate ? monthsDiff(new Date(c.creationDate), today) : 0;
-    return (months >= 37 && c.sales12m > 0) || c.sales12m > 5000;
-  });
-  const t2Active = t2Vips.filter(function(c) { return monthlyNames.has(c.normName); });
-  const t2Rate = t2Vips.length > 0 ? Math.round(t2Active.length / t2Vips.length * 100) : null;
-
-  const col2 = t2Rate === null ? 't-gray'
-    : t2Rate >= 50 ? 't-green'
-    : t2Rate >= 30 ? 't-amber' : 't-red';
-  const verdict2 = t2Rate === null ? 'No VIPs in benchmark'
-    : t2Rate >= 50 ? 'VIPs active in 2026'
-    : t2Rate >= 30 ? 'VIP retention declining'
-    : 'VIPs lost — urgent reactivation needed';
-  const detail2 = t2Vips.length === 0
-    ? 'No VIPs found in benchmark (Loyal 3y+ or >' + currency + '5,000 spend). Check benchmark file.'
-    : t2Vips.length + ' FY2025 VIPs (Loyal 3y+ or >' + currency + '5K) · ' + t2Active.length + ' appeared this month · ' + (t2Vips.length - t2Active.length) + ' not yet seen in 2026';
-
-  // ── T3: Y1→Y2 Conversion Rate ──
-  // FY2025 Y1 cohort = benchmark clients created Mar 2025 – Feb 2026
-  const fy25Start = new Date('2025-03-01');
-  const fy25End   = new Date('2026-02-28');
-  const t3Cohort = benchmarkClients.filter(function(c) {
-    if (!c.creationDate) return false;
-    const d = new Date(c.creationDate);
-    return d >= fy25Start && d <= fy25End;
-  });
-  const t3Returned = t3Cohort.filter(function(c) { return monthlyNames.has(c.normName); });
-  const t3Rate = t3Cohort.length > 0 ? Math.round(t3Returned.length / t3Cohort.length * 100) : null;
-
-  const col3 = t3Rate === null ? 't-gray'
-    : t3Rate >= 20 ? 't-green'
-    : t3Rate >= 10 ? 't-amber' : 't-red';
-  const verdict3 = t3Rate === null ? 'No FY2025 cohort data'
-    : t3Rate >= 20 ? 'Y1→Y2 conversion healthy'
-    : t3Rate >= 10 ? 'Conversion below target'
-    : 'Y1 clients not returning — CRM failure';
-  const detail3 = t3Cohort.length === 0
-    ? 'No clients created Mar 2025–Feb 2026 found in benchmark file.'
-    : t3Cohort.length + ' FY2025 new clients · ' + t3Returned.length + ' returned in 2026 · ' + (t3Cohort.length - t3Returned.length) + ' not yet returned';
 
   el.innerHTML =
     '<div class="tracker-card ' + col1 + '">' +
-      '<div class="tracker-label">T1 — 333 Return Rate · vs FY2025</div>' +
-      '<div class="tracker-num">' + (t1Rate !== null ? t1Rate + '%' : '—') + '</div>' +
-      '<div class="tracker-sub">FY2025 clients from 90–120 days ago who came back to buy this month</div>' +
+      '<div class="tracker-label">T1 — 333 Rule · This Month</div>' +
+      '<div class="tracker-num">' + (rate1 !== null ? rate1 + '%' : '—') + '</div>' +
+      '<div class="tracker-sub">Year 1 clients on-track — 3-day · 21-day · 3-month windows</div>' +
       '<div class="tracker-verdict">' + verdict1 + '</div>' +
       '<div class="tracker-detail">' + detail1 + '</div>' +
     '</div>' +
     '<div class="tracker-card ' + col2 + '">' +
-      '<div class="tracker-label">T2 — VIP Active Rate · vs FY2025</div>' +
-      '<div class="tracker-num">' + (t2Rate !== null ? t2Rate + '%' : '—') + '</div>' +
-      '<div class="tracker-sub">FY2025 VIPs (Loyal 3y+ or &gt;' + currency + '5K) appearing in 2026 monthly file</div>' +
+      '<div class="tracker-label">T2 — VIP Maintenance · This Month</div>' +
+      '<div class="tracker-num">' + (rate2 !== null ? rate2 + '%' : '—') + '</div>' +
+      '<div class="tracker-sub">VIPs (Sales &gt;' + currency + '5K or Loyal 3y+) contacted in last 30 days</div>' +
       '<div class="tracker-verdict">' + verdict2 + '</div>' +
       '<div class="tracker-detail">' + detail2 + '</div>' +
     '</div>' +
     '<div class="tracker-card ' + col3 + '">' +
       '<div class="tracker-label">T3 — Y1→Y2 Conversion · vs FY2025</div>' +
-      '<div class="tracker-num">' + (t3Rate !== null ? t3Rate + '%' : '—') + '</div>' +
-      '<div class="tracker-sub">FY2025 new clients (Mar 2025–Feb 2026) who returned to buy in 2026</div>' +
+      '<div class="tracker-num">' + (rate3 !== null ? rate3 + '%' : '—') + '</div>' +
+      '<div class="tracker-sub">FY2025 new clients (Mar 2025–Feb 2026) who visited after Mar 2026</div>' +
       '<div class="tracker-verdict">' + verdict3 + '</div>' +
       '<div class="tracker-detail">' + detail3 + '</div>' +
     '</div>';
 }
 
-// Single-file fallback (no benchmark loaded)
-function renderThreeTrackersSingleFile(clients, el, currency) {
-  // T1: 333 on-track rate within current file
-  const year1 = clients.filter(function(c) { return c.clvStage === 'Year 1'; });
-  const overdue333 = year1.filter(function(c) { return c.alert333 === 'overdue'; });
-  const active333  = year1.filter(function(c) { return ['3-day','21-day','3-month'].includes(c.alert333); });
-  const rate333 = year1.length > 0 ? Math.round((year1.length - overdue333.length) / year1.length * 100) : null;
-  const col333 = rate333 === null ? 't-gray' : rate333 >= 80 ? 't-green' : rate333 >= 60 ? 't-amber' : 't-red';
-  const verdict333 = rate333 === null ? 'No Year 1 data' : rate333 >= 80 ? 'On track' : rate333 >= 60 ? 'Needs attention' : 'Critical — clients falling through';
-  const detail333 = year1.length === 0 ? 'Upload FY2025 benchmark to see the cross-year 333 return rate.'
-    : year1.length + ' Year 1 clients · ' + overdue333.length + ' overdue · ' + active333.length + ' due now · Upload FY2025 benchmark for cross-year view';
+// ── Portfolio Section Layout ──
+// Renders the full portfolio + tracker area into #portfolio-section.
+// When benchmark loaded: two-column comparison (FY2025 left, Monthly right).
+// When no benchmark: single-column (existing layout).
+function renderPortfolioSection(clients, currency, target) {
+  const el = document.getElementById('portfolio-section');
+  const hasBm = benchmarkClients.length > 0;
 
-  // T2: VIP maintenance within current file
-  const vips = clients.filter(function(c) {
-    const months = c.monthsSinceCreation || 0;
-    return (months >= 37 && c.sales12m > 0) || c.sales12m > 5000;
-  });
-  const vipActive = vips.filter(function(c) { return c.daysSinceVisit <= 60; });
-  const vipRate = vips.length > 0 ? Math.round(vipActive.length / vips.length * 100) : null;
-  const colVip = vipRate === null ? 't-gray' : vipRate >= 80 ? 't-green' : vipRate >= 50 ? 't-amber' : 't-red';
-  const verdictVip = vipRate === null ? 'No VIP data' : vipRate >= 80 ? 'VIPs active' : vipRate >= 50 ? 'Some VIPs at risk' : 'VIPs neglected';
-  const detailVip = vips.length === 0 ? 'No VIPs in dataset. Upload FY2025 benchmark for cross-year VIP tracking.'
-    : vips.length + ' VIPs (Loyal 3y+ or >' + currency + '5K) · ' + vipActive.length + ' active (visited ≤60d) · Upload FY2025 benchmark for 2026 tracking';
-
-  // T3: Y1→Y2 within current file
-  const y1y2elig = clients.filter(function(c) { return c.monthsSinceCreation >= 13 && c.monthsSinceCreation <= 36; });
-  const y1y2conv = y1y2elig.filter(function(c) { return ['Year 2','Year 3','Loyal'].includes(c.clvStage); });
-  const y1y2rate = y1y2elig.length > 0 ? Math.round(y1y2conv.length / y1y2elig.length * 100) : null;
-  const colConv = y1y2rate === null ? 't-gray' : y1y2rate >= 40 ? 't-green' : y1y2rate >= 25 ? 't-amber' : 't-red';
-  const verdictConv = y1y2rate === null ? 'No eligible cohort' : y1y2rate >= 40 ? 'Strong retention' : y1y2rate >= 25 ? 'Retention below target' : 'Retention failure';
-  const detailConv = y1y2elig.length === 0 ? 'Not enough history in this file. Upload FY2025 benchmark to see the true Y1→Y2 cross-year rate.'
-    : y1y2elig.length + ' clients who completed Year 1 · ' + y1y2conv.length + ' returned · Upload FY2025 benchmark for cross-year Y1→Y2 tracking';
-
-  el.innerHTML =
-    '<div class="tracker-card ' + col333 + '">' +
-      '<div class="tracker-label">T1 — 333 Rule <span style="color:#3a3020;font-size:9px;">(single file · upload FY2025 for cross-year)</span></div>' +
-      '<div class="tracker-num">' + (rate333 !== null ? rate333 + '%' : '—') + '</div>' +
-      '<div class="tracker-sub">Year 1 clients on-track with 333 follow-up in this file</div>' +
-      '<div class="tracker-verdict">' + verdict333 + '</div>' +
-      '<div class="tracker-detail">' + detail333 + '</div>' +
+  const monthlyCardHtml =
+    '<div class="card" style="margin-bottom:12px;">' +
+      '<div style="font-size:12px;color:#4a4030;letter-spacing:2px;text-transform:uppercase;margin-bottom:14px;">CLV Breakdown</div>' +
+      '<table class="port-table" id="port-table">' +
+        '<thead><tr><th>Stage</th><th>Clients</th><th>%</th><th>12M Revenue</th><th>Avg/Client</th></tr></thead>' +
+        '<tbody id="port-tbody"></tbody>' +
+      '</table>' +
     '</div>' +
-    '<div class="tracker-card ' + colVip + '">' +
-      '<div class="tracker-label">T2 — VIP Maintenance <span style="color:#3a3020;font-size:9px;">(single file)</span></div>' +
-      '<div class="tracker-num">' + (vipRate !== null ? vipRate + '%' : '—') + '</div>' +
-      '<div class="tracker-sub">VIPs (Loyal 3y+ or >' + currency + '5K) active in this file</div>' +
-      '<div class="tracker-verdict">' + verdictVip + '</div>' +
-      '<div class="tracker-detail">' + detailVip + '</div>' +
-    '</div>' +
-    '<div class="tracker-card ' + colConv + '">' +
-      '<div class="tracker-label">T3 — Y1→Y2 Conversion <span style="color:#3a3020;font-size:9px;">(single file)</span></div>' +
-      '<div class="tracker-num">' + (y1y2rate !== null ? y1y2rate + '%' : '—') + '</div>' +
-      '<div class="tracker-sub">Clients who returned after their first year in this file</div>' +
-      '<div class="tracker-verdict">' + verdictConv + '</div>' +
-      '<div class="tracker-detail">' + detailConv + '</div>' +
+    '<div class="card card-gold">' +
+      '<div style="font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#c9a84c;opacity:.6;margin-bottom:4px;">Portfolio Health Score</div>' +
+      '<div class="health-score-big" id="health-score-letter">—</div>' +
+      '<div class="projection-bar"><div class="projection-fill" id="proj-fill" style="width:0%"></div></div>' +
+      '<div class="proj-label"><span id="proj-label-left">Projection</span><span id="proj-label-right">Target</span></div>' +
+      '<div class="health-meta" id="health-meta"></div>' +
     '</div>';
+
+  if (!hasBm) {
+    el.innerHTML =
+      '<div class="sec-title">Portfolio Overview</div>' +
+      '<div class="row-2" style="margin-bottom:16px;">' + monthlyCardHtml + '</div>' +
+      '<div class="sec-title" style="margin-top:0;">3 Key Trackers — CRM Truth Test</div>' +
+      '<div class="tracker-grid" id="tracker-grid"></div>';
+  } else {
+    el.innerHTML =
+      '<div class="sec-title">Portfolio Comparison — FY2025 vs 2026 Monthly</div>' +
+      '<div class="comparison-layout">' +
+        '<div class="comparison-col">' +
+          '<span class="comparison-col-header">FY2025 — Benchmark · ' + benchmarkClients.length.toLocaleString() + ' clients</span>' +
+          renderBenchmarkColumn(currency) +
+        '</div>' +
+        '<div class="comparison-col">' +
+          '<span class="comparison-col-header active">2026 Monthly — ' + new Date().toLocaleString('en', {month:'long', year:'numeric'}) + '</span>' +
+          monthlyCardHtml +
+          '<div class="sec-title" style="margin-top:4px;margin-bottom:10px;">3 Key Trackers</div>' +
+          '<div class="tracker-grid tracker-grid-col" id="tracker-grid"></div>' +
+        '</div>' +
+      '</div>';
+  }
+
+  // Populate the monthly data into the injected elements
+  renderPortfolioSnapshot(clients, currency, target);
+  renderThreeTrackers(clients);
+}
+
+// ── FY2025 Benchmark Left Column ──
+// Computes CLV stages from stored benchmark data using FY2025 end date (Feb 28, 2026).
+function renderBenchmarkColumn(currency) {
+  const FY25_END = new Date('2026-02-28');
+  const stages = ['Loyal','Year 3','Year 2','Year 1','Sleeping'];
+  const counts = { Loyal:0, 'Year 3':0, 'Year 2':0, 'Year 1':0, Sleeping:0 };
+  const revs   = { Loyal:0, 'Year 3':0, 'Year 2':0, 'Year 1':0, Sleeping:0 };
+  let totalRev = 0, total = 0;
+
+  benchmarkClients.forEach(function(c) {
+    const months = c.creationDate  ? monthsDiff(new Date(c.creationDate), FY25_END) : 999;
+    const dsv    = c.lastVisitDate ? Math.floor((FY25_END - new Date(c.lastVisitDate)) / 86400000) : 999;
+    const stage  = getCLVStage(months, c.sales12m, dsv);
+    counts[stage] = (counts[stage] || 0) + 1;
+    revs[stage]   = (revs[stage]   || 0) + c.sales12m;
+    totalRev += c.sales12m;
+    total++;
+  });
+
+  // FY2025 health score (projection vs SA target at FY25 end)
+  const mult = { 'Loyal':0.90,'Year 3':0.85,'Year 2':0.70,'Year 1':0.50,'Sleeping':0.20 };
+  const proj = stages.reduce(function(s,st){ return s + revs[st] * (mult[st]||0); }, 0);
+  const bmTarget = saProfile.target || 0;
+  const ratio = bmTarget > 0 ? proj / bmTarget : 0;
+  let score = 'E', scoreClass = 'score-e';
+  if (ratio >= 0.70) { score='A'; scoreClass='score-a'; }
+  else if (ratio >= 0.50) { score='B'; scoreClass='score-b'; }
+  else if (ratio >= 0.30) { score='C'; scoreClass='score-c'; }
+  else if (ratio >= 0.15) { score='D'; scoreClass='score-d'; }
+
+  const clvCls = {'Loyal':'clv-loyal','Year 3':'clv-y3','Year 2':'clv-y2','Year 1':'clv-y1','Sleeping':'clv-sleep'};
+  const rows = stages.map(function(st) {
+    const pct = total > 0 ? Math.round(counts[st] / total * 100) : 0;
+    return '<tr><td class="' + (clvCls[st]||'') + '">' + st + '</td>' +
+      '<td>' + counts[st] + '</td><td>' + pct + '%</td>' +
+      '<td>' + currency + Math.round(revs[st]).toLocaleString() + '</td></tr>';
+  }).join('') +
+    '<tr><td>Total</td><td>' + total + '</td><td>100%</td><td>' + currency + Math.round(totalRev).toLocaleString() + '</td></tr>';
+
+  return '<div class="card" style="margin-bottom:12px;">' +
+    '<div style="font-size:12px;color:#4a4030;letter-spacing:2px;text-transform:uppercase;margin-bottom:14px;">CLV Breakdown · as of Feb 2026</div>' +
+    '<table class="port-table"><thead><tr><th>Stage</th><th>Clients</th><th>%</th><th>12M Revenue</th></tr></thead>' +
+    '<tbody>' + rows + '</tbody></table></div>' +
+    '<div class="card" style="padding:18px 22px;">' +
+    '<div style="font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#c9a84c;opacity:.5;margin-bottom:4px;">FY2025 Health Score</div>' +
+    '<div class="health-score-big ' + scoreClass + '" style="font-size:52px;">' + score + '</div>' +
+    '<div style="font-size:12px;color:#5a5040;margin-top:8px;">' +
+      total.toLocaleString() + ' clients · ' + currency + Math.round(totalRev).toLocaleString() + ' total 12M' +
+    '</div></div>';
 }
 
 // ── Portfolio Snapshot ──
