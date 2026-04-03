@@ -1768,10 +1768,23 @@ function renderThreeTrackers(clients) {
 
   // ── Y2 Ready — Graduation Window (9–11 months) ──
   // Year 1 clients nearing their 12-month mark. Warm them up before they drift.
+  // Spending tier thresholds (first purchase / sales12m as proxy)
+  // Low < €700 (1 piece) · Medium €701–€3000 · High > €3000
+  function spendTier(c) {
+    const s = c.sales12m || 0;
+    if (s > 3000) return 'High';
+    if (s > 700)  return 'Medium';
+    return 'Low';
+  }
+  function tierAction(tier) {
+    if (tier === 'High')   return 'Know their life — maintain trust';
+    if (tier === 'Medium') return 'Monthly tracking — priority convert';
+    return '333 + graduation call';
+  }
+
   const y2Ready = clients.filter(function(c) {
     return c.clvStage === 'Year 1' && c.monthsSinceCreation >= 9 && c.monthsSinceCreation <= 11;
   });
-  const y2Names = y2Ready.map(function(c) { return c.name; }).slice(0, 10);
   const y2MoreCount = y2Ready.length > 10 ? y2Ready.length - 10 : 0;
   const y2Verdict = y2Ready.length === 0 ? 'No clients in graduation window'
     : y2Ready.length <= 3 ? 'Warm up this month — window is closing'
@@ -1779,10 +1792,17 @@ function renderThreeTrackers(clients) {
   const y2Detail = y2Ready.length === 0
     ? 'No Year 1 clients are in the 9–11 month window right now.'
     : 'These clients discovered your brand in the last 9–11 months. One relationship call now — before they hit Year 2 — is worth more than any new client acquisition.';
-  const y2NamesHtml = y2Names.length > 0
+
+  const y2NamesHtml = y2Ready.length > 0
     ? '<div class="y2ready-names">' +
-        y2Names.join(' · ') +
-        (y2MoreCount > 0 ? ' · <em>+' + y2MoreCount + ' more</em>' : '') +
+        y2Ready.slice(0, 10).map(function(c) {
+          const tier = spendTier(c);
+          const tierColor = tier === 'High' ? '#c9a84c' : tier === 'Medium' ? '#e6a817' : '#5a5040';
+          return '<span>' + c.name + ' <span style="color:' + tierColor + ';font-size:9px;">' +
+            currency + c.sales12m.toLocaleString() + ' · ' + tier + ' · ' + tierAction(tier) +
+            '</span></span>';
+        }).join('<br>') +
+        (y2MoreCount > 0 ? '<br><em>+' + y2MoreCount + ' more</em>' : '') +
       '</div>'
     : '';
 
