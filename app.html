@@ -520,6 +520,7 @@
   .tracker-card.t-amber::before { background:#e6a817; }
   .tracker-card.t-red::before   { background:#e74c3c; }
   .tracker-card.t-gray::before  { background:#3a3020; }
+  .tracker-card.t-gold::before  { background:#c9a84c; }
   .tracker-label {
     font-size:9px; letter-spacing:2.5px; text-transform:uppercase;
     color:#5a5040; margin-bottom:10px;
@@ -531,6 +532,7 @@
   .t-amber .tracker-num { color:#e6a817; }
   .t-red   .tracker-num { color:#e74c3c; }
   .t-gray  .tracker-num { color:#5a5040; }
+  .t-gold  .tracker-num { color:#c9a84c; }
   .tracker-sub { font-size:11px; color:#4a4030; line-height:1.5; margin-bottom:8px; }
   .tracker-verdict {
     font-size:11px; font-weight:600; padding:4px 10px;
@@ -540,6 +542,8 @@
   .t-amber .tracker-verdict { background:rgba(230,168,23,0.1);  color:#e6a817; border:1px solid rgba(230,168,23,0.25); }
   .t-red   .tracker-verdict { background:rgba(231,76,60,0.1);   color:#e74c3c; border:1px solid rgba(231,76,60,0.25); }
   .t-gray  .tracker-verdict { background:rgba(58,48,32,0.2);    color:#5a5040; border:1px solid rgba(58,48,32,0.3); }
+  .t-gold  .tracker-verdict { background:rgba(201,168,76,0.12); color:#c9a84c; border:1px solid rgba(201,168,76,0.3); }
+  .y2ready-names { font-size:10px; color:#6a5828; margin-top:10px; line-height:1.8; }
   .tracker-detail { font-size:10px; color:#3a3020; margin-top:8px; line-height:1.6; }
 
   /* ══════════════════════════════════════
@@ -1762,6 +1766,26 @@ function renderThreeTrackers(clients) {
   if (!el) return;
   const currency = saProfile.currency || '€';
 
+  // ── Y2 Ready — Graduation Window (9–11 months) ──
+  // Year 1 clients nearing their 12-month mark. Warm them up before they drift.
+  const y2Ready = clients.filter(function(c) {
+    return c.clvStage === 'Year 1' && c.monthsSinceCreation >= 9 && c.monthsSinceCreation <= 11;
+  });
+  const y2Names = y2Ready.map(function(c) { return c.name; }).slice(0, 10);
+  const y2MoreCount = y2Ready.length > 10 ? y2Ready.length - 10 : 0;
+  const y2Verdict = y2Ready.length === 0 ? 'No clients in graduation window'
+    : y2Ready.length <= 3 ? 'Warm up this month — window is closing'
+    : 'Priority warm-up — contact before Year 2';
+  const y2Detail = y2Ready.length === 0
+    ? 'No Year 1 clients are in the 9–11 month window right now.'
+    : 'These clients discovered your brand in the last 9–11 months. One relationship call now — before they hit Year 2 — is worth more than any new client acquisition.';
+  const y2NamesHtml = y2Names.length > 0
+    ? '<div class="y2ready-names">' +
+        y2Names.join(' · ') +
+        (y2MoreCount > 0 ? ' · <em>+' + y2MoreCount + ' more</em>' : '') +
+      '</div>'
+    : '';
+
   // ── T1: 333 Rule Status — monthly file ──
   const year1     = clients.filter(function(c) { return c.clvStage === 'Year 1'; });
   const in3day    = year1.filter(function(c) { return c.alert333 === '3-day'; });
@@ -1869,6 +1893,15 @@ function renderThreeTrackers(clients) {
     : '';
 
   el.innerHTML =
+    '<div class="tracker-card t-gold">' +
+      '<div class="tracker-label">Year 2 Ready — Graduation Window</div>' +
+      '<div class="tracker-num">' + y2Ready.length + '</div>' +
+      '<div style="font-size:13px;color:#6a5828;margin-bottom:4px;">clients · 9–11 months since first purchase</div>' +
+      '<div class="tracker-sub">Warm up before they reach Year 2 — highest conversion risk window</div>' +
+      '<div class="tracker-verdict">' + y2Verdict + '</div>' +
+      '<div class="tracker-detail">' + y2Detail + '</div>' +
+      y2NamesHtml +
+    '</div>' +
     '<div class="tracker-card ' + col1 + '">' +
       '<div class="tracker-label">T1 — 333 Rule · This Month</div>' +
       '<div class="tracker-num">' + t1CountHtml + '</div>' +
