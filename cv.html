@@ -1021,6 +1021,7 @@ function generateCV(d, topSkills, scores){
   const secExpCn    = isNew ? tn('cvSecExpNewCn') : tn('cvSecExpCn');
 
   return `<div class="cv-head">
+    <div class="cv-sec-num" style="margin-bottom:6px;">01 &nbsp;·&nbsp; ${L==='zh'?'个人信息 · Personal Information':'PERSONAL INFORMATION · 个人信息'}</div>
     <div class="cv-name">${d.name||'Your Name'}</div>
     <div class="cv-title-line">${titleLine}</div>
     <div class="cv-meta-line">
@@ -1068,6 +1069,14 @@ function cap(s){ return s?s.charAt(0).toUpperCase()+s.slice(1):s; }
 // ─── Build & preview ──────────────────────────────────────────────────
 function buildAndPreview(){
   const d=collectData();
+  if(!d.name){
+    alert(currentLang==='zh' ? '请在第2步填写您的全名。' : 'Please enter your full name in Step 2.');
+    goStep(2); document.getElementById('f-name').focus(); return;
+  }
+  if(!d.targetRole){
+    alert(currentLang==='zh' ? '请在第6步填写您的目标职位。' : 'Please enter your target role in Step 6.');
+    goStep(6); document.getElementById('f-target-role').focus(); return;
+  }
   const scores=scoreSkills(d);
   const topSkills=selectTopSkills(scores);
   const html=generateCV(d,topSkills,scores);
