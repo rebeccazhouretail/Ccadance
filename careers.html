@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JYS Retail — Careers</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body { background:#0c0c0f; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; color:#e8e2d9; min-height:100vh; }
+
+/* ── Nav ── */
+nav { display:flex; justify-content:space-between; align-items:center; padding:18px 40px; border-bottom:1px solid #1e1c18; }
+.wordmark { font-size:18px; font-weight:700; color:#c9a84c; letter-spacing:1px; }
+.wordmark span { color:#4a4030; font-weight:400; }
+.nav-link { font-size:12px; color:#4a4030; text-decoration:none; letter-spacing:1px; }
+.nav-link:hover { color:#6a6050; }
+
+/* ── Hero ── */
+.hero { max-width:860px; margin:60px auto 0; padding:0 32px; }
+.hero-eyebrow { font-size:10px; letter-spacing:3px; text-transform:uppercase; color:#c9a84c; opacity:.7; margin-bottom:14px; }
+.hero-title { font-size:32px; font-weight:700; color:#f5ead8; line-height:1.2; margin-bottom:16px; }
+.hero-sub { font-size:14px; color:#6a6050; line-height:1.8; max-width:600px; }
+.hero-divider { border:none; border-top:1px solid #1e1c18; margin:40px 0; }
+
+/* ── JD cards ── */
+.jd-wrap { max-width:860px; margin:0 auto 80px; padding:0 32px; display:flex; flex-direction:column; gap:40px; }
+
+.jd-card { background:#141418; border:1px solid #1e1c18; border-radius:14px; overflow:hidden; }
+.jd-card-head { padding:28px 36px 24px; border-bottom:1px solid #1e1c18; }
+.jd-badge { display:inline-block; font-size:9px; letter-spacing:2.5px; text-transform:uppercase; color:#c9a84c; border:1px solid rgba(201,168,76,.3); border-radius:20px; padding:4px 12px; margin-bottom:14px; }
+.jd-title { font-size:22px; font-weight:700; color:#f5ead8; margin-bottom:6px; }
+.jd-title-cn { font-size:14px; color:#4a4030; margin-bottom:14px; }
+.jd-meta { display:flex; flex-wrap:wrap; gap:10px; }
+.jd-tag { font-size:11px; color:#6a6050; background:#0e0d0b; border:1px solid #1e1c18; border-radius:4px; padding:4px 10px; }
+
+.jd-body { padding:28px 36px; }
+
+.jd-section { margin-bottom:28px; }
+.jd-section:last-child { margin-bottom:0; }
+.jd-section-title { font-size:9.5px; letter-spacing:2.5px; text-transform:uppercase; color:#c9a84c; opacity:.7; margin-bottom:14px; padding-bottom:8px; border-bottom:1px solid #1e1c18; }
+
+.jd-para { font-size:13px; color:#a09080; line-height:1.8; }
+
+.jd-list { list-style:none; display:flex; flex-direction:column; gap:8px; }
+.jd-list li { font-size:13px; color:#a09080; line-height:1.6; padding-left:16px; position:relative; }
+.jd-list li::before { content:'—'; position:absolute; left:0; color:#c9a84c; font-size:11px; }
+.jd-list li strong { color:#e8e2d9; font-weight:600; }
+
+/* ── 21-month timeline ── */
+.timeline { display:flex; flex-direction:column; gap:0; margin-top:4px; }
+.tl-phase { display:grid; grid-template-columns:140px 1fr; gap:0; position:relative; }
+.tl-phase:not(:last-child) .tl-line { border-left:1px solid #2a2420; margin-left:11px; }
+.tl-left { display:flex; flex-direction:column; align-items:flex-start; padding-bottom:20px; }
+.tl-dot { width:22px; height:22px; border-radius:50%; background:#0e0d0b; border:1px solid #c9a84c; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.tl-dot-inner { width:8px; height:8px; border-radius:50%; background:#c9a84c; }
+.tl-line { flex:1; width:1px; background:#2a2420; margin-left:10px; margin-top:4px; }
+.tl-months { font-size:9px; letter-spacing:1.5px; text-transform:uppercase; color:#4a4030; margin-top:6px; white-space:nowrap; }
+.tl-right { padding:2px 0 20px 16px; }
+.tl-phase-name { font-size:13px; font-weight:700; color:#f5ead8; margin-bottom:6px; }
+.tl-phase-items { list-style:none; display:flex; flex-direction:column; gap:4px; }
+.tl-phase-items li { font-size:12px; color:#6a6050; padding-left:12px; position:relative; }
+.tl-phase-items li::before { content:'·'; position:absolute; left:0; color:#c9a84c; }
+
+.tl-eval { background:rgba(201,168,76,0.07); border:1px solid rgba(201,168,76,0.2); border-radius:8px; padding:14px 18px; margin-top:8px; }
+.tl-eval-title { font-size:10px; letter-spacing:2px; text-transform:uppercase; color:#c9a84c; margin-bottom:6px; }
+.tl-eval-desc { font-size:12px; color:#a09080; line-height:1.6; }
+
+/* ── Career path connector ── */
+.career-path { max-width:860px; margin:0 auto 60px; padding:0 32px; }
+.path-title { font-size:9.5px; letter-spacing:2.5px; text-transform:uppercase; color:#c9a84c; opacity:.7; margin-bottom:20px; }
+.path-row { display:flex; align-items:center; gap:0; }
+.path-node { background:#141418; border:1px solid #1e1c18; border-radius:8px; padding:14px 18px; flex:1; }
+.path-node-title { font-size:12px; font-weight:700; color:#f5ead8; margin-bottom:3px; }
+.path-node-sub { font-size:11px; color:#4a4030; }
+.path-arrow { color:#2a2420; font-size:18px; padding:0 12px; flex-shrink:0; }
+.path-node.highlight { border-color:rgba(201,168,76,.3); background:rgba(201,168,76,0.05); }
+.path-node.highlight .path-node-title { color:#c9a84c; }
+
+/* ── Apply note ── */
+.apply-note { max-width:860px; margin:0 auto 80px; padding:0 32px; }
+.apply-card { background:#141418; border:1px solid #1e1c18; border-radius:10px; padding:24px 32px; display:flex; justify-content:space-between; align-items:center; gap:24px; }
+.apply-text { font-size:13px; color:#6a6050; line-height:1.7; }
+.apply-text strong { color:#e8e2d9; }
+.apply-contact { font-size:11px; color:#c9a84c; letter-spacing:.5px; white-space:nowrap; }
+
+/* ── Print ── */
+@media print {
+  body { background:#fff !important; color:#1a1a1a !important; }
+  nav, .apply-note { display:none; }
+  .jd-card { border:1px solid #ddd; background:#fff; break-inside:avoid; }
+  .jd-card-head { border-bottom:1px solid #eee; }
+  .jd-badge { border-color:#c9a84c; color:#c9a84c; }
+  .jd-title { color:#1a1a1a; }
+  .jd-title-cn { color:#999; }
+  .jd-tag { background:#f5f5f5; border-color:#eee; color:#666; }
+  .jd-section-title { color:#c9a84c; border-bottom-color:#eee; }
+  .jd-para, .jd-list li { color:#444; }
+  .jd-list li strong, .path-node-title { color:#1a1a1a; }
+  .tl-phase-name { color:#1a1a1a; }
+  .tl-eval { background:#faf9f7; border-color:#e8e0d0; }
+  .tl-eval-desc { color:#666; }
+  .path-node { background:#faf9f7; border-color:#eee; }
+  .career-path { break-inside:avoid; }
+  .jd-wrap { gap:24px; }
+}
+
+@media (max-width:600px) {
+  nav { padding:14px 20px; }
+  .hero, .jd-wrap, .career-path, .apply-note { padding:0 16px; }
+  .jd-card-head, .jd-body { padding:20px; }
+  .path-row { flex-direction:column; gap:8px; }
+  .path-arrow { transform:rotate(90deg); }
+  .tl-phase { grid-template-columns:100px 1fr; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wordmark">JYS Retail <span>/ careers</span></div>
+  <a href="index.html" class="nav-link">← Back to CCadance</a>
+</nav>
+
+<div class="hero">
+  <div class="hero-eyebrow">Open Positions — 2026</div>
+  <div class="hero-title">We build people.<br>The business follows.</div>
+  <div class="hero-sub">JYS Retail is not a conventional employer. We are a school with a commercial mission. Every person we hire is someone we intend to develop — from their first day on the floor to the moment they lead a team of their own. We hire for potential, discipline, and the willingness to learn in public.</div>
+  <hr class="hero-divider">
+</div>
+
+<!-- Career Path -->
+<div class="career-path">
+  <div class="path-title">Career Pathway at JYS Retail</div>
+  <div class="path-row">
+    <div class="path-node">
+      <div class="path-node-title">Retail Management Trainee</div>
+      <div class="path-node-sub">Day 1 — Month 21</div>
+    </div>
+    <div class="path-arrow">→</div>
+    <div class="path-node">
+      <div class="path-node-title">Sales Associate</div>
+      <div class="path-node-sub">Year 2 — Year 3</div>
+    </div>
+    <div class="path-arrow">→</div>
+    <div class="path-node">
+      <div class="path-node-title">Section Manager</div>
+      <div class="path-node-sub">Year 3 — Year 4</div>
+    </div>
+    <div class="path-arrow">→</div>
+    <div class="path-node highlight">
+      <div class="path-node-title">Retail Intelligence Manager</div>
+      <div class="path-node-sub">Year 4+</div>
+    </div>
+  </div>
+</div>
+
+<div class="jd-wrap">
+
+  <!-- JD 1: Retail Management Trainee -->
+  <div class="jd-card">
+    <div class="jd-card-head">
+      <div class="jd-badge">Open Position</div>
+      <div class="jd-title">Retail Management Trainee</div>
+      <div class="jd-title-cn">零售管理培训生</div>
+      <div class="jd-meta">
+        <span class="jd-tag">Entry Level</span>
+        <span class="jd-tag">21-Month Programme</span>
+        <span class="jd-tag">Full Time</span>
+        <span class="jd-tag">Luxury & Premium Retail</span>
+      </div>
+    </div>
+    <div class="jd-body">
+
+      <div class="jd-section">
+        <div class="jd-section-title">About This Role</div>
+        <p class="jd-para">The Retail Management Trainee programme is a structured 21-month path designed to build the next generation of retail leaders. You will not start in a classroom — you will start on the floor, with real clients, real targets, and real coaching from day one. By the end of the programme, you will be evaluated for promotion to Section Manager, responsible for leading a team of at least 5 people. From the moment you join, you will also be introduced to AI-assisted retail tools — because the future of retail management requires both human skill and technological fluency.</p>
+      </div>
+
+      <div class="jd-section">
+        <div class="jd-section-title">21-Month Training Path</div>
+        <div class="timeline">
+
+          <div class="tl-phase">
+            <div class="tl-left">
+              <div class="tl-dot"><div class="tl-dot-inner"></div></div>
+              <div class="tl-line"></div>
+              <div class="tl-months">Months 1–3</div>
+            </div>
+            <div class="tl-right">
+              <div class="tl-phase-name">Phase 1 — Foundation</div>
+              <ul class="tl-phase-items">
+                <li>Full floor SA role — client greeting, product knowledge, daily operations</li>
+                <li>Complete JYS 9-module retail curriculum</li>
+                <li>First client portfolio — minimum 20 contacts registered</li>
+                <li>Introduction to AI retail tools and daily task system</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="tl-phase">
+            <div class="tl-left">
+              <div class="tl-dot"><div class="tl-dot-inner"></div></div>
+              <div class="tl-line"></div>
+              <div class="tl-months">Months 4–9</div>
+            </div>
+            <div class="tl-right">
+              <div class="tl-phase-name">Phase 2 — Development</div>
+              <ul class="tl-phase-items">
+                <li>Client portfolio growth — 333 contact rule in practice</li>
+                <li>Sales target ownership — personal monthly KPI tracking</li>
+                <li>Product storytelling and brand knowledge deepening</li>
+                <li>CRM discipline — follow-up rhythm, client profiling, CLV awareness</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="tl-phase">
+            <div class="tl-left">
+              <div class="tl-dot"><div class="tl-dot-inner"></div></div>
+              <div class="tl-line"></div>
+              <div class="tl-months">Months 10–15</div>
+            </div>
+            <div class="tl-right">
+              <div class="tl-phase-name">Phase 3 — Advanced</div>
+              <ul class="tl-phase-items">
+                <li>VIP client management — identification, contact cadence, event hosting</li>
+                <li>Store operations contribution — VM, stock, briefings, daily open/close</li>
+                <li>Team collaboration — supporting senior SAs, sharing client intelligence</li>
+                <li>Commercial calendar ownership — plan client contact around brand events</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="tl-phase">
+            <div class="tl-left">
+              <div class="tl-dot"><div class="tl-dot-inner"></div></div>
+              <div class="tl-months">Months 16–21</div>
+            </div>
+            <div class="tl-right">
+              <div class="tl-phase-name">Phase 4 — Leadership Ready</div>
+              <ul class="tl-phase-items">
+                <li>Coaching a junior SA — task planning, client briefing, performance feedback</li>
+                <li>Section management preparation — shift leadership, daily team briefing</li>
+                <li>Full AI tool deployment — morning briefing, daily close, client portfolio diagnosis</li>
+                <li>Personal performance review — present own results to store manager</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="tl-eval">
+          <div class="tl-eval-title">Month 21 — Evaluation</div>
+          <div class="tl-eval-desc">Trainees who complete all four phases and meet performance benchmarks across client portfolio health, sales target achievement, and coaching demonstration are promoted to <strong style="color:#e8e2d9;">Section Manager</strong> — responsible for leading a minimum of 5 people. Trainees who show early AI fluency and systems thinking are tracked toward the Retail Intelligence Manager path.</div>
+        </div>
+      </div>
+
+      <div class="jd-section">
+        <div class="jd-section-title">Who We Are Looking For</div>
+        <ul class="jd-list">
+          <li>Fresh graduate or up to 2 years of work experience — field is open</li>
+          <li><strong>Discipline</strong> — shows up prepared, follows through, does not need to be reminded twice</li>
+          <li><strong>People curiosity</strong> — genuinely interested in understanding what clients want and why</li>
+          <li><strong>Learning speed</strong> — absorbs feedback and applies it quickly</li>
+          <li><strong>Multilingual</strong> is a strong advantage — any combination of languages welcome</li>
+          <li>Comfortable with digital tools — willing to learn AI-assisted systems from day one</li>
+        </ul>
+      </div>
+
+      <div class="jd-section">
+        <div class="jd-section-title">What You Will Gain</div>
+        <ul class="jd-list">
+          <li>A structured 21-month development programme — not trial and error, but a designed path</li>
+          <li>Real client responsibility from month one — not observation, not shadow work</li>
+          <li>Access to the JYS Retail intelligence system — tools built for SA performance, not corporate reporting</li>
+          <li>A clear promotion timeline — Section Manager at month 21 if you pass evaluation</li>
+          <li>Foundation to become a <strong>Retail Intelligence Manager</strong> — the most advanced retail leadership role we build</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- JD 2: Retail Intelligence Manager -->
+  <div class="jd-card">
+    <div class="jd-card-head">
+      <div class="jd-badge">Open Position</div>
+      <div class="jd-title">Retail Intelligence Manager</div>
+      <div class="jd-title-cn">零售智能运营官</div>
+      <div class="jd-meta">
+        <span class="jd-tag">Senior Level</span>
+        <span class="jd-tag">4+ Years Experience</span>
+        <span class="jd-tag">Full Time</span>
+        <span class="jd-tag">Luxury & Premium Retail</span>
+      </div>
+    </div>
+    <div class="jd-body">
+
+      <div class="jd-section">
+        <div class="jd-section-title">About This Role</div>
+        <p class="jd-para">The Retail Intelligence Manager is a new kind of retail leader — one who owns the full commercial loop without dependency on supporting functions. Before AI, this loop required three roles: the Retail Manager who faced the client, the Project Manager who built the tools, and the Product Manager who defined the product. This role collapses all three into one. You design the system. You deploy the tools. You coach the team. You close the client. The intelligence is yours — AI is your execution layer.</p>
+      </div>
+
+      <div class="jd-section">
+        <div class="jd-section-title">What You Own</div>
+        <ul class="jd-list">
+          <li><strong>Client portfolio</strong> — personal VIP relationships, CLV health, contact cadence, year-on-year growth</li>
+          <li><strong>Team performance</strong> — SA coaching, daily briefing, task system, escalation decisions</li>
+          <li><strong>Commercial calendar</strong> — plan revenue rhythm across the full finance year, not just monthly targets</li>
+          <li><strong>Retail systems</strong> — deploy, adapt, and improve AI-assisted tools for client management, reporting, and SA development</li>
+          <li><strong>Brand intelligence</strong> — product knowledge, collection performance, competitor awareness, market signals</li>
+          <li><strong>Results</strong> — this role does not hand off. It owns.</li>
+        </ul>
+      </div>
+
+      <div class="jd-section">
+        <div class="jd-section-title">Core Skills Required</div>
+        <ul class="jd-list">
+          <li><strong>Retail floor intelligence</strong> — reads clients, reads SAs, reads the room. Knows what is happening before it is reported.</li>
+          <li><strong>Storytelling</strong> — communicates to clients one-to-one, to teams in briefings, to brands at management level. The language changes; the clarity does not.</li>
+          <li><strong>AI fluency</strong> — knows what to ask, how to build, how to deploy, and how to evaluate whether a tool is actually working.</li>
+          <li><strong>Commercial thinking</strong> — every client contact, every coaching conversation, every system deployed connects back to revenue.</li>
+          <li><strong>Coaching ability</strong> — develops SA performance through diagnosis and structured feedback, not instruction alone.</li>
+        </ul>
+      </div>
+
+      <div class="jd-section">
+        <div class="jd-section-title">Experience Profile</div>
+        <ul class="jd-list">
+          <li>Minimum 4 years in luxury or premium retail — floor experience is non-negotiable</li>
+          <li>Proven client portfolio — can name VIP clients, track record, and relationship history</li>
+          <li>Experience managing or coaching a team — formal or informal</li>
+          <li>Demonstrated AI tool usage in a retail or commercial context</li>
+          <li>Multilingual preferred — client-facing language flexibility is a commercial asset</li>
+        </ul>
+      </div>
+
+      <div class="jd-section">
+        <div class="jd-section-title">What Makes This Role Different</div>
+        <p class="jd-para">Most retail management roles ask you to report upward, wait for tools to be built, and manage people through a fixed system. This role asks something different: that you take ownership of the entire operating loop and make it better every month. JYS Retail gives you the framework, the tools, and the coaching infrastructure. What you bring is the judgment to run it.</p>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- end jd-wrap -->
+
+<!-- Apply -->
+<div class="apply-note">
+  <div class="apply-card">
+    <div class="apply-text"><strong>To apply or to learn more</strong> — send your CV and a short note on why this role and why now. We read every message. We do not use automated screening.</div>
+    <div class="apply-contact">contact@jysretail.com</div>
+  </div>
+</div>
+
+</body>
+</html>

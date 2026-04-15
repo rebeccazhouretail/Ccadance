@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JYS Retail — Talent Intelligence System</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:#0c0c0f; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; color:#e8e2d9; min-height:100vh; }
+
+/* ── Nav ── */
+nav { display:flex; justify-content:space-between; align-items:center; padding:18px 40px; border-bottom:1px solid #1e1c18; }
+.wordmark { font-size:18px; font-weight:700; color:#c9a84c; letter-spacing:1px; }
+.wordmark span { color:#4a4030; font-weight:400; }
+.nav-right { display:flex; align-items:center; gap:16px; }
+.nav-link { font-size:12px; color:#4a4030; text-decoration:none; letter-spacing:1px; }
+.nav-link:hover { color:#6a6050; }
+.btn-print { background:none; border:1px solid #2a2420; color:#6a6050; padding:6px 14px; border-radius:4px; font-size:11px; cursor:pointer; letter-spacing:1px; }
+.btn-print:hover { border-color:#4a4030; color:#a09080; }
+
+/* ── Hero ── */
+.hero { max-width:900px; margin:48px auto 0; padding:0 32px; }
+.hero-eyebrow { font-size:10px; letter-spacing:3px; text-transform:uppercase; color:#c9a84c; opacity:.7; margin-bottom:12px; }
+.hero-title { font-size:28px; font-weight:700; color:#f5ead8; margin-bottom:8px; }
+.hero-sub { font-size:13px; color:#6a6050; line-height:1.8; max-width:620px; }
+
+/* ── Tabs ── */
+.tab-wrap { max-width:900px; margin:36px auto 0; padding:0 32px; }
+.tab-nav { display:flex; gap:0; border-bottom:1px solid #1e1c18; margin-bottom:32px; overflow-x:auto; }
+.tab-btn { background:none; border:none; border-bottom:2px solid transparent; color:#4a4030; font-size:11px; letter-spacing:1.5px; text-transform:uppercase; padding:10px 20px; cursor:pointer; white-space:nowrap; margin-bottom:-1px; transition:all .15s; }
+.tab-btn:hover { color:#6a6050; }
+.tab-btn.active { color:#c9a84c; border-bottom-color:#c9a84c; }
+.tab-num { font-size:9px; opacity:.6; margin-right:6px; }
+
+.tab-panel { display:none; }
+.tab-panel.active { display:block; }
+
+/* ── Shared card ── */
+.card { background:#141418; border:1px solid #1e1c18; border-radius:12px; padding:28px 32px; margin-bottom:20px; }
+.card-title { font-size:10px; letter-spacing:2.5px; text-transform:uppercase; color:#c9a84c; opacity:.7; margin-bottom:16px; padding-bottom:10px; border-bottom:1px solid #1e1c18; }
+.card-desc { font-size:13px; color:#6a6050; line-height:1.8; margin-bottom:16px; }
+
+/* ── Criteria list ── */
+.crit-list { list-style:none; display:flex; flex-direction:column; gap:10px; }
+.crit-item { display:flex; align-items:flex-start; gap:12px; font-size:13px; color:#a09080; line-height:1.6; }
+.crit-dot { width:6px; height:6px; border-radius:50%; background:#c9a84c; flex-shrink:0; margin-top:6px; }
+.crit-item strong { color:#e8e2d9; }
+
+/* ── Score table ── */
+.score-table { width:100%; border-collapse:collapse; margin-top:4px; }
+.score-table th { font-size:9px; letter-spacing:2px; text-transform:uppercase; color:#4a4030; text-align:left; padding:8px 12px; border-bottom:1px solid #1e1c18; }
+.score-table td { font-size:12px; color:#a09080; padding:10px 12px; border-bottom:1px solid #0e0d0b; vertical-align:top; }
+.score-table td:first-child { color:#e8e2d9; font-weight:600; width:180px; }
+.score-table tr:last-child td { border-bottom:none; }
+
+/* ── Decision bands ── */
+.band-row { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-top:4px; }
+.band { border-radius:8px; padding:16px 18px; }
+.band.hire { background:rgba(100,180,100,0.08); border:1px solid rgba(100,180,100,0.2); }
+.band.develop { background:rgba(201,168,76,0.07); border:1px solid rgba(201,168,76,0.2); }
+.band.pass { background:rgba(180,80,60,0.07); border:1px solid rgba(180,80,60,0.15); }
+.band-score { font-size:18px; font-weight:700; margin-bottom:4px; }
+.band.hire .band-score { color:#64b464; }
+.band.develop .band-score { color:#c9a84c; }
+.band.pass .band-score { color:#b4503c; }
+.band-label { font-size:10px; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:6px; }
+.band.hire .band-label { color:#64b464; }
+.band.develop .band-label { color:#c9a84c; }
+.band.pass .band-label { color:#b4503c; }
+.band-desc { font-size:11.5px; color:#6a6050; line-height:1.6; }
+
+/* ── Scoring tool ── */
+.score-tool { background:#0e0d0b; border:1px solid #1e1c18; border-radius:10px; padding:20px 24px; }
+.score-tool-title { font-size:10px; letter-spacing:2px; text-transform:uppercase; color:#c9a84c; opacity:.6; margin-bottom:16px; }
+.score-dim { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; padding-bottom:14px; border-bottom:1px solid #1a1a1e; }
+.score-dim:last-child { margin-bottom:0; padding-bottom:0; border-bottom:none; }
+.score-dim-label { font-size:12px; color:#a09080; }
+.score-dim-btns { display:flex; gap:6px; }
+.score-btn { width:32px; height:32px; border-radius:50%; background:#141418; border:1px solid #2a2420; color:#4a4030; font-size:12px; font-weight:700; cursor:pointer; transition:all .15s; }
+.score-btn:hover { border-color:#4a4030; color:#6a6050; }
+.score-btn.selected { background:#c9a84c; border-color:#c9a84c; color:#0c0c0f; }
+.score-total-wrap { margin-top:18px; padding-top:18px; border-top:1px solid #1e1c18; display:flex; justify-content:space-between; align-items:center; }
+.score-total-label { font-size:11px; color:#4a4030; letter-spacing:1px; text-transform:uppercase; }
+.score-total-val { font-size:28px; font-weight:700; color:#c9a84c; }
+.score-verdict { font-size:12px; margin-top:4px; text-align:right; }
+
+/* ── CV signals ── */
+.signal-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.signal-box { background:#0e0d0b; border-radius:8px; padding:18px 20px; }
+.signal-box-title { font-size:9.5px; letter-spacing:2px; text-transform:uppercase; margin-bottom:12px; }
+.signal-box.green .signal-box-title { color:#64b464; }
+.signal-box.red .signal-box-title { color:#b4503c; }
+.signal-list { list-style:none; display:flex; flex-direction:column; gap:7px; }
+.signal-list li { font-size:12px; color:#6a6050; padding-left:14px; position:relative; line-height:1.5; }
+.signal-list li::before { position:absolute; left:0; font-size:11px; }
+.signal-box.green .signal-list li::before { content:'✓'; color:#64b464; }
+.signal-box.red .signal-list li::before { content:'✗'; color:#b4503c; }
+
+/* ── Interview questions ── */
+.test-block { margin-bottom:24px; }
+.test-label { font-size:9px; letter-spacing:2.5px; text-transform:uppercase; color:#c9a84c; opacity:.6; margin-bottom:10px; }
+.test-name { font-size:15px; font-weight:700; color:#f5ead8; margin-bottom:12px; }
+.q-item { background:#0e0d0b; border-radius:8px; padding:14px 18px; margin-bottom:10px; }
+.q-text { font-size:13px; color:#e8e2d9; margin-bottom:8px; line-height:1.5; }
+.q-listen { font-size:11.5px; color:#4a4030; line-height:1.6; }
+.q-listen strong { color:#6a6050; }
+
+/* ── Onboarding timeline ── */
+.ob-row { display:grid; grid-template-columns:110px 1fr; gap:0; }
+.ob-left { padding-bottom:24px; display:flex; flex-direction:column; align-items:flex-start; }
+.ob-dot { width:20px; height:20px; border-radius:50%; border:1px solid #c9a84c; background:#0c0c0f; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.ob-dot-inner { width:7px; height:7px; border-radius:50%; background:#c9a84c; }
+.ob-line { flex:1; width:1px; background:#2a2420; margin-left:9px; margin-top:4px; }
+.ob-period { font-size:9px; letter-spacing:1.5px; text-transform:uppercase; color:#4a4030; margin-top:6px; line-height:1.4; }
+.ob-right { padding:0 0 24px 20px; }
+.ob-phase { font-size:13px; font-weight:700; color:#f5ead8; margin-bottom:6px; }
+.ob-items { list-style:none; display:flex; flex-direction:column; gap:4px; }
+.ob-items li { font-size:12px; color:#6a6050; padding-left:12px; position:relative; }
+.ob-items li::before { content:'·'; position:absolute; left:0; color:#c9a84c; }
+.ob-milestone { background:rgba(201,168,76,0.07); border:1px solid rgba(201,168,76,0.2); border-radius:6px; padding:10px 14px; margin-top:8px; font-size:11.5px; color:#c9a84c; }
+
+/* ── Retention signals ── */
+.retention-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.ret-card { background:#0e0d0b; border-radius:8px; padding:18px 20px; }
+.ret-card-title { font-size:9.5px; letter-spacing:2px; text-transform:uppercase; color:#c9a84c; opacity:.6; margin-bottom:10px; }
+.ret-list { list-style:none; display:flex; flex-direction:column; gap:6px; }
+.ret-list li { font-size:12px; color:#6a6050; padding-left:14px; position:relative; line-height:1.5; }
+.ret-list li::before { content:'—'; position:absolute; left:0; color:#2a2420; font-size:10px; }
+
+.exit-risk { background:rgba(180,80,60,0.07); border:1px solid rgba(180,80,60,0.15); border-radius:8px; padding:18px 20px; margin-top:16px; }
+.exit-risk-title { font-size:9.5px; letter-spacing:2px; text-transform:uppercase; color:#b4503c; opacity:.8; margin-bottom:10px; }
+
+/* ── The test quote ── */
+.test-quote { background:rgba(201,168,76,0.06); border-left:2px solid #c9a84c; padding:16px 20px; border-radius:0 8px 8px 0; margin:20px 0; }
+.test-quote p { font-size:14px; color:#e8e2d9; line-height:1.7; font-style:italic; }
+.test-quote-sub { font-size:11px; color:#4a4030; margin-top:6px; }
+
+/* ── Footer ── */
+.page-footer { max-width:900px; margin:0 auto 60px; padding:0 32px; }
+.footer-credit { font-size:11px; color:#2a2420; text-align:center; }
+
+/* ── Print ── */
+@media print {
+  body { background:#fff !important; color:#1a1a1a !important; }
+  nav .btn-print, .tab-nav { display:none !important; }
+  .tab-panel { display:block !important; page-break-before:always; }
+  .tab-panel:first-of-type { page-break-before:avoid; }
+  .card { background:#faf9f7; border:1px solid #eee; }
+  .score-tool { background:#f5f5f5; border:1px solid #eee; }
+  .q-item, .ret-card, .signal-box, .ob-right { background:#faf9f7; }
+  .hero-title, .card-title { color:#1a1a1a; }
+  .hero-sub, .card-desc { color:#666; }
+}
+
+@media (max-width:640px) {
+  nav { padding:14px 16px; }
+  .hero, .tab-wrap { padding:0 16px; }
+  .card { padding:20px; }
+  .band-row, .signal-grid, .retention-grid { grid-template-columns:1fr; }
+  .tab-btn { padding:10px 12px; font-size:10px; }
+  .ob-row { grid-template-columns:80px 1fr; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wordmark">JYS Retail <span>/ talent intelligence</span></div>
+  <div class="nav-right">
+    <a href="careers.html" class="nav-link">Open Positions</a>
+    <button class="btn-print" onclick="window.print()">↓ Print</button>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-eyebrow">JYS Retail — Internal Talent System</div>
+  <div class="hero-title">Senior SA Talent Intelligence</div>
+  <div class="hero-sub">A structured five-layer system for identifying, assessing, onboarding, and retaining Senior Sales Associates who own their clients — not just their role. Use this system at every stage of the talent journey, from first CV to long-term retention.</div>
+</div>
+
+<div class="tab-wrap">
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="showTab(0)"><span class="tab-num">01</span> Decision</button>
+    <button class="tab-btn" onclick="showTab(1)"><span class="tab-num">02</span> CV Screen</button>
+    <button class="tab-btn" onclick="showTab(2)"><span class="tab-num">03</span> Interview</button>
+    <button class="tab-btn" onclick="showTab(3)"><span class="tab-num">04</span> Onboarding</button>
+    <button class="tab-btn" onclick="showTab(4)"><span class="tab-num">05</span> Retention</button>
+  </div>
+
+  <!-- ─── TAB 1: DECISION ─── -->
+  <div class="tab-panel active">
+
+    <div class="card">
+      <div class="card-title">What We Are Looking For</div>
+      <p class="card-desc">A Senior Sales Associate is not the person who sells the most today. It is the person who can sell anywhere, to anyone, at any time — because they carry their clients with them, not their badge. Every hiring decision starts with this definition.</p>
+      <div class="test-quote">
+        <p>If this SA moved to a different brand tomorrow, how many clients would follow?</p>
+        <div class="test-quote-sub">That number is their real performance score. Everything else is context.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">The 5 Hiring Dimensions</div>
+      <table class="score-table">
+        <thead>
+          <tr><th>Dimension</th><th>Score 0</th><th>Score 1</th><th>Score 2</th><th>Score 3</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Client Portfolio</td>
+            <td>Cannot name clients</td>
+            <td>Names brands, not clients</td>
+            <td>Names clients, no contact system</td>
+            <td>Named clients + contact rhythm + results</td>
+          </tr>
+          <tr>
+            <td>Story Fluency</td>
+            <td>Repeats brand script</td>
+            <td>Knows product features</td>
+            <td>Connects product to client lifestyle</td>
+            <td>Adapts story to the person in front of them, unprompted</td>
+          </tr>
+          <tr>
+            <td>Contact Discipline</td>
+            <td>No follow-up system</td>
+            <td>Follows up when prompted</td>
+            <td>Has a system, inconsistent</td>
+            <td>Day 3 / Day 21 / 3-month rhythm, tracked</td>
+          </tr>
+          <tr>
+            <td>Self-Awareness</td>
+            <td>Cannot describe their own strengths</td>
+            <td>Generic answers ("I'm a hard worker")</td>
+            <td>Names strengths with examples</td>
+            <td>Knows strengths, gaps, and which clients they serve best</td>
+          </tr>
+          <tr>
+            <td>Portability</td>
+            <td>Value is 100% brand-dependent</td>
+            <td>Some clients, no proof of transfer</td>
+            <td>Clients have followed them once</td>
+            <td>Clear evidence clients follow the person, not the brand</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Score Your Candidate</div>
+      <div class="score-tool">
+        <div class="score-tool-title">Rate each dimension 0 – 3</div>
+        <div id="score-dims">
+          <div class="score-dim" data-dim="Client Portfolio">
+            <div class="score-dim-label">Client Portfolio</div>
+            <div class="score-dim-btns">
+              <button class="score-btn" onclick="setScore(this,0)">0</button>
+              <button class="score-btn" onclick="setScore(this,1)">1</button>
+              <button class="score-btn" onclick="setScore(this,2)">2</button>
+              <button class="score-btn" onclick="setScore(this,3)">3</button>
+            </div>
+          </div>
+          <div class="score-dim" data-dim="Story Fluency">
+            <div class="score-dim-label">Story Fluency</div>
+            <div class="score-dim-btns">
+              <button class="score-btn" onclick="setScore(this,0)">0</button>
+              <button class="score-btn" onclick="setScore(this,1)">1</button>
+              <button class="score-btn" onclick="setScore(this,2)">2</button>
+              <button class="score-btn" onclick="setScore(this,3)">3</button>
+            </div>
+          </div>
+          <div class="score-dim" data-dim="Contact Discipline">
+            <div class="score-dim-label">Contact Discipline</div>
+            <div class="score-dim-btns">
+              <button class="score-btn" onclick="setScore(this,0)">0</button>
+              <button class="score-btn" onclick="setScore(this,1)">1</button>
+              <button class="score-btn" onclick="setScore(this,2)">2</button>
+              <button class="score-btn" onclick="setScore(this,3)">3</button>
+            </div>
+          </div>
+          <div class="score-dim" data-dim="Self-Awareness">
+            <div class="score-dim-label">Self-Awareness</div>
+            <div class="score-dim-btns">
+              <button class="score-btn" onclick="setScore(this,0)">0</button>
+              <button class="score-btn" onclick="setScore(this,1)">1</button>
+              <button class="score-btn" onclick="setScore(this,2)">2</button>
+              <button class="score-btn" onclick="setScore(this,3)">3</button>
+            </div>
+          </div>
+          <div class="score-dim" data-dim="Portability">
+            <div class="score-dim-label">Portability</div>
+            <div class="score-dim-btns">
+              <button class="score-btn" onclick="setScore(this,0)">0</button>
+              <button class="score-btn" onclick="setScore(this,1)">1</button>
+              <button class="score-btn" onclick="setScore(this,2)">2</button>
+              <button class="score-btn" onclick="setScore(this,3)">3</button>
+            </div>
+          </div>
+        </div>
+        <div class="score-total-wrap">
+          <div>
+            <div class="score-total-label">Total Score</div>
+            <div class="score-verdict" id="score-verdict" style="color:#4a4030;">Score a candidate to see result</div>
+          </div>
+          <div class="score-total-val" id="score-total">—</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Decision Bands</div>
+      <div class="band-row">
+        <div class="band hire">
+          <div class="band-score">12 – 15</div>
+          <div class="band-label">Hire</div>
+          <div class="band-desc">This person owns their clients. Move to offer. Do not delay — top SAs are rarely available for long.</div>
+        </div>
+        <div class="band develop">
+          <div class="band-score">8 – 11</div>
+          <div class="band-label">Develop</div>
+          <div class="band-desc">Strong foundation, gaps in portfolio or discipline. Consider for Retail Management Trainee path with a clear 6-month review.</div>
+        </div>
+        <div class="band pass">
+          <div class="band-score">0 – 7</div>
+          <div class="band-label">Pass</div>
+          <div class="band-desc">Brand-dependent performance. No portable client value. Do not hire at Senior SA level — the role requires ownership, not execution.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Non-Negotiable Red Flags — Reject Regardless of Score</div>
+      <ul class="crit-list">
+        <li><div class="crit-dot"></div><div>Cannot name a single client by name, purchase history, or personal detail</div></li>
+        <li><div class="crit-dot"></div><div>Defines their own success as "I love selling" or "I'm a people person" — no results, no numbers</div></li>
+        <li><div class="crit-dot"></div><div>Blames former brand, manager, or team for their performance without any self-reflection</div></li>
+        <li><div class="crit-dot"></div><div>Has never followed up with a client after a purchase — not once, in any role</div></li>
+        <li><div class="crit-dot"></div><div>Describes themselves as a <strong>"shark"</strong> — chases transactions, not relationships</div></li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- ─── TAB 2: CV SCREEN ─── -->
+  <div class="tab-panel">
+
+    <div class="card">
+      <div class="card-title">How to Read a Senior SA CV</div>
+      <p class="card-desc">You have 5 minutes per CV. You are not looking for formatting or keywords. You are looking for evidence of portable client value. A CV built with the JYS Retail SA CV Framework already uses the right structure — scan for the signals below.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Signals — What to Look For</div>
+      <div class="signal-grid">
+        <div class="signal-box green">
+          <div class="signal-box-title">Green — Strong Signals</div>
+          <ul class="signal-list">
+            <li>Client numbers stated — "80 active clients", "47 new clients last year"</li>
+            <li>Contact system described — Day 3 / Day 21 / follow-up rhythm</li>
+            <li>Clients mentioned following them to a new brand</li>
+            <li>Achievements have a number — %, ranking, revenue, client count</li>
+            <li>VIP clients named as a separate managed group</li>
+            <li>Story or product knowledge mentioned with a client example</li>
+            <li>Works across multiple languages — multilingual client service</li>
+            <li>Result line is specific — "Ranked #1 in store Q3 · 115% of target"</li>
+          </ul>
+        </div>
+        <div class="signal-box red">
+          <div class="signal-box-title">Red — Weak Signals</div>
+          <ul class="signal-list">
+            <li>Role descriptions only — no results, no numbers</li>
+            <li>Brand names as the only proof of quality</li>
+            <li>"Passionate about fashion" — attitude without evidence</li>
+            <li>3+ roles in 3 years with no explanation</li>
+            <li>No mention of clients as a managed asset</li>
+            <li>Generic skills: "team player", "hard worker", "motivated"</li>
+            <li>Achievement section is one vague sentence</li>
+            <li>No contact information for references — or "available on request" only</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">5-Minute CV Score</div>
+      <p class="card-desc" style="margin-bottom:20px;">Answer these 5 questions. One point each. Score 4–5: proceed to interview. Score 2–3: borderline, request a portfolio call first. Score 0–1: pass.</p>
+      <ul class="crit-list">
+        <li><div class="crit-dot"></div><div>Does the CV mention a specific number of clients managed or developed? <strong>(1 point)</strong></div></li>
+        <li><div class="crit-dot"></div><div>Does at least one achievement line include a measurable result? <strong>(1 point)</strong></div></li>
+        <li><div class="crit-dot"></div><div>Is there any evidence of a client follow-up system or contact discipline? <strong>(1 point)</strong></div></li>
+        <li><div class="crit-dot"></div><div>Does the personal statement describe a client philosophy — not just a sales mindset? <strong>(1 point)</strong></div></li>
+        <li><div class="crit-dot"></div><div>Is there any sign that their client value is portable — clients followed, relationships maintained across brands? <strong>(1 point)</strong></div></li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- ─── TAB 3: INTERVIEW ─── -->
+  <div class="tab-panel">
+
+    <div class="card">
+      <div class="card-title">Interview Structure</div>
+      <p class="card-desc">Three tests. One conversation. You are not looking for polished answers — you are looking for specific, unprompted detail. A Senior SA who owns their clients will give you names, numbers, and stories without being asked to. A weak SA will give you attitude and generalities.</p>
+      <p class="card-desc">Total time: 45–60 minutes. Do not rush the Portfolio Test — that is where the real answer is.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Test 1 — The Story Test</div>
+      <div class="test-block">
+        <div class="test-label">What you are testing</div>
+        <div class="test-name">Can they make a product feel personal to a stranger?</div>
+        <div class="q-item">
+          <div class="q-text">Pick any product from your current or last brand. Tell me about it — as if I were a client you have just met for the first time.</div>
+          <div class="q-listen"><strong>Listen for:</strong> Do they adapt the story to you, or do they recite the brand script? Do they ask a question before they speak? Do they connect the product to a life moment, not just a feature? Strong SAs pause before answering — they are reading you first.</div>
+        </div>
+        <div class="q-item">
+          <div class="q-text">Tell me about a time a client bought something different from what they came in for. What happened?</div>
+          <div class="q-listen"><strong>Listen for:</strong> Specific client. Specific product. Specific moment in the conversation where the shift happened. Weak answers are generic ("I listened to them"). Strong answers name the product, the client's hesitation, and what they said that changed it.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Test 2 — The Portfolio Test</div>
+      <div class="test-block">
+        <div class="test-label">What you are testing</div>
+        <div class="test-name">Do they own real client relationships — or just a contact list?</div>
+        <div class="q-item">
+          <div class="q-text">Tell me about three clients you are currently in contact with. Not your best clients — just three you spoke to this month.</div>
+          <div class="q-listen"><strong>Listen for:</strong> Can they name them without hesitation? Do they know what they bought last, what they want next, one personal detail? Weak SAs describe types ("a VIP client who buys bags"). Strong SAs give you a person.</div>
+        </div>
+        <div class="q-item">
+          <div class="q-text">When was the last time a client contacted you — not the store, you personally? What did they want?</div>
+          <div class="q-listen"><strong>Listen for:</strong> Recency and specificity. If they cannot answer quickly, the client is not really theirs. If they answer immediately with a name and a reason, this is a Senior SA.</div>
+        </div>
+        <div class="q-item">
+          <div class="q-text">If you left your current brand tomorrow, what would you say to your top 10 clients?</div>
+          <div class="q-listen"><strong>Listen for:</strong> Confidence and a plan — not panic. A portable SA already knows exactly who their clients are and how to stay in contact. A brand-dependent SA will hesitate because they have never thought about this.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Test 3 — The Portability Test</div>
+      <div class="test-block">
+        <div class="test-label">What you are testing</div>
+        <div class="test-name">Does their value travel with them — or stay with the brand?</div>
+        <div class="q-item">
+          <div class="q-text">Have you ever moved to a new brand or role? What happened to your client relationships?</div>
+          <div class="q-listen"><strong>Listen for:</strong> Did any clients follow? Did they stay in contact? Did the SA make an effort to maintain the relationship outside of their professional role? This is the most honest signal of portable value.</div>
+        </div>
+        <div class="q-item">
+          <div class="q-text">How do you define a good sales associate? Not what the industry says — what you actually believe.</div>
+          <div class="q-listen"><strong>Listen for:</strong> Does their definition match yours? Strong answers put the client relationship at the centre. Weak answers put the sale at the centre. This question also tells you how self-aware they are about the gap between what they believe and what they do.</div>
+        </div>
+      </div>
+      <div class="test-quote" style="margin-bottom:0;">
+        <p>The store closed tomorrow. How many clients would call you?</p>
+        <div class="test-quote-sub">Ask this last. Listen to how long it takes them to answer. A Senior SA does not need to think about it.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ─── TAB 4: ONBOARDING ─── -->
+  <div class="tab-panel">
+
+    <div class="card">
+      <div class="card-title">Onboarding Philosophy</div>
+      <p class="card-desc">A Senior SA already has skills. Onboarding is not about teaching them to sell — it is about connecting their existing ability to the JYS system, the brand's commercial calendar, and the team rhythm. The first 90 days determine whether they perform independently or wait to be told what to do.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">90-Day Onboarding Path</div>
+      <div style="margin-top:4px;">
+
+        <div class="ob-row">
+          <div class="ob-left">
+            <div class="ob-dot"><div class="ob-dot-inner"></div></div>
+            <div class="ob-line"></div>
+            <div class="ob-period">Week 1–2</div>
+          </div>
+          <div class="ob-right">
+            <div class="ob-phase">Orientation — System & Team</div>
+            <ul class="ob-items">
+              <li>Full store walkthrough — product, VM, back-office, daily rhythm</li>
+              <li>Introduction to JYS Retail daily task system and briefing format</li>
+              <li>Complete JYS Modules 1–3: Philosophy, Client Understanding, Client Profile</li>
+              <li>First client list registration — minimum 10 contacts transferred from previous role</li>
+              <li>Shadow one senior team member for first 3 client appointments</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="ob-row">
+          <div class="ob-left">
+            <div class="ob-dot"><div class="ob-dot-inner"></div></div>
+            <div class="ob-line"></div>
+            <div class="ob-period">Month 1</div>
+          </div>
+          <div class="ob-right">
+            <div class="ob-phase">Foundation — Own Your First Clients</div>
+            <ul class="ob-items">
+              <li>Complete JYS Modules 4–6: Product Conversation, Appointment System, Commercial Calendar</li>
+              <li>First 20 active clients registered with full profile in JYS system</li>
+              <li>Begin 333 contact rhythm — Day 3, Day 21, 3-month follow-up</li>
+              <li>First personal target set and tracked — agreed with store manager</li>
+            </ul>
+            <div class="ob-milestone">Month 1 checkpoint: Can name 20 clients, their last purchase, and next contact date.</div>
+          </div>
+        </div>
+
+        <div class="ob-row">
+          <div class="ob-left">
+            <div class="ob-dot"><div class="ob-dot-inner"></div></div>
+            <div class="ob-line"></div>
+            <div class="ob-period">Month 2</div>
+          </div>
+          <div class="ob-right">
+            <div class="ob-phase">Development — Build the Portfolio</div>
+            <ul class="ob-items">
+              <li>Complete JYS Modules 7–9: Performance, SA Journey, Converting the Undecided Client</li>
+              <li>Portfolio grows to 40 active clients — mix of transferred and newly acquired</li>
+              <li>First VIP clients identified and flagged — monthly contact scheduled</li>
+              <li>First product storytelling review with manager — one product, one client story, assessed</li>
+            </ul>
+            <div class="ob-milestone">Month 2 checkpoint: First client who returns for a second purchase. This is the most important signal in Month 2.</div>
+          </div>
+        </div>
+
+        <div class="ob-row">
+          <div class="ob-left">
+            <div class="ob-dot"><div class="ob-dot-inner"></div></div>
+            <div class="ob-period">Month 3</div>
+          </div>
+          <div class="ob-right">
+            <div class="ob-phase">Independence — Full Performance Mode</div>
+            <ul class="ob-items">
+              <li>All 9 modules complete</li>
+              <li>50+ active clients in portfolio, 333 rule compliance tracked</li>
+              <li>First personal performance review — presented by the SA, not the manager</li>
+              <li>First contribution to team briefing — share one client or market observation</li>
+              <li>Retention signal review — is this SA growing, flat, or disengaging?</li>
+            </ul>
+            <div class="ob-milestone">Day 90 decision: Full Senior SA, or extend with a 30-day coaching plan. Do not leave this review to chance.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">What Onboarding Is Not</div>
+      <ul class="crit-list">
+        <li><div class="crit-dot"></div><div>It is not observation. A Senior SA is on the floor with real clients from day one.</div></li>
+        <li><div class="crit-dot"></div><div>It is not a welcome week. The rhythm starts immediately — briefing, tasks, follow-up.</div></li>
+        <li><div class="crit-dot"></div><div>It is not the manager's job to fill their calendar. The SA must own their own contact list from week one.</div></li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- ─── TAB 5: RETENTION ─── -->
+  <div class="tab-panel">
+
+    <div class="card">
+      <div class="card-title">Why Top SAs Leave</div>
+      <p class="card-desc">Top SAs do not leave for money first. They leave because nobody sees them. Their portfolio grows, their clients return, their juniors learn from them — and none of it is acknowledged. Retention is not a salary question. It is a recognition and growth question. By the time a Senior SA tells you they are leaving, the decision was made 3 months ago.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Monthly Retention Signals — Track These</div>
+      <div class="retention-grid">
+        <div class="ret-card">
+          <div class="ret-card-title">Portfolio Health</div>
+          <ul class="ret-list">
+            <li>Active client count growing month on month</li>
+            <li>333 contact compliance above 80%</li>
+            <li>VIP contact rate 100% — every VIP reached in last 30 days</li>
+            <li>Year 1 → Year 2 conversion rate above 20%</li>
+          </ul>
+        </div>
+        <div class="ret-card">
+          <div class="ret-card-title">Performance Growth</div>
+          <ul class="ret-list">
+            <li>Monthly target trend — improving, flat, or declining?</li>
+            <li>New clients acquired this month — not just from walk-in</li>
+            <li>Average transaction value — is it growing?</li>
+            <li>Cross-category sales — are they expanding client baskets?</li>
+          </ul>
+        </div>
+        <div class="ret-card">
+          <div class="ret-card-title">Engagement Signals</div>
+          <ul class="ret-list">
+            <li>Do they contribute to team briefings without being asked?</li>
+            <li>Do they coach or help junior SAs voluntarily?</li>
+            <li>Do they bring market observations or competitor insights?</li>
+            <li>Do they ask questions about the brand's next collection?</li>
+          </ul>
+        </div>
+        <div class="ret-card">
+          <div class="ret-card-title">Recognition Actions</div>
+          <ul class="ret-list">
+            <li>Name their best result in the team briefing — publicly</li>
+            <li>Give them the most important client appointment of the week</li>
+            <li>Include them in brand or buyer meetings — even once a quarter</li>
+            <li>Ask their opinion before making a team or VM decision</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="exit-risk">
+        <div class="exit-risk-title">Exit Risk Signals — Act Immediately If You See These</div>
+        <ul class="crit-list">
+          <li><div class="crit-dot" style="background:#b4503c;"></div><div>Client contact rate drops below 60% for two consecutive months</div></li>
+          <li><div class="crit-dot" style="background:#b4503c;"></div><div>They stop mentioning their clients in briefings — the portfolio goes quiet</div></li>
+          <li><div class="crit-dot" style="background:#b4503c;"></div><div>They become transactional — selling when clients arrive, not creating reasons to return</div></li>
+          <li><div class="crit-dot" style="background:#b4503c;"></div><div>They stop asking questions about upcoming collections or brand direction</div></li>
+          <li><div class="crit-dot" style="background:#b4503c;"></div><div>A junior SA tells you they haven't seen them coach or help anyone in weeks</div></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">The Retention Conversation</div>
+      <p class="card-desc" style="margin-bottom:16px;">Have this conversation every quarter — not only when there is a problem. Three questions, no agenda, no performance review attached.</p>
+      <ul class="crit-list">
+        <li><div class="crit-dot"></div><div><strong>What is going well for you right now</strong> — with your clients, your work, the team?</div></li>
+        <li><div class="crit-dot"></div><div><strong>What is one thing you want to do more of</strong> — that you are not doing enough of yet?</div></li>
+        <li><div class="crit-dot"></div><div><strong>What do you need from me</strong> — that you are not getting?</div></li>
+      </ul>
+      <div class="test-quote" style="margin-top:20px; margin-bottom:0;">
+        <p>The manager who asks these questions quarterly never gets surprised by a resignation letter.</p>
+        <div class="test-quote-sub">The manager who only asks during exit interviews was already 3 months too late.</div>
+      </div>
+    </div>
+
+  </div>
+
+</div><!-- end tab-wrap -->
+
+<div class="page-footer" style="margin-top:40px;">
+  <div class="footer-credit">JYS Retail Talent Intelligence System · For partner use · jysretail.com</div>
+</div>
+
+<script>
+function showTab(n){
+  document.querySelectorAll('.tab-panel').forEach((p,i)=>p.classList.toggle('active',i===n));
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',i===n));
+}
+
+// ── Scoring tool ──
+const scores={};
+function setScore(btn,val){
+  const dim=btn.closest('.score-dim');
+  dim.querySelectorAll('.score-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+  scores[dim.dataset.dim]=val;
+  updateTotal();
+}
+function updateTotal(){
+  const vals=Object.values(scores);
+  if(vals.length<5){ document.getElementById('score-total').textContent='—'; document.getElementById('score-verdict').textContent='Score all 5 dimensions'; document.getElementById('score-verdict').style.color='#4a4030'; return; }
+  const total=vals.reduce((a,b)=>a+b,0);
+  document.getElementById('score-total').textContent=total;
+  let verdict='', color='';
+  if(total>=12){ verdict='Hire — move to offer'; color='#64b464'; }
+  else if(total>=8){ verdict='Develop — consider trainee path'; color='#c9a84c'; }
+  else { verdict='Pass — not Senior SA level'; color='#b4503c'; }
+  document.getElementById('score-verdict').textContent=verdict;
+  document.getElementById('score-verdict').style.color=color;
+}
+</script>
+</body>
+</html>

@@ -3,1105 +3,498 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CCadance — Build Your SA CV</title>
+<title>CCadance — Daily CRM Recap</title>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
-
 body { background:#0c0c0f; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; color:#e8e2d9; min-height:100vh; }
 
 /* ── Nav ── */
 nav { display:flex; justify-content:space-between; align-items:center; padding:18px 40px; border-bottom:1px solid #1e1c18; }
 .wordmark { font-size:18px; font-weight:700; color:#c9a84c; letter-spacing:1px; }
 .wordmark span { color:#4a4030; font-weight:400; }
-.nav-right { display:flex; align-items:center; gap:16px; }
+.nav-right { display:flex; align-items:center; gap:14px; }
 .lang-btn { background:transparent; border:1px solid #2a2420; color:#6a6050; padding:5px 13px; border-radius:4px; font-size:11px; font-weight:600; cursor:pointer; letter-spacing:1px; transition:all .15s; }
 .lang-btn.active { background:#c9a84c; border-color:#c9a84c; color:#0c0c0f; }
 .nav-link { font-size:12px; color:#4a4030; text-decoration:none; letter-spacing:1px; }
-.nav-link:hover { color:#6a6050; }
 
-/* ── Progress ── */
-.progress-wrap { max-width:680px; margin:32px auto 0; padding:0 24px; }
-.progress-bar { display:flex; align-items:center; gap:0; }
-.prog-step { display:flex; flex-direction:column; align-items:center; gap:6px; flex:1; position:relative; }
-.prog-step:not(:last-child)::after { content:''; position:absolute; top:13px; left:50%; width:100%; height:1px; background:#1e1c18; z-index:0; }
-.prog-dot { width:26px; height:26px; border-radius:50%; border:1px solid #2a2420; background:#0c0c0f; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700; color:#4a4030; position:relative; z-index:1; transition:all .2s; flex-shrink:0; }
-.prog-step.active .prog-dot { border-color:#c9a84c; background:rgba(201,168,76,0.15); color:#c9a84c; }
-.prog-step.done .prog-dot { border-color:#c9a84c; background:#c9a84c; color:#0c0c0f; }
-.prog-label { font-size:9px; color:#4a4030; letter-spacing:1px; text-transform:uppercase; text-align:center; white-space:nowrap; }
-.prog-step.active .prog-label { color:#c9a84c; }
+/* ── Hero ── */
+.hero { max-width:680px; margin:48px auto 0; padding:0 24px; }
+.hero-eyebrow { font-size:10px; letter-spacing:3px; text-transform:uppercase; color:#c9a84c; opacity:.7; margin-bottom:12px; }
+.hero-title { font-size:26px; font-weight:700; color:#f5ead8; margin-bottom:8px; }
+.hero-sub { font-size:13px; color:#6a6050; line-height:1.8; }
 
-/* ── Form wrapper ── */
-.form-wrap { max-width:680px; margin:28px auto 60px; padding:0 24px; }
+/* ── Form ── */
+.form-wrap { max-width:680px; margin:32px auto 60px; padding:0 24px; }
 
-/* ── Cards ── */
-.step-card { background:#141418; border:1px solid #1e1c18; border-radius:14px; padding:36px 40px; display:none; }
-.step-card.active { display:block; }
-.step-eyebrow { font-size:10px; letter-spacing:3px; color:#c9a84c; opacity:.7; text-transform:uppercase; margin-bottom:10px; }
-.step-title { font-size:22px; font-weight:700; color:#f5ead8; margin-bottom:6px; }
-.step-sub { font-size:13px; color:#6a6050; line-height:1.6; margin-bottom:28px; }
+.layer-card { background:#141418; border:1px solid #1e1c18; border-radius:14px; padding:32px 36px; margin-bottom:20px; }
+.layer-num { font-size:9px; letter-spacing:3px; text-transform:uppercase; color:#c9a84c; opacity:.6; margin-bottom:6px; }
+.layer-title { font-size:17px; font-weight:700; color:#f5ead8; margin-bottom:4px; }
+.layer-sub { font-size:12px; color:#4a4030; line-height:1.6; margin-bottom:24px; }
 
-/* ── Form fields ── */
-.field { margin-bottom:20px; }
+.field { margin-bottom:18px; }
 .field:last-child { margin-bottom:0; }
 label { display:block; font-size:10px; letter-spacing:2px; text-transform:uppercase; color:#6a6050; margin-bottom:7px; }
-.req { color:#c9a84c; }
-input[type=text], input[type=email], input[type=tel], textarea, select {
+input[type=text], input[type=number], input[type=date], textarea, select {
   width:100%; background:#0e0d0b; border:1px solid #2a2420; border-radius:6px;
   color:#e8e2d9; font-size:13px; padding:10px 14px; font-family:inherit;
   transition:border-color .15s; outline:none;
 }
-input[type=text]:focus, input[type=email]:focus, input[type=tel]:focus, textarea:focus, select:focus { border-color:#c9a84c; }
-textarea { resize:vertical; min-height:90px; line-height:1.6; }
-select { cursor:pointer; }
+input[type=text]:focus, input[type=number]:focus, input[type=date]:focus, textarea:focus, select:focus { border-color:#c9a84c; }
+textarea { resize:vertical; min-height:80px; line-height:1.6; }
 select option { background:#141418; }
 .field-hint { font-size:11px; color:#4a4030; margin-top:5px; line-height:1.5; }
-
 .field-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
 .field-row3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; }
 
-/* ── Profile type choice ── */
-.profile-choice { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:4px; }
-.profile-opt { background:#0e0d0b; border:2px solid #2a2420; border-radius:10px; padding:24px 20px; cursor:pointer; transition:all .2s; }
-.profile-opt:hover { border-color:#4a4030; }
-.profile-opt.selected { border-color:#c9a84c; background:rgba(201,168,76,0.05); }
-.profile-opt-icon { font-size:24px; margin-bottom:10px; }
-.profile-opt-title { font-size:14px; font-weight:700; color:#f5ead8; margin-bottom:5px; }
-.profile-opt-desc { font-size:12px; color:#6a6050; line-height:1.5; }
+/* ── 333 rule rows ── */
+.rule-row { background:#0e0d0b; border:1px solid #1e1c18; border-radius:8px; padding:16px; margin-bottom:10px; }
+.rule-row:last-child { margin-bottom:0; }
+.rule-label { font-size:10px; letter-spacing:2px; text-transform:uppercase; color:#c9a84c; opacity:.6; margin-bottom:10px; }
+.rule-inner { display:grid; grid-template-columns:1fr auto; gap:12px; align-items:center; }
+.rule-status { display:flex; gap:6px; }
+.status-btn { background:#141418; border:1px solid #2a2420; color:#4a4030; padding:6px 12px; border-radius:4px; font-size:11px; font-weight:600; cursor:pointer; transition:all .15s; white-space:nowrap; }
+.status-btn:hover { border-color:#4a4030; color:#6a6050; }
+.status-btn.active-yes { background:rgba(100,180,100,0.15); border-color:rgba(100,180,100,0.4); color:#64b464; }
+.status-btn.active-partial { background:rgba(201,168,76,0.12); border-color:rgba(201,168,76,0.4); color:#c9a84c; }
+.status-btn.active-no { background:rgba(180,80,60,0.1); border-color:rgba(180,80,60,0.3); color:#b4503c; }
 
-/* ── Language rows ── */
-.lang-row { display:grid; grid-template-columns:2fr 1fr 36px; gap:10px; align-items:center; margin-bottom:10px; }
-.lang-row:last-child { margin-bottom:0; }
-.lang-remove { background:none; border:none; color:#4a4030; font-size:16px; cursor:pointer; padding:0 4px; transition:color .15s; line-height:1; }
-.lang-remove:hover { color:#e07840; }
-.add-btn { background:none; border:1px dashed #2a2420; color:#4a4030; padding:8px 16px; border-radius:6px; font-size:12px; cursor:pointer; width:100%; margin-top:8px; transition:all .15s; }
-.add-btn:hover { border-color:#4a4030; color:#6a6050; }
+/* ── Generate button ── */
+.generate-wrap { text-align:center; margin:28px 0; }
+.btn-generate { background:#c9a84c; color:#0c0c0f; border:none; padding:14px 40px; border-radius:8px; font-size:14px; font-weight:700; cursor:pointer; letter-spacing:.5px; transition:background .15s; }
+.btn-generate:hover { background:#e0be64; }
 
-/* ── Experience blocks ── */
-.exp-block { background:#0e0d0b; border:1px solid #1e1c18; border-radius:8px; padding:20px; margin-bottom:14px; position:relative; }
-.exp-block-num { font-size:10px; color:#4a4030; letter-spacing:2px; text-transform:uppercase; margin-bottom:14px; }
-.exp-remove { position:absolute; top:16px; right:16px; background:none; border:none; color:#4a4030; font-size:18px; cursor:pointer; transition:color .15s; }
-.exp-remove:hover { color:#e07840; }
-.no-exp-toggle { display:flex; align-items:center; gap:10px; margin-top:16px; cursor:pointer; }
-.no-exp-toggle input { width:auto; cursor:pointer; }
-.no-exp-toggle span { font-size:13px; color:#6a6050; }
+/* ── Output / Recap ── */
+#recap-output { display:none; }
+#recap-output.active { display:block; }
 
-/* ── Capacity questions ── */
-.cap-section { margin-bottom:24px; }
-.cap-section-title { font-size:10px; letter-spacing:2px; text-transform:uppercase; color:#c9a84c; opacity:.7; margin-bottom:14px; border-bottom:1px solid #1e1c18; padding-bottom:8px; }
-.cap-q { background:#0e0d0b; border:1px solid #1e1c18; border-radius:8px; padding:16px; margin-bottom:10px; }
-.cap-q label { font-size:12px; letter-spacing:.5px; color:#a09080; text-transform:none; margin-bottom:8px; }
+.recap-toolbar { background:#141418; border:1px solid #1e1c18; border-radius:10px; padding:14px 24px; margin-bottom:16px; display:flex; justify-content:space-between; align-items:center; }
+.recap-toolbar-left { font-size:13px; color:#a09080; }
+.recap-toolbar-left strong { color:#f5ead8; }
+.recap-actions { display:flex; gap:10px; }
+.btn-edit { background:none; border:1px solid #2a2420; color:#6a6050; padding:8px 16px; border-radius:6px; font-size:12px; cursor:pointer; }
+.btn-print { background:#c9a84c; color:#0c0c0f; border:none; padding:8px 20px; border-radius:6px; font-size:12px; font-weight:700; cursor:pointer; }
 
-/* ── Navigation buttons ── */
-.btn-row { display:flex; justify-content:space-between; align-items:center; margin-top:28px; }
-.btn-primary { background:#c9a84c; color:#0c0c0f; border:none; padding:12px 28px; border-radius:7px; font-size:13px; font-weight:700; cursor:pointer; letter-spacing:.5px; transition:background .15s; }
-.btn-primary:hover { background:#e0be64; }
-.btn-secondary { background:none; border:1px solid #2a2420; color:#6a6050; padding:12px 20px; border-radius:7px; font-size:13px; cursor:pointer; transition:all .15s; }
-.btn-secondary:hover { border-color:#4a4030; color:#a09080; }
-.step-count { font-size:11px; color:#4a4030; }
-
-/* ── Preview screen ── */
-#screen-preview { display:none; }
-#screen-preview.active { display:block; }
-.preview-toolbar { display:flex; justify-content:space-between; align-items:center; background:#141418; border:1px solid #1e1c18; border-radius:10px; padding:14px 24px; margin-bottom:20px; }
-.preview-toolbar-left { font-size:13px; color:#a09080; }
-.preview-toolbar-left strong { color:#f5ead8; }
-.preview-actions { display:flex; gap:10px; }
-.btn-download { background:#c9a84c; color:#0c0c0f; border:none; padding:10px 22px; border-radius:6px; font-size:12px; font-weight:700; cursor:pointer; letter-spacing:.5px; }
-.btn-download:hover { background:#e0be64; }
-.btn-edit { background:none; border:1px solid #2a2420; color:#6a6050; padding:10px 16px; border-radius:6px; font-size:12px; cursor:pointer; }
-.btn-edit:hover { border-color:#4a4030; color:#a09080; }
-
-/* ── Generated CV (white, print-ready) ── */
-#cv-output { background:#fff; border:1px solid #ddd; border-radius:4px; }
-
-/* CV internals */
-.cv-head { padding:28px 36px 20px; border-bottom:2px solid #c9a84c; }
-.cv-name { font-size:26px; font-weight:700; color:#1a1a1a; letter-spacing:-.3px; }
-.cv-title-line { font-size:10px; color:#c9a84c; letter-spacing:2.5px; text-transform:uppercase; margin-top:4px; font-weight:600; }
-.cv-meta-line { display:flex; flex-wrap:wrap; gap:0; margin-top:10px; }
-.cv-meta-item { font-size:11.5px; color:#666; padding-right:14px; margin-right:14px; border-right:1px solid #ddd; line-height:1.8; }
-.cv-meta-item:last-child { border-right:none; padding-right:0; margin-right:0; }
-.cv-meta-item strong { color:#1a1a1a; }
-.cv-body { padding:0 36px; color:#1a1a1a; }
-.cv-sec { padding:14px 0; border-bottom:1px solid #eeebe6; }
-.cv-sec:last-child { border-bottom:none; }
-.cv-sec-head { display:flex; align-items:baseline; gap:9px; margin-bottom:10px; }
-.cv-sec-num { font-size:9px; font-weight:700; color:#c9a84c; letter-spacing:2px; }
-.cv-sec-title { font-size:10px; font-weight:700; color:#1a1a1a; letter-spacing:2px; text-transform:uppercase; }
-.cv-sec-cn { font-size:10px; color:#ccc; letter-spacing:1px; margin-left:3px; }
-.cv-statement { font-size:12.5px; line-height:1.8; color:#444; border-left:2px solid #c9a84c; padding-left:12px; }
-.cv-exp-block { margin-bottom:12px; }
-.cv-exp-row { display:flex; justify-content:space-between; align-items:baseline; gap:10px; margin-bottom:3px; }
-.cv-exp-brand { font-size:12.5px; font-weight:700; color:#1a1a1a; }
-.cv-exp-role { font-size:10.5px; color:#c9a84c; font-weight:600; letter-spacing:.5px; }
-.cv-exp-dates { font-size:10.5px; color:#999; white-space:nowrap; }
-.cv-exp-loc { font-size:10.5px; color:#bbb; margin-bottom:4px; }
-.cv-exp-bullets { list-style:none; }
-.cv-exp-bullets li { font-size:12px; color:#555; line-height:1.6; padding-left:12px; position:relative; margin-bottom:2px; }
-.cv-exp-bullets li::before { content:'—'; position:absolute; left:0; color:#c9a84c; font-size:10px; }
-.cv-exp-bullets li strong { color:#1a1a1a; font-weight:600; }
-.cv-earlier { font-size:11px; color:#999; padding-left:12px; line-height:1.75; margin-top:4px; }
-.cv-earlier span { color:#ccc; margin-right:6px; }
-.skill-block { background:#faf9f7; border-left:2px solid #c9a84c; padding:10px 13px; margin-bottom:9px; }
-.skill-name { font-size:11.5px; font-weight:700; color:#1a1a1a; margin-bottom:2px; }
-.skill-desc { font-size:11.5px; color:#555; line-height:1.6; }
-.skill-proof { font-size:11px; color:#c9a84c; font-weight:600; margin-top:2px; }
-.cv-expect-grid { display:flex; flex-direction:column; gap:4px; }
-.cv-expect-row { display:flex; font-size:12px; }
-.cv-expect-label { color:#999; font-size:10.5px; letter-spacing:1px; text-transform:uppercase; width:140px; flex-shrink:0; }
-.cv-expect-val { color:#1a1a1a; font-weight:500; }
-.cv-refs { display:flex; flex-direction:column; gap:4px; }
-.cv-ref { font-size:12px; color:#444; }
-.cv-ref strong { color:#1a1a1a; }
-.cv-foot { padding:9px 36px; border-top:1px solid #eeebe6; display:flex; justify-content:space-between; }
-.cv-foot-credit { font-size:9.5px; color:#ccc; }
-.cv-foot-date { font-size:9.5px; color:#ccc; }
+/* ── Recap card (white, print-ready) ── */
+#recap-card { background:#fff; border:1px solid #ddd; border-radius:4px; color:#1a1a1a; }
+.rc-head { padding:24px 32px 18px; border-bottom:2px solid #c9a84c; }
+.rc-date { font-size:9.5px; letter-spacing:2px; text-transform:uppercase; color:#c9a84c; margin-bottom:6px; }
+.rc-title { font-size:20px; font-weight:700; color:#1a1a1a; }
+.rc-sa { font-size:11px; color:#999; margin-top:4px; }
+.rc-body { padding:0 32px; }
+.rc-layer { padding:16px 0; border-bottom:1px solid #eeebe6; }
+.rc-layer:last-child { border-bottom:none; }
+.rc-layer-head { display:flex; align-items:baseline; gap:8px; margin-bottom:10px; }
+.rc-layer-num { font-size:9px; font-weight:700; color:#c9a84c; letter-spacing:2px; }
+.rc-layer-title { font-size:10px; font-weight:700; color:#1a1a1a; letter-spacing:2px; text-transform:uppercase; }
+.rc-row { display:flex; margin-bottom:5px; font-size:12px; }
+.rc-label { color:#999; font-size:10.5px; letter-spacing:1px; text-transform:uppercase; width:170px; flex-shrink:0; }
+.rc-val { color:#1a1a1a; font-weight:500; line-height:1.6; }
+.rc-val.highlight { color:#c9a84c; font-weight:600; }
+.rc-val.warn { color:#b4503c; }
+.rc-insight { font-size:12px; color:#555; line-height:1.7; border-left:2px solid #c9a84c; padding-left:10px; margin-top:6px; }
+.rc-foot { padding:10px 32px; border-top:1px solid #eeebe6; display:flex; justify-content:space-between; }
+.rc-foot-credit { font-size:9.5px; color:#ccc; }
+.rc-foot-date { font-size:9.5px; color:#ccc; }
 
 /* ── Print ── */
 @media print {
   body { background:#fff !important; }
-  nav, .progress-wrap, .preview-toolbar, .btn-row, .toolbar { display:none !important; }
-  #screen-form { display:none !important; }
-  #screen-preview { display:block !important; }
-  #cv-output { border:none; border-radius:0; }
+  nav, .hero, .form-wrap .layer-card, .generate-wrap, .recap-toolbar { display:none !important; }
+  #recap-output { display:block !important; }
+  #recap-card { border:none; }
   .form-wrap { margin:0; padding:0; max-width:100%; }
-  .step-card { display:none !important; }
 }
 
 @media (max-width:600px) {
   nav { padding:14px 20px; }
   .form-wrap { padding:0 16px; }
-  .step-card { padding:24px 20px; }
-  .field-row { grid-template-columns:1fr; }
-  .field-row3 { grid-template-columns:1fr 1fr; }
-  .profile-choice { grid-template-columns:1fr; }
-  .lang-row { grid-template-columns:1fr 1fr 36px; }
-  .cv-head { padding:20px 20px 14px; }
-  .cv-body { padding:0 20px; }
-  .cv-foot { padding:9px 20px; flex-direction:column; gap:2px; }
+  .layer-card { padding:22px 20px; }
+  .field-row, .field-row3 { grid-template-columns:1fr; }
+  .rule-inner { grid-template-columns:1fr; }
+  .rc-head, .rc-body, .rc-foot { padding-left:18px; padding-right:18px; }
+  .rc-label { width:130px; }
 }
 </style>
 </head>
 <body>
 
-<!-- Nav -->
 <nav>
-  <div class="wordmark">ccadance <span>/ sa cv builder</span></div>
+  <div class="wordmark">ccadance <span>/ daily crm recap</span></div>
   <div class="nav-right">
     <button class="lang-btn active" data-lang="en" onclick="setLang('en')">EN</button>
     <button class="lang-btn" data-lang="zh" onclick="setLang('zh')">中文</button>
-    <a href="index.html" class="nav-link" data-i18n="navBack">← Back to CCadance</a>
+    <a href="index.html" class="nav-link" data-i18n="navBack">← Back</a>
   </div>
 </nav>
 
-<!-- Progress -->
-<div class="progress-wrap" id="progress-wrap">
-  <div class="progress-bar">
-    <div class="prog-step active" id="prog-1">
-      <div class="prog-dot">1</div>
-      <div class="prog-label" data-i18n="progProfile">Profile</div>
-    </div>
-    <div class="prog-step" id="prog-2">
-      <div class="prog-dot">2</div>
-      <div class="prog-label" data-i18n="progInfo">Info</div>
-    </div>
-    <div class="prog-step" id="prog-3">
-      <div class="prog-dot">3</div>
-      <div class="prog-label" data-i18n="progStory">Story</div>
-    </div>
-    <div class="prog-step" id="prog-4">
-      <div class="prog-dot">4</div>
-      <div class="prog-label" data-i18n="progExp">Experience</div>
-    </div>
-    <div class="prog-step" id="prog-5">
-      <div class="prog-dot">5</div>
-      <div class="prog-label" data-i18n="progStrengths">Strengths</div>
-    </div>
-    <div class="prog-step" id="prog-6">
-      <div class="prog-dot">6</div>
-      <div class="prog-label" data-i18n="progGoal">Goal</div>
-    </div>
-    <div class="prog-step" id="prog-7">
-      <div class="prog-dot">7</div>
-      <div class="prog-label" data-i18n="progRefs">References</div>
-    </div>
-  </div>
+<div class="hero" id="screen-form-hero">
+  <div class="hero-eyebrow" data-i18n="eyebrow">Daily Practice · CRM Recap</div>
+  <div class="hero-title" data-i18n="heroTitle">Review your selling day.</div>
+  <div class="hero-sub" data-i18n="heroSub">Three layers. Five minutes. A clear record of how you built client relationships today — and what to do tomorrow.</div>
 </div>
 
-<!-- Form screens -->
 <div class="form-wrap" id="screen-form">
 
-  <!-- STEP 1: Profile type -->
-  <div class="step-card active" id="step-1">
-    <div class="step-eyebrow" data-i18n="s1Eye">Step 1 of 7</div>
-    <div class="step-title" data-i18n="s1Title">Where are you right now?</div>
-    <div class="step-sub" data-i18n="s1Sub">Your answer shapes how your CV is written. Both paths lead to a powerful result.</div>
-    <div class="profile-choice">
-      <div class="profile-opt" id="opt-new" onclick="selectProfile('new')">
-        <div class="profile-opt-icon">✦</div>
-        <div class="profile-opt-title" data-i18n="optNewTitle">New to luxury retail</div>
-        <div class="profile-opt-desc" data-i18n="optNewDesc">Less than 1 year of experience, or applying for your first SA role. Your story starts here.</div>
+  <!-- Top fields -->
+  <div class="layer-card" style="margin-top:28px;">
+    <div class="field-row">
+      <div class="field">
+        <label data-i18n="fDate">Date</label>
+        <input type="date" id="f-date">
       </div>
-      <div class="profile-opt" id="opt-exp" onclick="selectProfile('experienced')">
-        <div class="profile-opt-icon">◈</div>
-        <div class="profile-opt-title" data-i18n="optExpTitle">Experienced SA</div>
-        <div class="profile-opt-desc" data-i18n="optExpDesc">1 or more years on the floor. You have clients, targets, and a track record to show.</div>
+      <div class="field">
+        <label data-i18n="fName">Your Name</label>
+        <input type="text" id="f-name" placeholder="e.g. Sarah Chen">
       </div>
-    </div>
-    <div class="btn-row">
-      <div></div>
-      <button class="btn-primary" onclick="goStep(2)" data-i18n="btnNext">Continue →</button>
     </div>
   </div>
 
-  <!-- STEP 2: Personal Information -->
-  <div class="step-card" id="step-2">
-    <div class="step-eyebrow" data-i18n="s2Eye">Step 2 of 7</div>
-    <div class="step-title" data-i18n="s2Title">Personal Information</div>
-    <div class="step-sub" data-i18n="s2Sub">The basics. Your name and how a recruiter can reach you.</div>
+  <!-- Layer 1: Local Client Network -->
+  <div class="layer-card">
+    <div class="layer-num" data-i18n="l1num">Layer 1 of 3</div>
+    <div class="layer-title" data-i18n="l1title">Local Client Network</div>
+    <div class="layer-sub" data-i18n="l1sub">The clients closest to you — geographically and in trust. These are the relationships you build first.</div>
+
     <div class="field-row">
       <div class="field">
-        <label data-i18n="fName">Full Name <span class="req">*</span></label>
-        <input type="text" id="f-name" placeholder="As it appears on documents">
+        <label data-i18n="fLocalTotal">Total local clients in my portfolio</label>
+        <input type="number" id="f-local-total" placeholder="e.g. 45" min="0">
       </div>
       <div class="field">
-        <label data-i18n="fLocation">City / Country <span class="req">*</span></label>
-        <input type="text" id="f-location" placeholder="e.g. Singapore">
+        <label data-i18n="fLocal3km">Within 3km of my store</label>
+        <input type="number" id="f-local-3km" placeholder="e.g. 18" min="0">
+        <div class="field-hint" data-i18n="fLocal3kmHint">These clients should hear from you most often. They can visit anytime.</div>
       </div>
     </div>
-    <div class="field-row">
-      <div class="field">
-        <label data-i18n="fEmail">Email <span class="req">*</span></label>
-        <input type="email" id="f-email" placeholder="your@email.com">
-      </div>
-      <div class="field">
-        <label data-i18n="fPhone">Phone</label>
-        <input type="tel" id="f-phone" placeholder="+65 xxxx xxxx">
-      </div>
-    </div>
+
     <div class="field">
-      <label data-i18n="fLangs">Languages <span class="req">*</span></label>
-      <div id="lang-list">
-        <div class="lang-row">
-          <input type="text" class="lang-name" placeholder="e.g. English">
-          <select class="lang-level">
-            <option value="">Level</option>
-            <option value="Native">Native</option>
-            <option value="Fluent">Fluent</option>
-            <option value="Professional">Professional</option>
-            <option value="Conversational">Conversational</option>
-          </select>
-          <button class="lang-remove" onclick="removeLang(this)">×</button>
+      <label data-i18n="fVisitedNoBuy">Who visited today but did not buy?</label>
+      <textarea id="f-visited-nobuy" placeholder="e.g. Ms. Wang — looked at the new coat, hesitated on price. She comes every 2 weeks. I will follow up in 3 days."></textarea>
+      <div class="field-hint" data-i18n="fVisitedNoBuyHint">Focus on who is genuinely interested but not ready yet. These are your next buyers — not lost clients.</div>
+    </div>
+
+    <div class="field">
+      <label data-i18n="fLocalInvite">Who will I contact or invite from my local network this week?</label>
+      <textarea id="f-local-invite" placeholder="e.g. Ms. Li — new arrival in her style. Mr. Park — his wife's birthday is next week."></textarea>
+    </div>
+  </div>
+
+  <!-- Layer 2: Loyal & VIP Clients -->
+  <div class="layer-card">
+    <div class="layer-num" data-i18n="l2num">Layer 2 of 3</div>
+    <div class="layer-title" data-i18n="l2title">Loyal & VIP Clients</div>
+    <div class="layer-sub" data-i18n="l2sub">The clients who trust you most. They pay the most, return the most, and need your attention every month.</div>
+
+    <div class="field-row">
+      <div class="field">
+        <label data-i18n="fLoyalCount">Loyal clients on hand</label>
+        <input type="number" id="f-loyal-count" placeholder="e.g. 12" min="0">
+      </div>
+      <div class="field">
+        <label data-i18n="fVipCount">VIP clients on hand</label>
+        <input type="number" id="f-vip-count" placeholder="e.g. 3" min="0">
+        <div class="field-hint" data-i18n="fVipHint">VIP = spent €5K+ in last 12 months, or loyal 3+ years. Every VIP must be contacted at least once this month.</div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label data-i18n="fSpecialCase">Special case today — any important client moment?</label>
+      <textarea id="f-special-case" placeholder="e.g. Ms. Chen called to say she is moving to Beijing in May. I noted this and will plan a farewell appointment before she leaves."></textarea>
+      <div class="field-hint" data-i18n="fSpecialCaseHint">A complaint, a personal detail shared, a difficult conversation, a client who surprised you — write it down.</div>
+    </div>
+
+    <div class="field">
+      <label data-i18n="fLearned">What did I learn today about one of my clients?</label>
+      <textarea id="f-learned" placeholder="e.g. Ms. Park mentioned her daughter is getting married in September. This is relevant for gifting and occasion dressing."></textarea>
+    </div>
+  </div>
+
+  <!-- Layer 3: 333 Rule -->
+  <div class="layer-card">
+    <div class="layer-num" data-i18n="l3num">Layer 3 of 3</div>
+    <div class="layer-title" data-i18n="l3title">333 Rule — Daily Check</div>
+    <div class="layer-sub" data-i18n="l3sub">The 333 rule is not a task — it is your first duty to every new client. Day 3, Day 21, 3 months. Did you follow it today?</div>
+
+    <div class="rule-row">
+      <div class="rule-label" data-i18n="r3day">Day 3 Contact</div>
+      <div class="rule-inner">
+        <input type="text" id="r-3day-who" placeholder="Who was due for Day 3 contact today?">
+        <div class="rule-status">
+          <button class="status-btn" onclick="setStatus(this,'3day','yes')" data-i18n="sDone">Done</button>
+          <button class="status-btn" onclick="setStatus(this,'3day','partial')" data-i18n="sPartial">Partial</button>
+          <button class="status-btn" onclick="setStatus(this,'3day','no')" data-i18n="sNot">Not done</button>
         </div>
       </div>
-      <button class="add-btn" onclick="addLang()" data-i18n="btnAddLang">+ Add another language</button>
-      <div class="field-hint" data-i18n="langHint">Luxury retail values multilingual SAs highly. List every language you use with clients.</div>
     </div>
-    <div class="btn-row">
-      <button class="btn-secondary" onclick="goStep(1)" data-i18n="btnBack">← Back</button>
-      <button class="btn-primary" onclick="goStep(3)" data-i18n="btnNext">Continue →</button>
+
+    <div class="rule-row">
+      <div class="rule-label" data-i18n="r21day">Day 21 Contact</div>
+      <div class="rule-inner">
+        <input type="text" id="r-21day-who" placeholder="Who was due for Day 21 contact today?">
+        <div class="rule-status">
+          <button class="status-btn" onclick="setStatus(this,'21day','yes')" data-i18n="sDone">Done</button>
+          <button class="status-btn" onclick="setStatus(this,'21day','partial')" data-i18n="sPartial">Partial</button>
+          <button class="status-btn" onclick="setStatus(this,'21day','no')" data-i18n="sNot">Not done</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="rule-row">
+      <div class="rule-label" data-i18n="r3month">3-Month Contact</div>
+      <div class="rule-inner">
+        <input type="text" id="r-3month-who" placeholder="Who was due for 3-month contact today?">
+        <div class="rule-status">
+          <button class="status-btn" onclick="setStatus(this,'3month','yes')" data-i18n="sDone">Done</button>
+          <button class="status-btn" onclick="setStatus(this,'3month','partial')" data-i18n="sPartial">Partial</button>
+          <button class="status-btn" onclick="setStatus(this,'3month','no')" data-i18n="sNot">Not done</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="field" style="margin-top:16px;">
+      <label data-i18n="f333Result">Did anyone come back to buy as a result of your 333 follow-up?</label>
+      <textarea id="f-333-result" placeholder="e.g. Ms. Lim came back — she was my Day 21 contact from 2 weeks ago. She bought the bag she was hesitating on. Follow-up works." style="min-height:70px;"></textarea>
     </div>
   </div>
 
-  <!-- STEP 3: Personal Statement -->
-  <div class="step-card" id="step-3">
-    <div class="step-eyebrow" data-i18n="s3Eye">Step 3 of 7</div>
-    <div class="step-title" data-i18n="s3Title">Your Story</div>
-    <div class="step-sub" id="s3-sub">Answer in your own words — short is fine. We build the statement from your answers.</div>
-    <div class="field" id="s3-q1-wrap">
-      <label id="s3-q1-label"></label>
-      <textarea id="s3-q1" rows="3" placeholder=""></textarea>
-    </div>
+  <!-- Tomorrow -->
+  <div class="layer-card">
+    <div class="layer-title" data-i18n="tomorrowTitle">Tomorrow's Focus</div>
+    <div class="layer-sub" data-i18n="tomorrowSub">One priority. One action. Keep it specific.</div>
     <div class="field">
-      <label id="s3-q2-label"></label>
-      <textarea id="s3-q2" rows="3" placeholder=""></textarea>
-    </div>
-    <div class="field">
-      <label id="s3-q3-label"></label>
-      <textarea id="s3-q3" rows="2" placeholder=""></textarea>
-      <div class="field-hint" data-i18n="s3Hint">No need to write perfect sentences. Key words are enough — we shape the language.</div>
-    </div>
-    <div class="btn-row">
-      <button class="btn-secondary" onclick="goStep(2)" data-i18n="btnBack">← Back</button>
-      <button class="btn-primary" onclick="goStep(4)" data-i18n="btnNext">Continue →</button>
+      <label data-i18n="fTomorrow">What is the one thing I will do tomorrow for my clients?</label>
+      <input type="text" id="f-tomorrow" placeholder="e.g. Call Ms. Wang — Day 3 follow-up on the coat she liked. Have a story ready about the fabric.">
     </div>
   </div>
 
-  <!-- STEP 4: Experience -->
-  <div class="step-card" id="step-4">
-    <div class="step-eyebrow" data-i18n="s4Eye">Step 4 of 7</div>
-    <div class="step-title" id="s4-title"></div>
-    <div class="step-sub" id="s4-sub"></div>
-    <div id="exp-blocks"></div>
-    <button class="add-btn" id="add-exp-btn" onclick="addExpBlock()" data-i18n="btnAddRole">+ Add another role</button>
-    <label class="no-exp-toggle" id="no-exp-toggle">
-      <input type="checkbox" id="no-exp-check" onchange="toggleNoExp(this)">
-      <span data-i18n="noExpLabel">I don't have retail experience yet</span>
-    </label>
-    <div class="btn-row">
-      <button class="btn-secondary" onclick="goStep(3)" data-i18n="btnBack">← Back</button>
-      <button class="btn-primary" onclick="goStep(5)" data-i18n="btnNext">Continue →</button>
-    </div>
+  <div class="generate-wrap">
+    <button class="btn-generate" onclick="buildRecap()" data-i18n="btnGenerate">Generate my recap →</button>
   </div>
 
-  <!-- STEP 5: Capacity / Strengths -->
-  <div class="step-card" id="step-5">
-    <div class="step-eyebrow" data-i18n="s5Eye">Step 5 of 7</div>
-    <div class="step-title" data-i18n="s5Title">Your Strengths</div>
-    <div class="step-sub" data-i18n="s5Sub">Answer what applies to you. The system selects your top 3 strongest skills automatically — only those appear in your CV.</div>
+</div><!-- end form -->
 
-    <div class="cap-section" id="cap-sales-section">
-      <div class="cap-section-title" data-i18n="capSalesTitle">Sales Performance</div>
-      <div class="cap-q">
-        <label data-i18n="capQ-S2">Did you consistently hit your sales target? What was your best result? (e.g. "110% every month at Brand X")</label>
-        <textarea id="cap-S2" rows="2" placeholder="e.g. Consistently above 110% at Furla. Ranked #1 in store for Q3."></textarea>
-      </div>
-      <div class="cap-q">
-        <label data-i18n="capQ-S1">Have you grown a client's spending into a new category? Give a specific example.</label>
-        <textarea id="cap-S1" rows="2" placeholder="e.g. Introduced a bag client to RTW — she now buys full looks each season."></textarea>
-      </div>
+<!-- Recap output -->
+<div class="form-wrap" id="recap-output">
+  <div class="recap-toolbar">
+    <div class="recap-toolbar-left">
+      <strong data-i18n="recapReady">Your daily recap is ready.</strong>
+      <span data-i18n="recapSub"> Save it, print it, or share it with your manager.</span>
     </div>
-
-    <div class="cap-section">
-      <div class="cap-section-title" data-i18n="capClientTitle">Client Relationships</div>
-      <div class="cap-q">
-        <label data-i18n="capQ-C1">How many active clients do you manage or contact regularly? Do you have a follow-up system?</label>
-        <textarea id="cap-C1" rows="2" placeholder="e.g. 80 active clients. I call or message them on a schedule after each purchase."></textarea>
-      </div>
-      <div class="cap-q">
-        <label data-i18n="capQ-C2">How many new clients did you bring in last year? How do you convert walk-in clients?</label>
-        <textarea id="cap-C2" rows="2" placeholder="e.g. 47 new clients last year. I always take their contact on the first visit."></textarea>
-      </div>
-      <div class="cap-q">
-        <label data-i18n="capQ-C3">Do you have VIP clients? Have clients ever followed you when you moved to a new brand?</label>
-        <textarea id="cap-C3" rows="2" placeholder="e.g. 5 VIP clients. Two followed me from Furla to my current role."></textarea>
-      </div>
-    </div>
-
-    <div class="cap-section">
-      <div class="cap-section-title" data-i18n="capProductTitle">Product & Style</div>
-      <div class="cap-q">
-        <label data-i18n="capQ-P3">Which brands have you been formally trained on? Which product categories do you know deeply?</label>
-        <textarea id="cap-P3" rows="2" placeholder="e.g. Trained: Furla (leather goods), Clarins (skincare). Deep knowledge: bags, RTW women."></textarea>
-      </div>
-      <div class="cap-q">
-        <label data-i18n="capQ-P2">Have you given style or wardrobe advice to clients? Give a specific example with a result.</label>
-        <textarea id="cap-P2" rows="2" placeholder="e.g. I rebuilt a client's wardrobe from RTW into full looks. Her annual spend grew by 40%."></textarea>
-      </div>
-      <div class="cap-q">
-        <label data-i18n="capQ-P1">Are you known for product storytelling? How do you make a product feel personal to a client?</label>
-        <textarea id="cap-P1" rows="2" placeholder="e.g. I always connect the product to the client's life — occasion, memory, or a specific detail they shared."></textarea>
-      </div>
-    </div>
-
-    <div class="cap-section">
-      <div class="cap-section-title" data-i18n="capCommunityTitle">Community & Events</div>
-      <div class="cap-q">
-        <label data-i18n="capQ-R2">Have you hosted or helped organise any in-store events, VIP previews, or client evenings?</label>
-        <textarea id="cap-R2" rows="2" placeholder="e.g. Invited and hosted 15 VIP clients at Furla's Jewel opening event."></textarea>
-      </div>
-      <div class="cap-q">
-        <label data-i18n="capQ-R3">Do you use WeChat, LINE, KakaoTalk, Instagram, or WhatsApp to stay in contact with clients?</label>
-        <textarea id="cap-R3" rows="2" placeholder="e.g. I manage 40+ clients on WeChat. I send personalised new arrival messages each season."></textarea>
-      </div>
-    </div>
-
-    <div class="cap-section">
-      <div class="cap-section-title" data-i18n="capProfTitle">Professional</div>
-      <div class="cap-q">
-        <label data-i18n="capQ-Q4">Have you trained or coached a junior SA? What was the result?</label>
-        <textarea id="cap-Q4" rows="2" placeholder="e.g. Coached 2 new joiners at Clarins. Both hit their first-month KPI."></textarea>
-      </div>
-      <div class="cap-q">
-        <label data-i18n="capQ-Q3">Describe your after-sales follow-up. How do you stay in touch with clients after a purchase?</label>
-        <textarea id="cap-Q3" rows="2" placeholder="e.g. I message on Day 3, Day 21, and 3 months. I note personal details to use next time."></textarea>
-      </div>
-    </div>
-
-    <div class="btn-row">
-      <button class="btn-secondary" onclick="goStep(4)" data-i18n="btnBack">← Back</button>
-      <button class="btn-primary" onclick="goStep(6)" data-i18n="btnNext">Continue →</button>
+    <div class="recap-actions">
+      <button class="btn-edit" onclick="backToForm()" data-i18n="btnEdit">← Edit</button>
+      <button class="btn-print" onclick="window.print()" data-i18n="btnPrint">↓ Print / Save PDF</button>
     </div>
   </div>
-
-  <!-- STEP 6: Career Expectation -->
-  <div class="step-card" id="step-6">
-    <div class="step-eyebrow" data-i18n="s6Eye">Step 6 of 7</div>
-    <div class="step-title" data-i18n="s6Title">Career Expectation</div>
-    <div class="step-sub" data-i18n="s6Sub">Four clear lines. A recruiter reads this in 10 seconds — make it count.</div>
-    <div class="field">
-      <label data-i18n="fTargetRole">Target role <span class="req">*</span></label>
-      <input type="text" id="f-target-role" placeholder="e.g. Senior Sales Associate — Luxury Fashion Brand">
-      <div class="field-hint" data-i18n="targetRoleHint">Be specific. "SA at a luxury brand" is too vague. Name the tier or function.</div>
-    </div>
-    <div class="field">
-      <label data-i18n="fTargetEnv">Target environment</label>
-      <input type="text" id="f-target-env" placeholder="e.g. Flagship boutique · client-first culture · Singapore or regional">
-    </div>
-    <div class="field">
-      <label data-i18n="fSkillsDev">Skills you want to develop</label>
-      <input type="text" id="f-skills-dev" placeholder="e.g. VIP portfolio management · brand storytelling in a new category">
-      <div class="field-hint" data-i18n="skillsDevHint">Self-awareness is a strength here, not a weakness.</div>
-    </div>
-    <div class="field">
-      <label data-i18n="fSalary">Salary expectation <span class="req">*</span></label>
-      <input type="text" id="f-salary" placeholder='e.g. SGD $4,500–5,500 base + commission, or write "Negotiable"'>
-      <div class="field-hint" data-i18n="salaryHint">Always state a number or "Negotiable". Leaving this blank makes you look unprepared.</div>
-    </div>
-    <div class="btn-row">
-      <button class="btn-secondary" onclick="goStep(5)" data-i18n="btnBack">← Back</button>
-      <button class="btn-primary" onclick="goStep(7)" data-i18n="btnNext">Continue →</button>
-    </div>
-  </div>
-
-  <!-- STEP 7: References -->
-  <div class="step-card" id="step-7">
-    <div class="step-eyebrow" data-i18n="s7Eye">Step 7 of 7</div>
-    <div class="step-title" data-i18n="s7Title">References</div>
-    <div class="step-sub" data-i18n="s7Sub">Two contacts for background checks. Name, title, company, and a phone number or email. That is all the recruiter needs.</div>
-    <div class="field">
-      <label data-i18n="fRef1Name">Reference 1 — Full Name</label>
-      <input type="text" id="ref1-name" placeholder="Full name">
-    </div>
-    <div class="field-row3">
-      <div class="field">
-        <label data-i18n="fRef1Title">Title</label>
-        <input type="text" id="ref1-title" placeholder="e.g. Store Manager">
-      </div>
-      <div class="field">
-        <label data-i18n="fRef1Co">Company</label>
-        <input type="text" id="ref1-co" placeholder="e.g. Furla Singapore">
-      </div>
-      <div class="field">
-        <label data-i18n="fRef1Contact">Phone / Email</label>
-        <input type="text" id="ref1-contact" placeholder="Contact">
-      </div>
-    </div>
-    <div class="field" style="margin-top:8px;">
-      <label data-i18n="fRef2Name">Reference 2 — Full Name</label>
-      <input type="text" id="ref2-name" placeholder="Full name">
-    </div>
-    <div class="field-row3">
-      <div class="field">
-        <label data-i18n="fRef2Title">Title</label>
-        <input type="text" id="ref2-title" placeholder="e.g. Area Manager">
-      </div>
-      <div class="field">
-        <label data-i18n="fRef2Co">Company</label>
-        <input type="text" id="ref2-co" placeholder="e.g. Clarins Singapore">
-      </div>
-      <div class="field">
-        <label data-i18n="fRef2Contact">Phone / Email</label>
-        <input type="text" id="ref2-contact" placeholder="Contact">
-      </div>
-    </div>
-    <label class="no-exp-toggle" style="margin-top:16px;">
-      <input type="checkbox" id="ref-onrequest" onchange="toggleRefOnRequest(this)">
-      <span data-i18n="refOnRequest">Prefer not to list yet — write "Available on request"</span>
-    </label>
-    <div class="btn-row">
-      <button class="btn-secondary" onclick="goStep(6)" data-i18n="btnBack">← Back</button>
-      <button class="btn-primary" onclick="buildAndPreview()" data-i18n="btnGenerate">Build my CV →</button>
-    </div>
-  </div>
-
-</div><!-- end screen-form -->
-
-<!-- Preview screen -->
-<div class="form-wrap" id="screen-preview">
-  <div class="preview-toolbar">
-    <div class="preview-toolbar-left">
-      <strong data-i18n="previewReady">Your CV is ready.</strong>
-      <span data-i18n="previewSub"> Review below, then download as PDF.</span>
-    </div>
-    <div class="preview-actions">
-      <button class="btn-edit" onclick="backToEdit()" data-i18n="btnEdit">← Edit</button>
-      <button class="btn-download" onclick="window.print()" data-i18n="btnDownload">↓ Download PDF</button>
-    </div>
-  </div>
-  <div id="cv-output"></div>
+  <div id="recap-card"></div>
 </div>
 
 <script>
-// ─── State ───────────────────────────────────────────────────────────
-let currentStep = 1;
-let saProfile = null; // 'new' or 'experienced'
-let expCount = 0;
-let currentLang = localStorage.getItem('ccadance-cv-lang') || 'en';
+let currentLang = localStorage.getItem('ccadance-recap-lang') || 'en';
+const ruleStatus = { '3day':'', '21day':'', '3month':'' };
 
-// ─── Strings ─────────────────────────────────────────────────────────
 const STR = {
   en: {
-    navBack:'← Back to CCadance',
-    progProfile:'Profile', progInfo:'Info', progStory:'Story',
-    progExp:'Experience', progStrengths:'Strengths', progGoal:'Goal', progRefs:'References',
-    s1Eye:'Step 1 of 7', s1Title:'Where are you right now?',
-    s1Sub:'Your answer shapes how your CV is written. Both paths lead to a powerful result.',
-    optNewTitle:'New to luxury retail', optNewDesc:'Less than 1 year of experience, or applying for your first SA role. Your story starts here.',
-    optExpTitle:'Experienced SA', optExpDesc:'1 or more years on the floor. You have clients, targets, and a track record to show.',
-    s2Eye:'Step 2 of 7', s2Title:'Personal Information',
-    s2Sub:'The basics. Your name and how a recruiter can reach you.',
-    fName:'Full Name', fLocation:'City / Country', fEmail:'Email', fPhone:'Phone',
-    fLangs:'Languages', btnAddLang:'+ Add another language',
-    langHint:'Luxury retail values multilingual SAs highly. List every language you use with clients.',
-    s3Eye:'Step 3 of 7', s3Title:'Your Story',
-    s3SubNew:'Tell us about yourself in your own words. Short answers are fine — we shape the writing.',
-    s3SubExp:'Tell us about your selling approach. Key words are enough — we shape the language.',
-    s3Q1New:'Why luxury retail? What draws you to this industry?',
-    s3Q2New:'Describe a time you helped someone find exactly what they needed — in any context.',
-    s3Q3New:'In one sentence: what does great client service look like to you?',
-    s3Q1Exp:'What type of client do you serve best? Describe them.',
-    s3Q2Exp:'What makes your approach to selling different from others?',
-    s3Q3Exp:'In one sentence: what is your client relationship philosophy?',
-    s3Hint:'No need to write perfect sentences. Key words are enough — we shape the language.',
-    s4Eye:'Step 4 of 7',
-    s4TitleNew:'Education & Early Experience', s4SubNew:'List any courses, internships, or work experience — luxury retail or not. Every role counts.',
-    s4TitleExp:'Experience', s4SubExp:'Your 3 most recent or relevant roles. Earlier experience is summarised automatically.',
-    expBrandLabel:'Brand / Company', expRoleLabel:'Job Title', expDatesLabel:'Dates (e.g. 2022–2024)',
-    expLocLabel:'Location', expAchLabel:'Key achievement or result (include a number if you can)',
-    expAchPlaceholder:'e.g. Consistently above target · Promoted within 6 months · Led store opening',
-    btnAddRole:'+ Add another role', noExpLabel:"I don't have retail experience yet",
-    s5Eye:'Step 5 of 7', s5Title:'Your Strengths',
-    s5Sub:'Answer what applies to you. The system selects your top 3 strongest skills automatically — only those appear in your CV.',
-    capSalesTitle:'Sales Performance', capClientTitle:'Client Relationships',
-    capProductTitle:'Product & Style', capCommunityTitle:'Community & Events', capProfTitle:'Professional',
-    'capQ-S2':'Did you consistently hit your sales target? What was your best result?',
-    'capQ-S1':'Have you grown a client\'s spending into a new category? Give a specific example.',
-    'capQ-C1':'How many active clients do you manage or contact regularly? Do you have a follow-up system?',
-    'capQ-C2':'How many new clients did you bring in last year? How do you convert walk-in clients?',
-    'capQ-C3':'Do you have VIP clients? Have clients ever followed you when you moved to a new brand?',
-    'capQ-P3':'Which brands have you been formally trained on? Which product categories do you know deeply?',
-    'capQ-P2':'Have you given style or wardrobe advice to clients? Give a specific example with a result.',
-    'capQ-P1':'Are you known for product storytelling? How do you make a product feel personal to a client?',
-    'capQ-R2':'Have you hosted or helped organise any in-store events, VIP previews, or client evenings?',
-    'capQ-R3':'Do you use WeChat, LINE, KakaoTalk, Instagram, or WhatsApp to stay in contact with clients?',
-    'capQ-Q4':'Have you trained or coached a junior SA? What was the result?',
-    'capQ-Q3':'Describe your after-sales follow-up. How do you stay in touch with clients after a purchase?',
-    s6Eye:'Step 6 of 7', s6Title:'Career Expectation',
-    s6Sub:'Four clear lines. A recruiter reads this in 10 seconds — make it count.',
-    fTargetRole:'Target role', targetRoleHint:'Be specific. "SA at a luxury brand" is too vague. Name the tier or function.',
-    fTargetEnv:'Target environment', fSkillsDev:'Skills you want to develop',
-    skillsDevHint:'Self-awareness is a strength here, not a weakness.',
-    fSalary:'Salary expectation', salaryHint:'Always state a number or "Negotiable". Leaving this blank makes you look unprepared.',
-    s7Eye:'Step 7 of 7', s7Title:'References',
-    s7Sub:'Two contacts for background checks. Name, title, company, and a phone number or email.',
-    fRef1Name:'Reference 1 — Full Name', fRef1Title:'Title', fRef1Co:'Company', fRef1Contact:'Phone / Email',
-    fRef2Name:'Reference 2 — Full Name', fRef2Title:'Title', fRef2Co:'Company', fRef2Contact:'Phone / Email',
-    refOnRequest:'Prefer not to list yet — write "Available on request"',
-    btnNext:'Continue →', btnBack:'← Back', btnGenerate:'Build my CV →',
-    previewReady:'Your CV is ready.', previewSub:' Review below, then download as PDF.',
-    btnEdit:'← Edit', btnDownload:'↓ Download PDF', btnEdit2:'← Edit',
-    // CV output strings
-    cvTitleNew:'Sales Associate · Luxury Retail', cvTitleExp:'Sales Associate · Luxury Retail',
-    cvSecStatement:'Personal Statement', cvSecStatementCn:'个人陈述',
-    cvSecExp:'Experience', cvSecExpCn:'工作经历',
-    cvSecExpNew:'Education & Development', cvSecExpNewCn:'教育与成长',
-    cvSecCapacity:'Capacity', cvSecCapacityCn:'核心能力',
-    cvSecExpect:'Career Expectation', cvSecExpectCn:'职业期望',
-    cvSecRefs:'References', cvSecRefsCn:'背景调查联系人',
-    cvLabelRole:'Target role', cvLabelEnv:'Target environment',
-    cvLabelSkills:'Skills to develop', cvLabelSalary:'Salary expectation',
-    cvEarlier:'Earlier', cvRefOnRequest:'Available on request',
-    cvFooter:'Generated with the JYS Retail SA Professional CV Framework · ccadance.com',
-    // Skill names & descriptions (generated)
-    skillNames:{
-      S2:'Consistent Target Achievement', S1:'Cross-Category Selling', C1:'Client Portfolio Management',
-      C2:'New Client Acquisition', C3:'VIP Client Management', C4:'Relationship Longevity',
-      P3:'Brand & Category Knowledge', P2:'Styling Advisory', P1:'Brand Storytelling',
-      R2:'Client Event Hosting', R3:'Digital Client Engagement', Q4:'SA Coaching & Development',
-      Q3:'After-Sales Follow-Up Discipline', Q1:'Multilingual Client Service'
-    }
+    navBack:'← Back', eyebrow:'Daily Practice · CRM Recap',
+    heroTitle:'Review your selling day.',
+    heroSub:'Three layers. Five minutes. A clear record of how you built client relationships today — and what to do tomorrow.',
+    fDate:'Date', fName:'Your Name',
+    l1num:'Layer 1 of 3', l1title:'Local Client Network',
+    l1sub:'The clients closest to you — geographically and in trust. These are the relationships you build first.',
+    fLocalTotal:'Total local clients in my portfolio',
+    fLocal3km:'Within 3km of my store',
+    fLocal3kmHint:'These clients should hear from you most often. They can visit anytime.',
+    fVisitedNoBuy:'Who visited today but did not buy?',
+    fVisitedNoBuyHint:'Focus on who is genuinely interested but not ready yet. These are your next buyers — not lost clients.',
+    fLocalInvite:'Who will I contact or invite from my local network this week?',
+    l2num:'Layer 2 of 3', l2title:'Loyal & VIP Clients',
+    l2sub:'The clients who trust you most. They pay the most, return the most, and need your attention every month.',
+    fLoyalCount:'Loyal clients on hand', fVipCount:'VIP clients on hand',
+    fVipHint:'VIP = spent €5K+ in last 12 months, or loyal 3+ years. Every VIP must be contacted at least once this month.',
+    fSpecialCase:'Special case today — any important client moment?',
+    fSpecialCaseHint:'A complaint, a personal detail shared, a difficult conversation, a client who surprised you — write it down.',
+    fLearned:'What did I learn today about one of my clients?',
+    l3num:'Layer 3 of 3', l3title:'333 Rule — Daily Check',
+    l3sub:'The 333 rule is not a task — it is your first duty to every new client. Day 3, Day 21, 3 months. Did you follow it today?',
+    r3day:'Day 3 Contact', r21day:'Day 21 Contact', r3month:'3-Month Contact',
+    sDone:'Done', sPartial:'Partial', sNot:'Not done',
+    f333Result:'Did anyone come back to buy as a result of your 333 follow-up?',
+    tomorrowTitle:"Tomorrow's Focus",
+    tomorrowSub:'One priority. One action. Keep it specific.',
+    fTomorrow:'What is the one thing I will do tomorrow for my clients?',
+    btnGenerate:'Generate my recap →',
+    recapReady:'Your daily recap is ready.',
+    recapSub:' Save it, print it, or share it with your manager.',
+    btnEdit:'← Edit', btnPrint:'↓ Print / Save PDF',
+    rcTitle:'Selling Day Recap', rcCredit:'CCadance in Retail · Daily CRM Practice · ccadance.com',
+    rcL1:'Local Client Network', rcL2:'Loyal & VIP Clients', rcL3:'333 Rule',
+    rcLocalTotal:'Local clients', rcLocal3km:'Within 3km',
+    rcVisited:'Did not buy today', rcInvite:'Contacting this week',
+    rcLoyal:'Loyal clients', rcVip:'VIP clients',
+    rcSpecial:'Special case', rcLearned:'Learned today',
+    rc3day:'Day 3', rc21day:'Day 21', rc3month:'3 months',
+    rc333Result:'333 result today', rcTomorrow:"Tomorrow's focus",
+    statusYes:'✓ Done', statusPartial:'~ Partial', statusNo:'✗ Not done', statusNone:'— Not recorded',
   },
   zh: {
-    navBack:'← 返回 CCadance',
-    progProfile:'类型', progInfo:'信息', progStory:'故事',
-    progExp:'经历', progStrengths:'优势', progGoal:'期望', progRefs:'推荐人',
-    s1Eye:'第1步 / 共7步', s1Title:'你目前的情况是？',
-    s1Sub:'你的回答将决定简历的呈现方式。两条路径都能产出有力的结果。',
-    optNewTitle:'初入奢侈品零售', optNewDesc:'工作经验不足一年，或正在申请第一份销售顾问职位。你的故事从这里开始。',
-    optExpTitle:'有经验的销售顾问', optExpDesc:'一年及以上的地面销售经验。你有客户、有业绩目标、有可以展示的工作履历。',
-    s2Eye:'第2步 / 共7步', s2Title:'个人信息',
-    s2Sub:'基础信息。你的姓名以及招聘方如何联系到你。',
-    fName:'全名', fLocation:'城市 / 国家', fEmail:'邮箱', fPhone:'电话',
-    fLangs:'语言能力', btnAddLang:'+ 添加语言',
-    langHint:'多语言能力在奢侈品零售中极具价值。请列出你用于客户服务的每一种语言。',
-    s3Eye:'第3步 / 共7步', s3Title:'你的故事',
-    s3SubNew:'用自己的话描述。简短的回答也没问题——我们会帮你整理成流畅的文字。',
-    s3SubExp:'描述你的销售风格。关键词即可——我们会帮你整理成专业语言。',
-    s3Q1New:'为什么选择奢侈品零售？是什么吸引你进入这个行业？',
-    s3Q2New:'请描述一次你帮助他人找到所需之物的经历——任何场景都可以。',
-    s3Q3New:'用一句话描述：在你看来，什么是真正优质的客户服务？',
-    s3Q1Exp:'你最擅长服务哪类客户？请描述他们。',
-    s3Q2Exp:'你的销售方式与其他人有什么不同？',
-    s3Q3Exp:'用一句话表达：你的客户关系理念是什么？',
-    s3Hint:'不需要写完整的句子。关键词即可——我们会帮你整理成专业语言。',
-    s4Eye:'第4步 / 共7步',
-    s4TitleNew:'教育背景与早期经历', s4SubNew:'列出任何课程、实习或工作经历——奢侈品行业内外均可。每段经历都有价值。',
-    s4TitleExp:'工作经历', s4SubExp:'你最近或最相关的3段工作经历。更早的经历将自动归为一行简述。',
-    expBrandLabel:'品牌 / 公司', expRoleLabel:'职位', expDatesLabel:'任职时间（如2022–2024）',
-    expLocLabel:'地点', expAchLabel:'核心成就或业绩（尽量包含数字）',
-    expAchPlaceholder:'如：持续超额完成目标 · 6个月内晋升 · 主导门店开业',
-    btnAddRole:'+ 添加另一段经历', noExpLabel:'我目前还没有零售工作经验',
-    s5Eye:'第5步 / 共7步', s5Title:'你的核心优势',
-    s5Sub:'回答适用于你的问题。系统会自动评分并选出你最强的3项技能，只有这3项会出现在你的简历中。',
-    capSalesTitle:'销售业绩', capClientTitle:'客户关系',
-    capProductTitle:'产品与风格', capCommunityTitle:'社群与活动', capProfTitle:'职业素养',
-    'capQ-S2':'你是否持续达成销售目标？你最好的成绩是什么？',
-    'capQ-S1':'你是否曾引导客户在新品类上增加消费？请给出具体案例。',
-    'capQ-C1':'你目前定期维护或联系多少位活跃客户？你有系统化的跟进方式吗？',
-    'capQ-C2':'你去年新开发了多少客户？你如何将到店客人转化为注册客户？',
-    'capQ-C3':'你有VIP客户吗？是否有客户在你换品牌时跟随你而来？',
-    'capQ-P3':'你曾接受过哪些品牌的正式培训？你对哪些产品品类有深入了解？',
-    'capQ-P2':'你是否为客户提供过风格或衣橱建议？请给出具体案例并说明结果。',
-    'capQ-P1':'你是否擅长以故事方式介绍产品？你如何让产品与客户的生活产生共鸣？',
-    'capQ-R2':'你是否曾参与组织或主持门店活动、VIP预览会或客户晚宴？',
-    'capQ-R3':'你是否使用微信、LINE、KakaoTalk、Instagram或WhatsApp与客户保持联系？',
-    'capQ-Q4':'你是否曾培训或辅导过初级销售顾问？结果如何？',
-    'capQ-Q3':'描述你的售后跟进方式。购买后你如何持续与客户保持联系？',
-    s6Eye:'第6步 / 共7步', s6Title:'职业期望',
-    s6Sub:'四行清晰的内容。招聘方10秒内就能读完——让每一行都有分量。',
-    fTargetRole:'目标职位', targetRoleHint:'请具体说明。"在奢侈品牌做SA"太模糊——请指出层级或职能方向。',
-    fTargetEnv:'目标工作环境', fSkillsDev:'希望发展的技能',
-    skillsDevHint:'自我认知在这里是优势，不是弱点。',
-    fSalary:'薪资期望', salaryHint:'请明确填写数字或"面议"。空白会让你显得准备不足。',
-    s7Eye:'第7步 / 共7步', s7Title:'背景调查联系人',
-    s7Sub:'两位联系人，用于背景调查。姓名、职位、公司及联系方式即可。',
-    fRef1Name:'推荐人1 — 全名', fRef1Title:'职位', fRef1Co:'公司', fRef1Contact:'电话 / 邮箱',
-    fRef2Name:'推荐人2 — 全名', fRef2Title:'职位', fRef2Co:'公司', fRef2Contact:'电话 / 邮箱',
-    refOnRequest:'暂不公开——填写"可提供联系方式"',
-    btnNext:'继续 →', btnBack:'← 返回', btnGenerate:'生成我的简历 →',
-    previewReady:'你的简历已生成。', previewSub:'请在下方预览，满意后下载PDF。',
-    btnEdit:'← 编辑', btnDownload:'↓ 下载PDF',
-    cvTitleNew:'销售顾问 · 奢侈品零售', cvTitleExp:'销售顾问 · 奢侈品零售',
-    cvSecStatement:'个人陈述', cvSecStatementCn:'Personal Statement',
-    cvSecExp:'工作经历', cvSecExpCn:'Experience',
-    cvSecExpNew:'教育与成长', cvSecExpNewCn:'Education & Development',
-    cvSecCapacity:'核心能力', cvSecCapacityCn:'Capacity',
-    cvSecExpect:'职业期望', cvSecExpectCn:'Career Expectation',
-    cvSecRefs:'背景调查联系人', cvSecRefsCn:'References',
-    cvLabelRole:'目标职位', cvLabelEnv:'目标环境',
-    cvLabelSkills:'希望发展的技能', cvLabelSalary:'薪资期望',
-    cvEarlier:'早期经历', cvRefOnRequest:'可提供联系方式，请联系本人',
-    cvFooter:'基于JYS零售销售顾问简历专业框架生成 · ccadance.com',
-    skillNames:{
-      S2:'持续超达销售目标', S1:'跨品类销售拓展', C1:'客户档案管理',
-      C2:'新客开发', C3:'VIP客户管理', C4:'长期客户关系',
-      P3:'品牌与品类知识', P2:'风格顾问', P1:'品牌故事讲述',
-      R2:'客户活动主持', R3:'数字化客户维护', Q4:'销售顾问培养与辅导',
-      Q3:'售后跟进纪律', Q1:'多语言客户服务'
-    }
+    navBack:'← 返回', eyebrow:'每日练习 · CRM 工作日志',
+    heroTitle:'复盘你今天的销售工作。',
+    heroSub:'三个维度。五分钟。清晰记录你今天如何构建客户关系——以及明天该做什么。',
+    fDate:'日期', fName:'你的姓名',
+    l1num:'第1层 / 共3层', l1title:'本地客户网络',
+    l1sub:'与你地理位置最近、信任关系最深的客户。这是你最先建立的关系网络。',
+    fLocalTotal:'我客户档案中的本地客户总数',
+    fLocal3km:'门店3公里以内的客户数',
+    fLocal3kmHint:'这些客户应该最频繁地收到你的联系——他们随时可以到访。',
+    fVisitedNoBuy:'今天来访但未购买的客户是谁？',
+    fVisitedNoBuyHint:'关注真正感兴趣但尚未准备好的客户。他们是你的下一批买家——不是流失客户。',
+    fLocalInvite:'本周我计划联系或邀请哪些本地网络中的客户？',
+    l2num:'第2层 / 共3层', l2title:'忠实客户与VIP',
+    l2sub:'最信任你的客户。他们消费最多、回购最频繁，每个月都需要你的关注。',
+    fLoyalCount:'当前忠实客户数量', fVipCount:'当前VIP客户数量',
+    fVipHint:'VIP = 过去12个月消费5000欧元以上，或忠实客户满3年。每位VIP本月内必须至少联系一次。',
+    fSpecialCase:'今日特殊案例——有重要的客户时刻吗？',
+    fSpecialCaseHint:'投诉、客户分享的个人细节、困难的对话、让你意外的客户——都值得记录下来。',
+    fLearned:'今天我从某位客户身上学到了什么？',
+    l3num:'第3层 / 共3层', l3title:'333法则 — 每日检查',
+    l3sub:'333法则不是一项任务——它是你对每位新客户的首要责任。第3天、第21天、3个月。今天做到了吗？',
+    r3day:'第3天联系', r21day:'第21天联系', r3month:'3个月联系',
+    sDone:'已完成', sPartial:'部分完成', sNot:'未完成',
+    f333Result:'今天有客户因为333跟进回来购买了吗？',
+    tomorrowTitle:'明日重点',
+    tomorrowSub:'一个优先事项。一个行动。保持具体。',
+    fTomorrow:'明天我将为客户做的一件事是什么？',
+    btnGenerate:'生成我的日志 →',
+    recapReady:'你的每日复盘已生成。',
+    recapSub:' 保存、打印，或与你的主管分享。',
+    btnEdit:'← 编辑', btnPrint:'↓ 打印 / 保存PDF',
+    rcTitle:'每日销售工作复盘', rcCredit:'CCadance in Retail · 每日CRM练习 · ccadance.com',
+    rcL1:'本地客户网络', rcL2:'忠实客户与VIP', rcL3:'333法则',
+    rcLocalTotal:'本地客户', rcLocal3km:'3公里内',
+    rcVisited:'今日到访未购', rcInvite:'本周计划联系',
+    rcLoyal:'忠实客户', rcVip:'VIP客户',
+    rcSpecial:'特殊案例', rcLearned:'今日所学',
+    rc3day:'第3天', rc21day:'第21天', rc3month:'3个月',
+    rc333Result:'333今日成果', rcTomorrow:'明日重点',
+    statusYes:'✓ 已完成', statusPartial:'~ 部分完成', statusNo:'✗ 未完成', statusNone:'— 未记录',
   }
 };
-function t(key){ return (STR[currentLang]&&STR[currentLang][key])||STR.en[key]||key; }
 
-// ─── Language ─────────────────────────────────────────────────────────
+function t(k){ return (STR[currentLang]&&STR[currentLang][k])||STR.en[k]||k; }
+
 function setLang(lang){
-  currentLang = lang;
-  localStorage.setItem('ccadance-cv-lang', lang);
+  currentLang=lang;
+  localStorage.setItem('ccadance-recap-lang',lang);
   document.querySelectorAll('[data-i18n]').forEach(el=>{
     const k=el.getAttribute('data-i18n');
     if(STR[lang]&&STR[lang][k]) el.textContent=STR[lang][k];
     else if(STR.en[k]) el.textContent=STR.en[k];
   });
   document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active',b.dataset.lang===lang));
-  updateStep3Labels();
-  updateStep4Labels();
-}
-
-// ─── Step navigation ─────────────────────────────────────────────────
-function goStep(n){
-  document.querySelectorAll('.step-card').forEach(c=>c.classList.remove('active'));
-  const card=document.getElementById('step-'+n);
-  if(card){ card.classList.add('active'); currentStep=n; }
-  document.querySelectorAll('.prog-step').forEach((s,i)=>{
-    s.classList.remove('active','done');
-    if(i+1<n) s.classList.add('done');
-    else if(i+1===n) s.classList.add('active');
-  });
-  // mark done steps
-  document.querySelectorAll('.prog-step.done .prog-dot').forEach(d=>{ if(!d.innerHTML.includes('✓')) d.innerHTML='✓'; });
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
-// ─── Profile selection ────────────────────────────────────────────────
-function selectProfile(p){
-  saProfile=p;
-  document.getElementById('opt-new').classList.toggle('selected',p==='new');
-  document.getElementById('opt-exp').classList.toggle('selected',p==='experienced');
-  updateStep3Labels();
-  updateStep4Labels();
-  const capSales=document.getElementById('cap-sales-section');
-  if(capSales) capSales.style.display=(p==='new')?'none':'block';
-}
-
-function updateStep3Labels(){
-  const isNew = saProfile==='new';
-  const sub=document.getElementById('s3-sub');
-  const q1l=document.getElementById('s3-q1-label');
-  const q2l=document.getElementById('s3-q2-label');
-  const q3l=document.getElementById('s3-q3-label');
-  if(sub) sub.textContent = isNew ? t('s3SubNew') : t('s3SubExp');
-  if(q1l) q1l.textContent = isNew ? t('s3Q1New') : t('s3Q1Exp');
-  if(q2l) q2l.textContent = isNew ? t('s3Q2New') : t('s3Q2Exp');
-  if(q3l) q3l.textContent = isNew ? t('s3Q3New') : t('s3Q3Exp');
-  const q1=document.getElementById('s3-q1');
-  const q2=document.getElementById('s3-q2');
-  if(q1){ q1.placeholder = isNew ? 'e.g. I am drawn to luxury retail because...' : 'e.g. Clients who value long-term relationships and style curation...'; }
-  if(q2){ q2.placeholder = isNew ? 'e.g. At my part-time role in a café, I noticed a regular customer...' : 'e.g. I remember details — a client\'s daughter\'s birthday, her travel plans...'; }
-}
-
-function updateStep4Labels(){
-  const isNew = saProfile==='new';
-  const title=document.getElementById('s4-title');
-  const sub=document.getElementById('s4-sub');
-  if(title) title.textContent = isNew ? t('s4TitleNew') : t('s4TitleExp');
-  if(sub) sub.textContent = isNew ? t('s4SubNew') : t('s4SubExp');
-  const noExpToggle=document.getElementById('no-exp-toggle');
-  if(noExpToggle) noExpToggle.style.display = isNew ? 'none' : 'flex';
-}
-
-// ─── Language rows ────────────────────────────────────────────────────
-function addLang(){
-  const list=document.getElementById('lang-list');
-  const row=document.createElement('div');
-  row.className='lang-row';
-  row.innerHTML=`<input type="text" class="lang-name" placeholder="e.g. Mandarin">
-    <select class="lang-level">
-      <option value="">Level</option>
-      <option value="Native">Native</option>
-      <option value="Fluent">Fluent</option>
-      <option value="Professional">Professional</option>
-      <option value="Conversational">Conversational</option>
-    </select>
-    <button class="lang-remove" onclick="removeLang(this)">×</button>`;
-  list.appendChild(row);
-}
-function removeLang(btn){
-  const rows=document.querySelectorAll('.lang-row');
-  if(rows.length>1) btn.closest('.lang-row').remove();
-}
-
-// ─── Experience blocks ────────────────────────────────────────────────
-function addExpBlock(){
-  const container=document.getElementById('exp-blocks');
-  const idx=++expCount;
-  const div=document.createElement('div');
-  div.className='exp-block'; div.id='exp-'+idx;
-  div.innerHTML=`
-    <div class="exp-block-num">${t('progExp')} ${idx}</div>
-    <button class="exp-remove" onclick="removeExp(${idx})">×</button>
-    <div class="field-row">
-      <div class="field"><label>${t('expBrandLabel')}</label><input type="text" id="exp-${idx}-brand" placeholder="e.g. Furla"></div>
-      <div class="field"><label>${t('expRoleLabel')}</label><input type="text" id="exp-${idx}-role" placeholder="e.g. Supervisor"></div>
-    </div>
-    <div class="field-row">
-      <div class="field"><label>${t('expDatesLabel')}</label><input type="text" id="exp-${idx}-dates" placeholder="e.g. 2019–2021"></div>
-      <div class="field"><label>${t('expLocLabel')}</label><input type="text" id="exp-${idx}-loc" placeholder="e.g. Singapore"></div>
-    </div>
-    <div class="field"><label>${t('expAchLabel')}</label>
-      <textarea id="exp-${idx}-ach" rows="2" placeholder="${t('expAchPlaceholder')}"></textarea>
-    </div>`;
-  container.appendChild(div);
-  const addBtn=document.getElementById('add-exp-btn');
-  if(container.children.length>=3 && addBtn) addBtn.style.display='none';
-}
-function removeExp(idx){
-  const el=document.getElementById('exp-'+idx);
-  if(el) el.remove();
-  const addBtn=document.getElementById('add-exp-btn');
-  if(addBtn) addBtn.style.display='';
-}
-function toggleNoExp(cb){
-  const blocks=document.getElementById('exp-blocks');
-  const addBtn=document.getElementById('add-exp-btn');
-  if(cb.checked){ blocks.style.display='none'; if(addBtn) addBtn.style.display='none'; }
-  else { blocks.style.display=''; if(addBtn) addBtn.style.display=''; }
-}
-function toggleRefOnRequest(cb){
-  ['ref1-name','ref1-title','ref1-co','ref1-contact','ref2-name','ref2-title','ref2-co','ref2-contact'].forEach(id=>{
-    const el=document.getElementById(id);
-    if(el){ el.disabled=cb.checked; el.style.opacity=cb.checked?'0.3':'1'; }
+  // update placeholders
+  document.getElementById('f-visited-nobuy').placeholder = lang==='zh'?'如：王女士——试了新款外套，在价格上有顾虑。她每两周来一次。我将在3天后跟进。':'e.g. Ms. Wang — looked at the new coat, hesitated on price. She comes every 2 weeks. I will follow up in 3 days.';
+  document.getElementById('f-local-invite').placeholder = lang==='zh'?'如：李女士——新到货符合她的风格。朴先生——他太太下周生日。':'e.g. Ms. Li — new arrival in her style. Mr. Park — his wife\'s birthday is next week.';
+  document.getElementById('f-special-case').placeholder = lang==='zh'?'如：陈女士来电说她5月将搬去北京。我已记录，并计划在她离开前安排一次告别拜访。':'e.g. Ms. Chen called to say she is moving to Beijing in May. I noted this and will plan a farewell appointment before she leaves.';
+  document.getElementById('f-learned').placeholder = lang==='zh'?'如：朴女士提到她女儿9月将结婚。这与礼品选购和场合搭配相关。':'e.g. Ms. Park mentioned her daughter is getting married in September. This is relevant for gifting and occasion dressing.';
+  document.getElementById('f-333-result').placeholder = lang==='zh'?'如：林女士回来了——她是我两周前第21天跟进的客户。她购买了之前犹豫的那只包。跟进有效。':'e.g. Ms. Lim came back — she was my Day 21 contact from 2 weeks ago. She bought the bag she was hesitating on. Follow-up works.';
+  document.getElementById('f-tomorrow').placeholder = lang==='zh'?'如：致电王女士——外套的第3天跟进。提前准备好关于面料的故事。':'e.g. Call Ms. Wang — Day 3 follow-up on the coat she liked. Have a story ready about the fabric.';
+  document.querySelectorAll('input[id^="r-"]').forEach(el=>{
+    if(el.id==='r-3day-who') el.placeholder = lang==='zh'?'今天该进行第3天联系的客户是谁？':'Who was due for Day 3 contact today?';
+    if(el.id==='r-21day-who') el.placeholder = lang==='zh'?'今天该进行第21天联系的客户是谁？':'Who was due for Day 21 contact today?';
+    if(el.id==='r-3month-who') el.placeholder = lang==='zh'?'今天该进行3个月联系的客户是谁？':'Who was due for 3-month contact today?';
   });
 }
 
-// ─── Data collection ──────────────────────────────────────────────────
-function collectData(){
-  // Languages
-  const langs=[];
-  document.querySelectorAll('.lang-row').forEach(row=>{
-    const name=row.querySelector('.lang-name').value.trim();
-    const level=row.querySelector('.lang-level').value;
-    if(name) langs.push({name,level});
-  });
-  // Experience
-  const exps=[];
-  document.querySelectorAll('.exp-block').forEach(block=>{
-    const id=block.id.split('-')[1];
-    const brand=v('exp-'+id+'-brand');
-    if(brand) exps.push({brand, role:v('exp-'+id+'-role'), dates:v('exp-'+id+'-dates'), loc:v('exp-'+id+'-loc'), ach:v('exp-'+id+'-ach')});
-  });
-  const noExp=document.getElementById('no-exp-check')&&document.getElementById('no-exp-check').checked;
-  const refOnRequest=document.getElementById('ref-onrequest')&&document.getElementById('ref-onrequest').checked;
-
-  return {
-    profile: saProfile||'experienced',
-    name: v('f-name'), location: v('f-location'),
-    email: v('f-email'), phone: v('f-phone'),
-    langs,
-    sq1: v('s3-q1'), sq2: v('s3-q2'), sq3: v('s3-q3'),
-    exps, noExp,
-    capS2: v('cap-S2'), capS1: v('cap-S1'),
-    capC1: v('cap-C1'), capC2: v('cap-C2'), capC3: v('cap-C3'),
-    capP3: v('cap-P3'), capP2: v('cap-P2'), capP1: v('cap-P1'),
-    capR2: v('cap-R2'), capR3: v('cap-R3'),
-    capQ4: v('cap-Q4'), capQ3: v('cap-Q3'),
-    targetRole: v('f-target-role'), targetEnv: v('f-target-env'),
-    skillsDev: v('f-skills-dev'), salary: v('f-salary'),
-    ref1Name: v('ref1-name'), ref1Title: v('ref1-title'), ref1Co: v('ref1-co'), ref1Contact: v('ref1-contact'),
-    ref2Name: v('ref2-name'), ref2Title: v('ref2-title'), ref2Co: v('ref2-co'), ref2Contact: v('ref2-contact'),
-    refOnRequest
-  };
+function setStatus(btn, rule, status){
+  const wrap = btn.closest('.rule-status');
+  wrap.querySelectorAll('.status-btn').forEach(b=>{ b.classList.remove('active-yes','active-partial','active-no'); });
+  btn.classList.add('active-'+status);
+  ruleStatus[rule]=status;
 }
+
 function v(id){ const el=document.getElementById(id); return el?el.value.trim():''; }
 
-// ─── Skill scoring ────────────────────────────────────────────────────
-function scoreSkills(d){
-  const score={};
-  const s=(key,text)=>{ if(!text) return 0; const hasNum=/\d/.test(text); const long=text.length>40; return hasNum?3:(long?2:1); };
-  score.S2=s('S2',d.capS2);
-  score.S1=s('S1',d.capS1);
-  score.C1=s('C1',d.capC1);
-  score.C2=s('C2',d.capC2);
-  score.C3=s('C3',d.capC3);
-  score.P3=s('P3',d.capP3);
-  score.P2=s('P2',d.capP2);
-  score.P1=s('P1',d.capP1);
-  score.R2=s('R2',d.capR2);
-  score.R3=s('R3',d.capR3);
-  score.Q4=s('Q4',d.capQ4);
-  score.Q3=s('Q3',d.capQ3);
-  // Languages: 2+ languages = score 3 for Q1
-  const langCount=d.langs.filter(l=>l.name).length;
-  score.Q1 = langCount>=3?3:langCount>=2?2:langCount===1?1:0;
-  return score;
+function statusLabel(s){
+  if(s==='yes') return t('statusYes');
+  if(s==='partial') return t('statusPartial');
+  if(s==='no') return t('statusNo');
+  return t('statusNone');
+}
+function statusColor(s){
+  if(s==='yes') return '#64b464';
+  if(s==='partial') return '#c9a84c';
+  if(s==='no') return '#b4503c';
+  return '#bbb';
 }
 
-function selectTopSkills(scores){
-  // Priority order within same score: C > S > P > R > Q
-  const priority=['C1','C2','C3','S2','S1','P3','P2','P1','R2','R3','Q1','Q4','Q3'];
-  const scored=priority.map(k=>({k,s:scores[k]||0})).filter(x=>x.s>0);
-  scored.sort((a,b)=>b.s-a.s||(priority.indexOf(a.k)-priority.indexOf(b.k)));
-  return scored.slice(0,3).map(x=>x.k);
+function row(label, val, color){
+  if(!val) return '';
+  return `<div class="rc-row"><div class="rc-label">${label}</div><div class="rc-val" style="${color?'color:'+color:''}">${val}</div></div>`;
 }
 
-// ─── Statement generator ──────────────────────────────────────────────
-function buildStatement(d){
-  const name=d.name.split(' ')[0]||'I';
-  const isNew=d.profile==='new';
-  const langStr=d.langs.length>0?d.langs.map(l=>l.name+(l.level?` (${l.level})`:'') ).join(', '):'';
-  const expYears=d.exps.length>0?calcYears(d.exps):'';
+function buildRecap(){
+  const date = v('f-date') || new Date().toISOString().split('T')[0];
+  const dateDisplay = new Date(date+'T12:00:00').toLocaleDateString(currentLang==='zh'?'zh-CN':'en-GB',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  const name = v('f-name') || '—';
 
-  if(isNew){
-    const q1=d.sq1||'luxury retail and the art of client relationships';
-    const q3=d.sq3||'great service is making the client feel understood before they speak';
-    let stmt=`Drawn to luxury retail through a genuine passion for ${q1.toLowerCase().replace(/^why |^because /i,'')}, ${name} brings a clear belief: ${q3.toLowerCase().replace(/^that |^i believe /i,'')}. `;
-    if(langStr) stmt+=`Multilingual in ${langStr}${d.location?' and based in '+d.location:''}, ${name.toLowerCase()} offers the cultural fluency that today's luxury clients expect. `;
-    stmt+=`Seeking a first role in a brand environment where that belief can be put into practice every day.`;
-    return stmt;
-  } else {
-    const q2=d.sq2||'a reading of the client that goes beyond the transaction';
-    const q3=d.sq3||'the best client relationships are built between visits, not during them';
-    let stmt=``;
-    if(expYears) stmt+=`With ${expYears} on the floor of luxury and fashion retail, `;
-    stmt+=`${name} has built a career on one principle: ${q3.toLowerCase().replace(/^that |^i believe /i,'')}. `;
-    stmt+=`The difference in ${name.toLowerCase()}'s approach is ${q2.toLowerCase().replace(/^my |^i /i,'')}. `;
-    if(langStr) stmt+=`Serving clients in ${langStr}. `;
-    stmt+=`Now looking for a brand environment where long-term client value is as important as today's target.`;
-    return stmt;
-  }
-}
-
-function calcYears(exps){
-  // try to extract a year range
-  let earliest=2099, latest=0;
-  exps.forEach(e=>{
-    const years=(e.dates||'').match(/\d{4}/g);
-    if(years){ years.forEach(y=>{ const n=parseInt(y); if(n<earliest)earliest=n; if(n>latest)latest=n; }); }
-  });
-  if(earliest<2099&&latest>0){ const yrs=Math.max(1,new Date().getFullYear()-earliest); return yrs+' year'+(yrs!==1?'s':''); }
-  return '';
-}
-
-// ─── CV HTML generator ────────────────────────────────────────────────
-function generateCV(d, topSkills, scores){
-  const isNew=d.profile==='new';
-  const L=currentLang;
-  const tn=k=>t(k);
-  const today=new Date(); const dateStr=today.toLocaleDateString('en-GB',{month:'long',year:'numeric'});
-
-  // Header
-  const langLine=d.langs.filter(l=>l.name).map(l=>`<strong>${l.name}</strong>${l.level?' · '+l.level:''}`).join(' &nbsp;·&nbsp; ');
-  const titleLine=tn(isNew?'cvTitleNew':'cvTitleExp');
-
-  // Personal statement
-  const stmt=buildStatement(d);
-
-  // Experience
-  let expHTML='';
-  const mainExps=d.exps.slice(0,2);
-  const earlierExps=d.exps.slice(2);
-  if(!d.noExp&&d.exps.length>0){
-    mainExps.forEach((e,i)=>{
-      expHTML+=`<div class="cv-exp-block">
-        <div class="cv-exp-row">
-          <div><div class="cv-exp-brand">${e.brand||''}</div><div class="cv-exp-role">${e.role||''}</div></div>
-          <div class="cv-exp-dates">${e.dates||''}</div>
-        </div>
-        ${e.loc?`<div class="cv-exp-loc">${e.loc}</div>`:''}
-        ${e.ach?`<ul class="cv-exp-bullets">${formatAch(e.ach)}</ul>`:''}
-      </div>`;
-      if(i<mainExps.length-1) expHTML+=`<hr style="border:none;border-top:1px solid #f0ede8;margin:10px 0;">`;
-    });
-    if(earlierExps.length>0){
-      expHTML+=`<div class="cv-earlier"><span>${tn('cvEarlier')}</span>`+earlierExps.map(e=>`${e.brand}${e.role?' — '+e.role:''}${e.dates?' · '+e.dates:''}`).join(' &nbsp;·&nbsp; ')+'</div>';
-    }
-  } else if(d.noExp){
-    expHTML=`<div style="font-size:12px;color:#999;font-style:italic;">${L==='zh'?'尚无零售工作经历——将在首个职位后补充。':'No retail experience yet — to be built from first role.'}</div>`;
-  }
-
-  // Skills
-  let skillsHTML='';
-  const capMap={ S2:'capS2',S1:'capS1',C1:'capC1',C2:'capC2',C3:'capC3',P3:'capP3',P2:'capP2',P1:'capP1',R2:'capR2',R3:'capR3',Q4:'capQ4',Q3:'capQ3',Q1:null };
-  topSkills.forEach(code=>{
-    const name=t('skillNames')[code]||code;
-    let desc='', proof='';
-    if(code==='Q1'){
-      const ls=d.langs.filter(l=>l.name);
-      if(ls.length>=2){
-        desc=L==='zh'?`能够以${ls.map(l=>l.name).join('、')}为${ls.map(l=>l.name).join(' and ')}客户提供完整的购物体验，包括产品讲述与客户关系维护。`
-          :`Delivers full client appointments in ${ls.map(l=>l.name+(l.level?` (${l.level})`:'') ).join(' and ')}, including product storytelling and relationship management.`;
-        proof=ls.map(l=>`${l.name}${l.level?' · '+l.level:''}`).join(' · ');
-      }
-    } else {
-      const rawKey=capMap[code];
-      const rawText=rawKey?d[rawKey]:'';
-      if(rawText){
-        const sentences=rawText.split(/[.。!！]/g).map(s=>s.trim()).filter(Boolean);
-        desc=sentences[0]+(sentences[0]&&!sentences[0].endsWith('.')?'.':'');
-        const nums=rawText.match(/\d+[%+]?/g);
-        proof=nums?nums.slice(0,2).join(' · ')+(sentences[1]?' · '+sentences[1]:''):(sentences[1]||'');
-      }
-    }
-    skillsHTML+=`<div class="skill-block">
-      <div class="skill-name">${name}</div>
-      ${desc?`<div class="skill-desc">${cap(desc)}</div>`:''}
-      ${proof?`<div class="skill-proof">${proof}</div>`:''}
-    </div>`;
-  });
-
-  // Expectation
-  const expRows=[
-    {label:tn('cvLabelRole'), val:d.targetRole},
-    {label:tn('cvLabelEnv'), val:d.targetEnv},
-    {label:tn('cvLabelSkills'), val:d.skillsDev},
-    {label:tn('cvLabelSalary'), val:d.salary}
-  ].filter(r=>r.val);
-
-  // References
-  let refsHTML='';
-  if(d.refOnRequest){
-    refsHTML=`<div class="cv-ref">${tn('cvRefOnRequest')}</div>`;
-  } else {
-    if(d.ref1Name) refsHTML+=`<div class="cv-ref"><strong>${d.ref1Name}</strong>${d.ref1Title?' · '+d.ref1Title:''}${d.ref1Co?' · '+d.ref1Co:''}${d.ref1Contact?' · '+d.ref1Contact:''}</div>`;
-    if(d.ref2Name) refsHTML+=`<div class="cv-ref"><strong>${d.ref2Name}</strong>${d.ref2Title?' · '+d.ref2Title:''}${d.ref2Co?' · '+d.ref2Co:''}${d.ref2Contact?' · '+d.ref2Contact:''}</div>`;
-    if(!d.ref1Name&&!d.ref2Name) refsHTML=`<div class="cv-ref" style="color:#bbb;font-style:italic;">${tn('cvRefOnRequest')}</div>`;
-  }
-
-  const secExpTitle = isNew ? tn('cvSecExpNew') : tn('cvSecExp');
-  const secExpCn    = isNew ? tn('cvSecExpNewCn') : tn('cvSecExpCn');
-
-  return `<div class="cv-head">
-    <div class="cv-sec-num" style="margin-bottom:6px;">01 &nbsp;·&nbsp; ${L==='zh'?'个人信息 · Personal Information':'PERSONAL INFORMATION · 个人信息'}</div>
-    <div class="cv-name">${d.name||'Your Name'}</div>
-    <div class="cv-title-line">${titleLine}</div>
-    <div class="cv-meta-line">
-      ${d.location?`<div class="cv-meta-item">${d.location}</div>`:''}
-      ${d.email?`<div class="cv-meta-item">${d.email}</div>`:''}
-      ${d.phone?`<div class="cv-meta-item">${d.phone}</div>`:''}
-      ${langLine?`<div class="cv-meta-item">${langLine}</div>`:''}
-    </div>
+  const html = `
+  <div class="rc-head">
+    <div class="rc-date">${dateDisplay}</div>
+    <div class="rc-title">${t('rcTitle')}</div>
+    <div class="rc-sa">${name}</div>
   </div>
-  <div class="cv-body">
-    <div class="cv-sec">
-      <div class="cv-sec-head"><div class="cv-sec-num">02</div><div class="cv-sec-title">${tn('cvSecStatement')}</div><div class="cv-sec-cn">${tn('cvSecStatementCn')}</div></div>
-      <div class="cv-statement">${stmt}</div>
+  <div class="rc-body">
+
+    <div class="rc-layer">
+      <div class="rc-layer-head"><div class="rc-layer-num">01</div><div class="rc-layer-title">${t('rcL1')}</div></div>
+      ${row(t('rcLocalTotal'), v('f-local-total'))}
+      ${row(t('rcLocal3km'), v('f-local-3km'))}
+      ${v('f-visited-nobuy')?`${row(t('rcVisited'),'&nbsp;')}<div class="rc-insight">${v('f-visited-nobuy')}</div>`:''}
+      ${v('f-local-invite')?`<div style="margin-top:8px;">${row(t('rcInvite'),'&nbsp;')}<div class="rc-insight">${v('f-local-invite')}</div></div>`:''}
     </div>
-    <div class="cv-sec">
-      <div class="cv-sec-head"><div class="cv-sec-num">03</div><div class="cv-sec-title">${secExpTitle}</div><div class="cv-sec-cn">${secExpCn}</div></div>
-      ${expHTML||`<div style="font-size:12px;color:#bbb;font-style:italic;">Add your experience in Step 4.</div>`}
+
+    <div class="rc-layer">
+      <div class="rc-layer-head"><div class="rc-layer-num">02</div><div class="rc-layer-title">${t('rcL2')}</div></div>
+      ${row(t('rcLoyal'), v('f-loyal-count'))}
+      ${row(t('rcVip'), v('f-vip-count'))}
+      ${v('f-special-case')?`<div style="margin-top:8px;">${row(t('rcSpecial'),'&nbsp;')}<div class="rc-insight">${v('f-special-case')}</div></div>`:''}
+      ${v('f-learned')?`<div style="margin-top:8px;">${row(t('rcLearned'),'&nbsp;')}<div class="rc-insight">${v('f-learned')}</div></div>`:''}
     </div>
-    <div class="cv-sec">
-      <div class="cv-sec-head"><div class="cv-sec-num">04</div><div class="cv-sec-title">${tn('cvSecCapacity')}</div><div class="cv-sec-cn">${tn('cvSecCapacityCn')}</div></div>
-      ${skillsHTML||`<div style="font-size:12px;color:#bbb;font-style:italic;">Complete Step 5 to generate your top 3 skills.</div>`}
+
+    <div class="rc-layer">
+      <div class="rc-layer-head"><div class="rc-layer-num">03</div><div class="rc-layer-title">${t('rcL3')}</div></div>
+      <div class="rc-row"><div class="rc-label">${t('rc3day')}</div><div class="rc-val"><span style="color:${statusColor(ruleStatus['3day'])};font-weight:600;">${statusLabel(ruleStatus['3day'])}</span>${v('r-3day-who')?' · '+v('r-3day-who'):''}</div></div>
+      <div class="rc-row"><div class="rc-label">${t('rc21day')}</div><div class="rc-val"><span style="color:${statusColor(ruleStatus['21day'])};font-weight:600;">${statusLabel(ruleStatus['21day'])}</span>${v('r-21day-who')?' · '+v('r-21day-who'):''}</div></div>
+      <div class="rc-row"><div class="rc-label">${t('rc3month')}</div><div class="rc-val"><span style="color:${statusColor(ruleStatus['3month'])};font-weight:600;">${statusLabel(ruleStatus['3month'])}</span>${v('r-3month-who')?' · '+v('r-3month-who'):''}</div></div>
+      ${v('f-333-result')?`<div style="margin-top:8px;">${row(t('rc333Result'),'&nbsp;')}<div class="rc-insight">${v('f-333-result')}</div></div>`:''}
     </div>
-    <div class="cv-sec">
-      <div class="cv-sec-head"><div class="cv-sec-num">05</div><div class="cv-sec-title">${tn('cvSecExpect')}</div><div class="cv-sec-cn">${tn('cvSecExpectCn')}</div></div>
-      <div class="cv-expect-grid">${expRows.map(r=>`<div class="cv-expect-row"><div class="cv-expect-label">${r.label}</div><div class="cv-expect-val">${r.val}</div></div>`).join('')}</div>
-    </div>
-    <div class="cv-sec">
-      <div class="cv-sec-head"><div class="cv-sec-num">06</div><div class="cv-sec-title">${tn('cvSecRefs')}</div><div class="cv-sec-cn">${tn('cvSecRefsCn')}</div></div>
-      <div class="cv-refs">${refsHTML}</div>
-    </div>
+
+    ${v('f-tomorrow')?`<div class="rc-layer">
+      <div class="rc-layer-head"><div class="rc-layer-num">→</div><div class="rc-layer-title">${t('rcTomorrow')}</div></div>
+      <div class="rc-insight" style="border-left-color:#1a1a1a;">${v('f-tomorrow')}</div>
+    </div>`:''}
+
   </div>
-  <div class="cv-foot">
-    <div class="cv-foot-credit">${tn('cvFooter')}</div>
-    <div class="cv-foot-date">${dateStr}</div>
+  <div class="rc-foot">
+    <div class="rc-foot-credit">${t('rcCredit')}</div>
+    <div class="rc-foot-date">${dateDisplay}</div>
   </div>`;
-}
 
-function formatAch(text){
-  const bullets=text.split(/[.。\n]/g).map(s=>s.trim()).filter(s=>s.length>3).slice(0,2);
-  if(bullets.length===0) return `<li>${text}</li>`;
-  return bullets.map(b=>`<li>${cap(b)}</li>`).join('');
-}
-function cap(s){ return s?s.charAt(0).toUpperCase()+s.slice(1):s; }
-
-// ─── Build & preview ──────────────────────────────────────────────────
-function buildAndPreview(){
-  const d=collectData();
-  if(!d.name){
-    alert(currentLang==='zh' ? '请在第2步填写您的全名。' : 'Please enter your full name in Step 2.');
-    goStep(2); document.getElementById('f-name').focus(); return;
-  }
-  if(!d.targetRole){
-    alert(currentLang==='zh' ? '请在第6步填写您的目标职位。' : 'Please enter your target role in Step 6.');
-    goStep(6); document.getElementById('f-target-role').focus(); return;
-  }
-  const scores=scoreSkills(d);
-  const topSkills=selectTopSkills(scores);
-  const html=generateCV(d,topSkills,scores);
-  document.getElementById('cv-output').innerHTML=html;
-  document.getElementById('screen-form').style.display='none';
-  document.getElementById('progress-wrap').style.display='none';
-  document.getElementById('screen-preview').classList.add('active');
+  document.getElementById('recap-card').innerHTML = html;
+  document.getElementById('screen-form').style.display = 'none';
+  document.getElementById('screen-form-hero').style.display = 'none';
+  document.getElementById('recap-output').classList.add('active');
   window.scrollTo({top:0,behavior:'smooth'});
 }
-function backToEdit(){
-  document.getElementById('screen-form').style.display='';
-  document.getElementById('progress-wrap').style.display='';
-  document.getElementById('screen-preview').classList.remove('active');
-  goStep(currentStep);
+
+function backToForm(){
+  document.getElementById('screen-form').style.display = '';
+  document.getElementById('screen-form-hero').style.display = '';
+  document.getElementById('recap-output').classList.remove('active');
 }
 
-// ─── Init ─────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded',()=>{
   setLang(currentLang);
-  addExpBlock();
-  updateStep3Labels();
-  updateStep4Labels();
-  // hide sales section until profile is selected
-  const capSales=document.getElementById('cap-sales-section');
-  if(capSales) capSales.style.display='none';
+  document.getElementById('f-date').value = new Date().toISOString().split('T')[0];
 });
 </script>
 </body>
